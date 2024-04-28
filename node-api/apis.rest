@@ -1,0 +1,191 @@
+### Run status check
+GET http://localhost:3000/
+
+### Create a ticket
+POST http://localhost:3000/api/tickets
+Content-Type: application/json
+
+POST http://localhost:3000/api/tickets
+Content-Type: application/json
+
+{
+  "topicId": 1,
+  "title": "Ticket Title",
+  "description": "Ticket Description",
+  "attachments": ["file1.pdf", "file2.png"],
+  "priority": "P1",
+  "requestedBy": "John Doe",
+  "fyiTo": ["Manager1", "Manager2"]
+}
+
+
+### Get all tickets
+GET http://localhost:3000/api/tickets
+
+### Get ticket by Id
+GET http://localhost:3000/api/tickets/1
+
+### Update a ticket
+PUT http://localhost:3000/api/tickets/1
+Content-Type: application/json
+
+PUT http://localhost:3000/api/tickets/1
+Content-Type: application/json
+
+{
+  "title": "Updated Ticket Title",
+  "description": "Updated Ticket Description",
+  "attachments": ["file3.doc"],
+  "priority": "P2",
+  "requestedBy": "Jane Smith",
+  "fyiTo": ["Manager3"]
+}
+
+
+
+### Delete a ticket
+DELETE http://localhost:3000/api/tickets/1
+
+
+### Create Organization (POST /api/organizations)
+POST http://localhost:3000/api/organizations
+Content-Type: application/json
+
+{
+  "code": "org1",
+  "name": "My Organization",
+  "address": "123 Main St"
+}
+
+### Get All Organizations (GET /api/organizations)
+GET http://localhost:3000/api/organizations
+
+### Get Organization by ID (GET /api/organizations/:id)
+GET http://localhost:3000/api/organizations/1
+
+### Update Organization (PUT /api/organizations/:id)
+PUT http://localhost:3000/api/organizations/1
+Content-Type: application/json
+
+{
+  "code": "org1",
+  "name": "Updated Organization",
+  "address": "456 Elm St"
+}
+
+### Delete Organization (DELETE /api/organizations/:id)
+DELETE http://localhost:3000/api/organizations/1
+
+### Create Project (POST /api/projects)
+POST http://localhost:3000/api/projects
+Content-Type: application/json
+
+{
+  "organizationId": 1,
+  "code": "proj1",
+  "name": "My Project",
+  "description": "Project description"
+}
+
+
+### Get All Projects (GET /api/projects)
+GET http://localhost:3000/api/projects
+
+### Get project by id
+GET http://localhost:3000/api/projects
+
+### Update Project (PUT /api/projects/:id)
+PUT http://localhost:3000/api/projects/1
+Content-Type: application/json
+
+{
+  "code": "proj1",
+  "name": "Updated Project",
+  "description": "Updated project description"
+}
+
+### Delete a project
+DELETE http://localhost:3000/api/projects/1
+
+### Create Topic (POST /api/topics)
+POST http://localhost:3000/api/topics
+Content-Type: application/json
+
+{
+  "projectId": 1,
+  "name": "Topic 1",
+  "description": "Description of Topic 1"
+}
+
+### Get All Topics (GET /api/topics)
+GET http://localhost:3000/api/topics
+
+### Get Topic by ID (GET /api/topics/:id)
+GET http://localhost:3000/api/topics/1
+
+### Update Topic (PUT /api/topics/:id)
+PUT http://localhost:3000/api/topics/1
+Content-Type: application/json
+
+{
+  "name": "Updated Topic 1",
+  "description": "Updated description of Topic 1"
+}
+
+### Delete Topic (DELETE /api/topics/:id)
+DELETE http://localhost:3000/api/topics/1
+
+### User Registration
+POST http://localhost:3000/api/register
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "phoneNumber": "1234567890",
+  "password": "password123"
+}
+
+### User Login
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+### Change Password
+PUT http://localhost:3000/api/change-password
+Authorization: Bearer <JWT token>
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "currentPassword": "password123",
+  "newPassword": "newpassword456"
+}
+
+### Assign Role to User for a Project
+POST http://localhost:3000/api/user-roles
+Authorization: Bearer <JWT token>
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "projectId": 1,
+  "role": "Admin"
+}
+
+### Update User Role for a Project
+PUT http://localhost:3000/api/user-roles/:id
+Authorization: Bearer <JWT token>
+Content-Type: application/json
+
+{
+  "role": "Support"
+}
+
+### Delete User Role for a Project
+DELETE http://localhost:3000/api/user-roles/:id
+Authorization: Bearer <JWT token>
