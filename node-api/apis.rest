@@ -5,43 +5,28 @@ GET http://localhost:3000/
 POST http://localhost:3000/api/tickets
 Content-Type: application/json
 
-POST http://localhost:3000/api/tickets
-Content-Type: application/json
-
 {
   "topicId": 1,
   "title": "Ticket Title",
   "description": "Ticket Description",
-  "attachments": ["file1.pdf", "file2.png"],
   "priority": "P1",
   "requestedBy": "John Doe",
+  "attachments": ["file1.pdf", "file2.png"],
   "fyiTo": ["Manager1", "Manager2"]
 }
 
-
-### Get all tickets
-GET http://localhost:3000/api/tickets
-
-### Get ticket by Id
-GET http://localhost:3000/api/tickets/1
-
 ### Update a ticket
-PUT http://localhost:3000/api/tickets/1
-Content-Type: application/json
-
 PUT http://localhost:3000/api/tickets/1
 Content-Type: application/json
 
 {
   "title": "Updated Ticket Title",
   "description": "Updated Ticket Description",
-  "attachments": ["file3.doc"],
   "priority": "P2",
   "requestedBy": "Jane Smith",
+  "attachments": ["file3.doc"],
   "fyiTo": ["Manager3"]
 }
-
-
 
 ### Delete a ticket
 DELETE http://localhost:3000/api/tickets/1

@@ -1,10 +1,13 @@
 // models/Ticket.js
-
 const { DataTypes } = require('sequelize');
-const sequelize = require('../db');
-const Topic = require('./Topic');
+const db = require('../db');
 
-const Ticket = sequelize.define('Ticket', {
+const Ticket = db.define('Ticket', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
   title: {
     type: DataTypes.STRING,
     allowNull: false
@@ -21,27 +24,16 @@ const Ticket = sequelize.define('Ticket', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  fyiTo: {
-    type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: true
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false
   },
-  assignedTo: {
-    type: DataTypes.STRING,
-    allowNull: true
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false
   },
-  escalationLevel: {
-    type: DataTypes.ENUM('L1', 'L2', 'L3'),
-    allowNull: true
-  },
-  attachments: {
-    type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: true
-  }
-});
-
-// Define association with Topic
-Ticket.belongsTo(Topic, {
-  foreignKey: {
+  TopicId: {
+    type: DataTypes.INTEGER,
     allowNull: false
   }
 });

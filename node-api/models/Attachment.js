@@ -1,22 +1,21 @@
 // models/Attachment.js
+const { DataTypes } = require('sequelize');
+const db = require('../db');
 
-const { DataTypes, Model } = require('sequelize');
-const sequelize = require('../db');
-
-class Attachment extends Model {}
-
-Attachment.init({
-  filename: {
+const Attachment = db.define('Attachment', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  fileName: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  filePath: {
-    type: DataTypes.STRING,
+  TicketId: {
+    type: DataTypes.INTEGER,
     allowNull: false
   }
-}, {
-  sequelize,
-  modelName: 'Attachment'
 });
 
 module.exports = Attachment;
