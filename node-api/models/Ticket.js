@@ -32,7 +32,7 @@ const Ticket = db.define('Ticket', {
     type: DataTypes.DATE,
     allowNull: false
   },
-  TopicId: {
+  topicId: {
     type: DataTypes.INTEGER,
     allowNull: false
   }

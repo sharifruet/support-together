@@ -1,5 +1,3 @@
-// routes/authRoutes.js
-
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
@@ -38,7 +36,7 @@ router.post('/login', async (req, res) => {
     const userRoles = await UserRole.findAll({ where: { UserId: user.id } });
     // Generate JWT token with user roles
     const token = jwt.sign({ userId: user.id, roles: userRoles.map(role => ({ projectId: role.ProjectId, role: role.role })) }, 'secret_key', { expiresIn: '1h' });
-    res.json({ token });
+    res.json({ token, userRoles }); // Send user roles along with the token
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ error: 'Failed to login' });
