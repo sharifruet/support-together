@@ -1,0 +1,33 @@
+@baseURL = http://localhost:3000/api
+
+### Create a new ticket
+POST {{baseURL}}/tickets
+Content-Type: application/json
+
+{
+  "topicId": 1,
+  "title": "New Ticket",
+  "description": "Description of the new ticket",
+  "priority": "P3",
+  "requestedBy": "John Doe",
+  "attachments": ["attachment1.jpg", "attachment2.pdf"],
+  "fyiTo": ["user1@example.com", "user2@example.com"]
+}
+
+### Update an existing ticket
+PUT {{baseURL}}/tickets/1
+Content-Type: application/json
+
+{
+  "title": "Updated Ticket",
+  "description": "Updated description"
+}
+
+### Delete a ticket by ID
+DELETE {{baseURL}}/tickets/1
+
+### Get all tickets
+GET {{baseURL}}/tickets
+
+### Get a ticket by ID
+GET {{baseURL}}/tickets/1

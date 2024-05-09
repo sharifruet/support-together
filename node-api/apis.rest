@@ -1,5 +1,7 @@
+@BASE_URL = http://localhost:3000/api
+
 ### Run status check
-GET http://localhost:3000/
+GET {{BASE_URL}}
 
 ### Create a ticket
 POST http://localhost:3000/api/tickets
