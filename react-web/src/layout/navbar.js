@@ -9,10 +9,10 @@ const NavBar = () =>{
     return(
         <Container fluid>
             <Row>
-                <Navbar bg="dark" class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
-                    <ul class="navbar-nav">
-                        <li class="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} class="nav-link active" to='/home'>Home</Link></li>
-                        <li class="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} class="nav-link" to='/about'>Support</Link></li>
+                <Navbar bg="dark" className="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+                    <ul className="navbar-nav">
+                        <li className="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} className="nav-link active" to='/home'>Home</Link></li>
+                        <li className="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} className="nav-link" to='/about'>Support</Link></li>
                     </ul>
                     <NavDropdown title="Why Us" id="nav-dropdown" style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}}>
                         <NavDropdown.Item eventKey="4.1">Policy</NavDropdown.Item>
@@ -21,9 +21,9 @@ const NavBar = () =>{
                         <NavDropdown.Divider />
                         <NavDropdown.Item eventKey="4.4">Complain Box</NavDropdown.Item>
                     </NavDropdown>
-                    <ul class="navbar-nav" style={{marginLeft:'Auto',paddingRight:'10px'}}>
-                        <li class="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} class="nav-link" to='/loginreg'><FaSignInAlt/> Login</Link></li>
-                        <li class="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} class="nav-link" to='/signup'> Signup</Link></li>
+                    <ul className="navbar-nav" style={{marginLeft:'Auto',paddingRight:'10px'}}>
+                        <li className="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} className="nav-link" to='/loginreg'><FaSignInAlt/> Login</Link></li>
+                        <li className="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} className="nav-link" to='/signup'> Signup</Link></li>
                     </ul>
                 </Navbar>
             </Row>

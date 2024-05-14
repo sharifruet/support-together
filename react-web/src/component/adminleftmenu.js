@@ -10,7 +10,8 @@ import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ViewListSharpIcon from '@mui/icons-material/ViewListSharp';
-export default function SupportList() {
+
+export default function AdminLeftmenu() {
   return (
     <List
       sx={{ width: '100%', maxWidth: 360 }}
@@ -18,7 +19,7 @@ export default function SupportList() {
       aria-labelledby="nested-list-subheader"
       subheader={
         <ListSubheader component="div" id="nested-list-subheader" style={{background:'#555',color:'#fff'}}>
-          <strong>SUPPORT ACTIVITY</strong><hr/>
+          <strong>ADMIN ACTIVITY</strong><hr/>
         </ListSubheader>
       }
     >
@@ -26,25 +27,25 @@ export default function SupportList() {
         <ListItemIcon>
           <AddCircleIcon style={{color:'#14DB8D'}}/>
         </ListItemIcon>
-        <ListItemText primary="Create Ticket" />
+        <ListItemText primary="Add Organization" />
       </ListItemButton>
       <ListItemButton>
         <ListItemIcon>
-          <ViewListSharpIcon style={{color:'#1BC8DB'}}/>
+          <AddCircleIcon style={{color:'#1BC8DB'}}/>
         </ListItemIcon>
-        <ListItemText  primary="Ticket List" />
+        <ListItemText primary="Add Project" />
       </ListItemButton>
       <ListItemButton>
         <ListItemIcon>
-          <SendIcon  style={{color:'#fff'}}/>
+          <AddCircleIcon  style={{color:'#fff'}}/>
         </ListItemIcon>
-        <ListItemText primary="Sent Ticket" />
+        <ListItemText primary="Add Topic" />
       </ListItemButton>
       <ListItemButton>
         <ListItemIcon>
-          <DraftsIcon style={{color:'yellow'}}/>
+          <AddCircleIcon style={{color:'yellow'}}/>
         </ListItemIcon>
-        <ListItemText primary="Drafts"/>
+        <ListItemText primary="Add Ticket"/>
       </ListItemButton>
       <ListItemButton>
         <ListItemIcon>

@@ -6,6 +6,7 @@ import Signup from "./page/signup";
 import Slider from "./layout/slider";
 import ForgotPass from "./page/forgatePass";
 import Dashboard from "./page/dashboard";
+import SupportForm from "./component/supportform";
 const RouteComponent = () =>{
     return(
         <div>
@@ -18,6 +19,7 @@ const RouteComponent = () =>{
                 <Route path='/Slider' element={<Slider/>}/>
                 <Route path='/ForgotPass' element={<ForgotPass/>}/>
                 <Route path='/Dashboard' element={<Dashboard/>}/>
+                <Route path='/SupportForm' element={<SupportForm/>}/>
             </Routes>
         </div>
     )

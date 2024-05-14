@@ -2,8 +2,6 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -11,36 +9,73 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider} from '@mui/material/styles';
 import { useState } from 'react';
+import axios from "../api/axios";
+
+const REGISTER_URL = "/register";
+
 
 
 const defaultTheme = createTheme();
 function Signup() {
-  let [ username, setUsername ] = useState("");
+  let [ name, setName ] = useState("");
   let [ email, setEmail ] = useState("");
+  let [ phoneNo, setPhoneNumber ] = useState("");
   let [ password, setPassword ] = useState("");
-   const handleSubmit = async (event) => {
-    event.preventDefault();
-    await fetch(
-      `https://harunor-rashid-openshop-backend-v2.onrender.com/api/auth/signup`, 
-      {
-      method: "POST",
-      headers: {
-        "content-type": "application/json"
-      },
-      body: JSON.stringify({
-        username, password, email
-      })
-    })
-    .then(response => { return response.json();})
-    .then(responseData => {
-      if(responseData.message === 'Registration Successfully Completed') {
-        alert(responseData.message)
-        window.location.replace('/loginreg');
+
+   //console.log(name,email,phoneNo,password)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        REGISTER_URL,
+        JSON.stringify({name, email, phoneNo, password }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      console.log(response);
+     // const accessToken = response?.data?.accessToken;
+      // console.log(accessToken);
+      // if(accessToken !=''){
+      //   window.location.replace('/Dashboard');
+      // }
+
+    } catch (err) {
+      if (!err?.response) {
+        alert("No Server Response");
+      } else if (err.response?.status === 400) {
+        alert("Missing data");
+      } else if (err.response?.status === 401) {
+        alert("Unauthorized");
       } else {
-        alert(responseData.message)
+        alert("Registration Failed");
       }
-    })
-   }
+    }
+  };
+  //  const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   await fetch(
+  //     `https://harunor-rashid-openshop-backend-v2.onrender.com/api/auth/signup`, 
+  //     {
+  //     method: "POST",
+  //     headers: {
+  //       "content-type": "application/json"
+  //     },
+  //     body: JSON.stringify({
+  //       username, password, email
+  //     })
+  //   })
+  //   .then(response => { return response.json();})
+  //   .then(responseData => {
+  //     if(responseData.message === 'Registration Successfully Completed') {
+  //       alert(responseData.message)
+  //       window.location.replace('/loginreg');
+  //     } else {
+  //       alert(responseData.message)
+  //     }
+  //   })
+  //  }
   
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -62,14 +97,14 @@ function Signup() {
               <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
-                  name="username"
+                  name="name"
                   required
                   fullWidth
-                  id="username"
-                  label="Username"
+                  id="name"
+                  label="Name"
                   autoFocus
-                  onChange={e => setUsername(e.target.value)}
-                  value={username}
+                  onChange={e => setName(e.target.value)}
+                  value={name}
                 />
               </Grid>
              
@@ -87,6 +122,17 @@ function Signup() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  fullWidth
+                  id="phoneno"
+                  label="Phone Number"
+                  name="phoneno"
+                  autoComplete="phoneno"
+                  onChange={e => setPhoneNumber(e.target.value)}
+                  value={phoneNo}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
                   required
                   fullWidth
                   name="password"
@@ -96,24 +142,6 @@ function Signup() {
                   autoComplete="new-password"
                   onChange={e => setPassword(e.target.value)}
                   value={password}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="repassword"
-                  label="Re-Password"
-                  type="password"
-                  id="repassword"
-                  autoComplete="Re-password"
-                  
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive updates info via email."
                 />
               </Grid>
             </Grid>

@@ -24,10 +24,9 @@ const Home = () =>{
                    
                 </Col>
                 <Col sm={4}>
-                    {/* <Box><CategoryList/></Box> */}
                     <Button variant="outlined">Please Login</Button>
                     <br/>
-                    <LogReg/>
+                    <LogReg/> 
                 </Col>
             </Row>
         </Container>

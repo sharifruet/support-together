@@ -7,41 +7,65 @@ import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
+import axios from "../api/axios";
+const LOGIN_URL = "/login"; 
+
 
 const defaultTheme = createTheme();
 
 export default function LogReg() {
 
-  let [ username, setUsername ] = useState();
+  let [ email, setUsername ] = useState();
   let [ password, setPassword ] = useState();
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    await fetch( 
-      `https://harunor-rashid-openshop-backend-v2.onrender.com/api/auth/signin`, 
-      {
-      method: "POST",
-      headers: {
-        "content-type": "application/json"
-      },
-      body: JSON.stringify({
-        username, password
-      })
-    })
-    .then(response => { return response.json();})
-    .then(responseData => {
-      if(responseData.message === 'Login Successfully') {
-        alert(responseData.message)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        LOGIN_URL,
+        JSON.stringify({ email, password }),
+        {
+          headers: { "Content-Type": "application/json" },
+          
+        }
+      );
+      const accessToken = response?.data?.accessToken;
+      console.log(accessToken);
+      
         window.location.replace('/Dashboard');
+      
+
+    } catch (err) {
+      if (!err?.response) {
+        alert("No Server Response");
+      } else if (err.response?.status === 400) {
+        alert("Missing Username or Password");
+      } else if (err.response?.status === 401) {
+        alert("Unauthorized");
       } else {
-        alert(responseData.message)
+        alert("Login Failed");
       }
-    })
-  }
+    }
+  };
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   await fetch( 
+  //     'https://support.i2gether.com/api/login', 
+  //     {
+  //     method: "POST",
+  //     headers: {
+  //       "content-type": "application/json; charset=utf-8"
+  //     },
+  //     body: JSON.stringify({
+  //       email, password
+  //     })
+  //   })
+    
+  //   .then(response => { return response.json();})
+  //   window.location.replace('/Dashboard');
+  // }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -62,12 +86,12 @@ export default function LogReg() {
                     required
                     fullWidth
                     id="username"
-                    label="Username"
+                    label="Email Address"
                     name="username"
                     autoComplete="username"
                     autoFocus
                     onChange={e => setUsername(e.target.value)}
-                    value={username}
+                    value={email}
                     />
                 <TextField
                     margin="normal"
