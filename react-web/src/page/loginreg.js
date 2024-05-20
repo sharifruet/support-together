@@ -59,23 +59,6 @@ export default function LogReg() {
       }
     }
   };
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   await fetch( 
-  //     'https://support.i2gether.com/api/login', 
-  //     {
-  //     method: "POST",
-  //     headers: {
-  //       "content-type": "application/json; charset=utf-8"
-  //     },
-  //     body: JSON.stringify({
-  //       email, password
-  //     })
-  //   })
-    
-  //   .then(response => { return response.json();})
-  //   window.location.replace('/Dashboard');
-  // }
 
   return (
     <ThemeProvider theme={defaultTheme}>
