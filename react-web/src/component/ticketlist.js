@@ -168,7 +168,7 @@ useEffect(() => {
                   return (
                     <TableRow>
                       <TableCell align="left">{row.title}</TableCell>
-                      <TableCell align="right"><button variant="outlined" size="small" onClick={() => handleShow(setTid(row.id))}><i class="bi bi-pencil-square"></i></button></TableCell>
+                      <TableCell align="right"><i role="button" onClick={() => handleShow(setTid(row.id))} className="bi bi-pencil-square"></i></TableCell>
                     </TableRow>
                   );
                 })}
