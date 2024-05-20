@@ -1,4 +1,4 @@
-import * as React from 'react';
+import  React from 'react';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -21,35 +21,32 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import { TextareaAutosize } from '@mui/material';
+import { useState } from 'react';
+import { useEffect } from 'react';
 import axios from "../api/axios";
 const TICKET_URL = "/tickets";
+const TOPIC_URL = "/topics";
 
-function createData(title, priority, requestedBy, topicId, projectId) {
-  return {
-    title,
-    priority,
-    requestedBy,
-    topicId,
-    projectId,
-  };
-}
-
-const rows = [
-  createData(1, 'Cupcake', 305, 3.7, 67, 4.3),
-  createData(2, 'Donut', 452, 25.0, 51, 4.9),
-  createData(3, 'Eclair', 262, 16.0, 24, 6.0),
-  createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData(5, 'Gingerbread', 356, 16.0, 49, 3.9),
-  createData(6, 'Honeycomb', 408, 3.2, 87, 6.5),
-  createData(7, 'Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData(8, 'Jelly Bean', 375, 0.0, 94, 0.0),
-  createData(9, 'KitKat', 518, 26.0, 65, 7.0),
-  createData(10, 'Lollipop', 392, 0.2, 98, 0.0),
-  createData(11, 'Marshmallow', 318, 0, 81, 2.0),
-  createData(12, 'Nougat', 360, 19.0, 9, 37.0),
-  createData(13, 'Oreo', 437, 18.0, 63, 4.0),
-];
-
+//const rows = [];
+const textareaStyle = {
+  overflow: 'hidden', 
+  minHeight: '100px',  
+  width: '100%',  
+  padding: '8px',  
+  border: '1px solid #888',  
+  borderRadius: '4px',  
+  marginTop: '20px'
+};
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -79,6 +76,13 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
+  
+  {
+    id: 'id',
+    numeric: false,
+    disablePadding: true,
+    label: 'ID',
+  },
   {
     id: 'title',
     numeric: false,
@@ -101,15 +105,15 @@ const headCells = [
     id: 'topicId',
     numeric: true,
     disablePadding: false,
-    label: 'Topic',
+    label: 'TopicId',
   },
   {
-    id: 'projectId',
+    id: 'action',
     numeric: true,
     disablePadding: false,
-    label: 'Status',
-  },
-  
+    label: 'Action',
+  }
+
 ];
 
 function EnhancedTableHead(props) {
@@ -122,21 +126,10 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
-        </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align={headCell.numeric ? 'right' : 'center'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -219,26 +212,68 @@ function EnhancedTableToolbar(props) {
   );
 }
 
-EnhancedTableToolbar.propTypes = {
+TicketList.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
 export default function TicketList() {
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
+  const [orderBy, setOrderBy] = React.useState();
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [tickets, setTickets] = React.useState([]);
+  const [tickets, setTickets] = useState([]);
+  const [show, setShow] = useState(false);
+  const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
+  const [tid, setTid] = useState();
+  const [databyid, setDatabyid] = useState();
+  const [edittitle, setEdittitle] = useState();
+  const [editrequisby, setEditrequisby] = useState();
+  const [edittopicid, setEdittopicid] = useState();
+  const [editdescription, setEditdescription ] = useState();
+  const [topiclist, setTopiclist] = useState();
 
-  React.useEffect(() => {
+
+
+
+
+  useEffect(() => {
+    axios.get(`${TICKET_URL}/${tid}`)
+    .then((response) => {
+      setDatabyid(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching data:', error);
+    });
+}, [show, tid]);
+
+useEffect(() => {
+  axios.get(TOPIC_URL).then((response) => {
+    setTopiclist(response.data);
+    console.log(topiclist);
+  });
+
+},[databyid]);
+
+useEffect(() => {
+  if (databyid) {
+    setEdittitle(databyid.title);
+    setEditrequisby(databyid.requestedBy);
+    setEdittopicid(databyid.topicId);
+    setEditdescription(databyid.description);
+  }
+}, [databyid]);
+
+
+
+  useEffect(() => {
     axios.get(TICKET_URL).then((response) => {
       setTickets(response.data);
     });
 
   }, []);
-
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -247,7 +282,7 @@ export default function TicketList() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      const newSelected = tickets.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -278,7 +313,7 @@ export default function TicketList() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(parseInt(event.target.value, 5));
     setPage(0);
   };
 
@@ -290,11 +325,11 @@ export default function TicketList() {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - tickets.length) : 0;
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+      stableSort(tickets, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
       ),
@@ -302,89 +337,157 @@ export default function TicketList() {
   );
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+    <>
+    <Modal show={show} onHide={handleClose} style={{marginTop:'40px'}}>
+      <Modal.Header closeButton>
+        <Modal.Title>Update Ticket</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              hidden
+              id="id"
+              name="id"
+              onChange={e => setEdittitle(e.target.value)}
+              value={tid}
             />
-            <TableBody>
-              {tickets.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
-                const labelId = `enhanced-table-checkbox-${index}`;
+             <TextField
+              required
+              id="title"
+              name="title"
+              label="Title"
+              fullWidth
+              autoComplete="title"
+              variant="standard"
+              focused
+              onChange={e => setEdittitle(e.target.value)}
+              value={edittitle}
+            />
+             <TextField
+              required
+              id="requestedBy"
+              name="requestedBy"
+              label="RequestedBy"
+              fullWidth
+              focused
+              autoComplete="requestedBy"
+              variant="standard"
+              onChange={e => setEditrequisby(e.target.value)}
+              value={editrequisby}
+            />
+             <FormControl variant="standard" sx={{ minWidth: 330 }}>
+              <InputLabel id="demo-simple-select-standard-label">Select Topic *</InputLabel>
+              <Select label="Topic" name="topicId" id="topicId"
+                onChange={e => setEdittopicid(e.target.value)}>
+                {topiclist?.map((tlist) => <MenuItem value={tlist.id}>{tlist.name}</MenuItem>)}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <TextareaAutosize 
+              id="description"
+              name="description"
+              label="Description"
+              fullWidth
+              autoComplete="description"
+              variant="standard"
+              placeholder='Description...'
+              style={textareaStyle}
+              onChange={e => setEditdescription(e.target.value)}
+              value={editdescription}>
+            </TextareaAutosize>
+            <br/><br/>
+            <Button variant="primary">
+              UPDATE
+            </Button>
+          </Grid>
+        </Grid>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          Close
+        </Button>
+        </Modal.Footer>
+      </Modal>
+      <Box sx={{ width: '100%' }}>
+        <Paper sx={{ width: '100%', mb: 2 }}>
+          <EnhancedTableToolbar numSelected={selected.length} />
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 750 }}
+              aria-labelledby="tableTitle"
+              size={dense ? 'small' : 'medium'}
+            >
+              <EnhancedTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={tickets.length}
+              />
+              <TableBody>
+                {tickets.map((row, index) => {
+                  const isItemSelected = isSelected(row.id);
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, row.id)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.id}
-                    selected={isItemSelected}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
+                  return (
+                    <TableRow
+                      hover
+                      onClick={(event) => handleClick(event, row.id)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.id}
+                      selected={isItemSelected}
+                      sx={{ cursor: 'pointer' }}
                     >
-                    {row.title}
-                    </TableCell>
-                    <TableCell align="right">{row.priority}</TableCell>
-                    <TableCell align="right">{row.requestedBy}</TableCell>
-                    <TableCell align="right">{row.topicId}</TableCell>
-                    <TableCell align="right">{'Active'}</TableCell>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            'aria-labelledby': labelId,
+                          }}
+                        />
+                      </TableCell>
+                    
+                      <TableCell align="right">{row.title}</TableCell>
+                      <TableCell align="right">{row.priority}</TableCell>
+                      <TableCell align="right">{row.requestedBy}</TableCell>
+                      <TableCell align="right">{row.topicId}</TableCell>
+                      <TableCell align="right"><button variant="outlined" size="small" onClick={() => handleShow(setTid(row.id))}><DriveFileRenameOutlineOutlinedIcon/></button></TableCell>
+                    </TableRow>
+                  );
+                })}
+                {emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: (dense ? 33 : 53) * emptyRows,
+                    }}
+                  >
+                    <TableCell colSpan={6} />
                   </TableRow>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={tickets.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+        <FormControlLabel
+          control={<Switch checked={dense} onChange={handleChangeDense} />}
+          label="Dense padding"
         />
-      </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
-    </Box>
+      </Box>
+    </>
   );
 }

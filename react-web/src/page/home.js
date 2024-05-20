@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -8,10 +8,6 @@ import Button from '@mui/material/Button';
 import Slider from '../layout/slider';
 import LogReg from './loginreg';
 const Home = () =>{
-    const [index, setIndex] = useState(0);
-    const handleSelect = (selectedIndex, e) => {
-      setIndex(selectedIndex);
-    };
     return(
         <Container>
             <Row>

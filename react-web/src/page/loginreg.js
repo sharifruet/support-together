@@ -31,12 +31,22 @@ export default function LogReg() {
           
         }
       );
-      const accessToken = response?.data?.accessToken;
-      console.log(accessToken);
-      
-        window.location.replace('/Dashboard');
-      
-
+      //console.log(response.data);
+      const accessToken = response?.data?.token;
+      //console.log(response.data.userRoles);
+      if(accessToken !==''){
+        response.data.userRoles.forEach(element => {
+          // console.log(element.role);
+          if(element.role === 'Customer' || element.role === 'Support'){
+             window.location.replace('/Supportdashboard');
+          }else if(element.role === 'Admin'){
+             window.location.replace('/Admindashboard');
+          }else{
+             window.location.replace('/Dashboard');
+          }
+         });
+      }
+     
     } catch (err) {
       if (!err?.response) {
         alert("No Server Response");
@@ -119,16 +129,16 @@ export default function LogReg() {
                     Sign In
                     </Button>
                     <Grid container>
-                    <Grid item xs>
-                        <Link href="/ForgotPass" variant="body2">
-                        Forgot password?
-                        </Link>
-                    </Grid>
-                    <Grid item>
-                        <Link href="/signup" variant="body2">
-                        {"Don't have an account?Please Sign Up"}
-                        </Link>
-                    </Grid>
+                      <Grid item xs>
+                          <Link href="/ForgotPass" variant="body2">
+                          Forgot password?
+                          </Link>
+                      </Grid>
+                      <Grid item>
+                          <Link href="/signup" variant="body2">
+                          {"Don't have an account?Please Sign Up"}
+                          </Link>
+                      </Grid>
                     </Grid>
                 </Box>
             </Box>

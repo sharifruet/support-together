@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import Button from '@mui/material/Button';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import { Card } from 'react-bootstrap';
@@ -91,7 +92,7 @@ export default function SupportForm() {
           </Grid>
           <Grid item sm={6}></Grid>
           <Grid item xs={6} >
-          <FormControl variant="standard" sx={{ minWidth: 330 }}>
+            <FormControl variant="standard" sx={{ minWidth: 330 }}>
               <InputLabel id="demo-simple-select-standard-label">Select Topic *</InputLabel>
               <Select label="Topic" name="topicId" id="topicId"
                 onChange={e => setTopic(e.target.value)}>
@@ -128,7 +129,7 @@ export default function SupportForm() {
             </TextareaAutosize>
           </Grid>
           <Grid item xs={12}>
-              <button type="submit" className='btn btn-primary' onClick={handleSubmit}>Submit</button>
+              <Button type="submit" className='btn btn-primary' onClick={handleSubmit}>Submit</Button>
           </Grid>
         </Grid>
       </Card>

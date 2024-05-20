@@ -6,7 +6,10 @@ import Signup from "./page/signup";
 import Slider from "./layout/slider";
 import ForgotPass from "./page/forgatePass";
 import Dashboard from "./page/dashboard";
+import Admindashboard from "./page/admindashboard";
+import Supportdashboard from "./page/supportdashboard";
 import SupportForm from "./component/supportform";
+import ProjectListOrgwise from "./component/projectlistorgwise";
 const RouteComponent = () =>{
     return(
         <div>
@@ -19,7 +22,10 @@ const RouteComponent = () =>{
                 <Route path='/Slider' element={<Slider/>}/>
                 <Route path='/ForgotPass' element={<ForgotPass/>}/>
                 <Route path='/Dashboard' element={<Dashboard/>}/>
+                <Route path='/Admindashboard' element={<Admindashboard/>}/>
+                <Route path='/Supportdashboard' element={<Supportdashboard/>}/>
                 <Route path='/SupportForm' element={<SupportForm/>}/>
+                <Route path='/ProjectListOrgwise/:id' element={<ProjectListOrgwise/>}/>
             </Routes>
         </div>
     )
