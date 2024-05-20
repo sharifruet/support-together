@@ -16,6 +16,7 @@ const NavBar = () =>{
             <Row>
                 <Navbar bg="dark" className="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
                     <ul className="navbar-nav">
+
                         <li className="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} className="nav-link active" to='/dashboard'> <img style={{height:30}} src="support-together.png"/> Home</Link></li>
                         <li className="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} className="nav-link" to='/about'>Support</Link></li>          
                     </ul>

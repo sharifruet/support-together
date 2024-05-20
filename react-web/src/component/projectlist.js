@@ -3,7 +3,6 @@ import React, { useContext, useEffect } from 'react';
 import {useState} from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -19,21 +18,18 @@ import GlobalContext from '../GlobalContext';
 export default function ProjectList() {
     const [projects, setProjects] = useState([]);
     const [isVisible, setIsVisible] = useState(false);
-    const [ticketlistvisible, setTicketlistvisible] = useState(false);
     const [organizations, setOrganizations] = useState([]);
     const gContext = useContext(GlobalContext);
 
     const toggleComponent = () => {
         setIsVisible(!isVisible);
-        setTicketlistvisible(ticketlistvisible);
-      };
-    const toggleTicectlist = () => {
-        setTicketlistvisible(!ticketlistvisible);
-        setIsVisible(isVisible);
       };
 
     useEffect(() => {
       setProjects(gContext.projects);
+    }, []);
+    useEffect(() => {
+      setOrganizations(gContext.organizations);
     }, []);
     /*
     React.useEffect(() => {
@@ -62,12 +58,10 @@ export default function ProjectList() {
         <div className='container'>
             <Grid container spacing={2}>
                 <Grid>
-                    {ticketlistvisible && <TicketList />}
                     {isVisible && <SupportForm />}
                 </Grid>
                 {gContext.projects.map((project) =>
-                    <Grid key={project.id} item xs={4}>
-                        
+                    <Grid key={project.id} item xs={6}>
                         <Card>
                             <br/>
                             <Typography sx={{ fontSize: 14 }}  gutterBottom>
@@ -76,12 +70,10 @@ export default function ProjectList() {
                             </Typography>
                             <hr/>
                             <Typography sx={{ fontSize: 14 }}  gutterBottom>
-                                Project Code: {project.OrganizationId}
-                            </Typography>
-                            
-                            <CardActions>
                                 <Button size="small" onClick={toggleComponent}>Create Ticket</Button>
-                                <Button size="small" onClick={toggleTicectlist}> --- &nbsp; List <NotificationsActiveIcon/></Button>
+                            </Typography>
+                            <CardActions>
+                              <TicketList />
                             </CardActions>
                         </Card> 
                     </Grid>
