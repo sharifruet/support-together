@@ -16,8 +16,7 @@ const NavBar = () =>{
             <Row>
                 <Navbar bg="dark" className="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
                     <ul className="navbar-nav">
-                        <li className="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} className="nav-link active" to='/Admindashboard'>Home</Link></li>
-                        <li className="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} className="nav-link active" to='/home'>Home - {gContext.loggedIn} - </Link></li>
+                        <li className="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} className="nav-link active" to='/home'>Home  {gContext.loggedIn}  </Link></li>
                         <li className="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} className="nav-link" to='/about'>Support</Link></li>
                         {gContext?.roles?.length>0? (
                             <li className='text-white'> {gContext.roles[0].role} </li>
