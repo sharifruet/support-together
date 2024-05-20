@@ -61,27 +61,7 @@ export default function Dashboard() {
     <ThemeProvider theme={defaultTheme}>
       <Box>
         <CssBaseline />
-        <AppBar>
-          <Toolbar
-            sx={{
-              pr: '14px', 
-            }}
-          >
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
-             Organization List
-            </Typography>
-            <IconButton color="inherit">
-                <LogoutIcon onClick={Logout}/>&nbsp; &nbsp;
-                <ManageAccountsIcon/>
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+
         <Grid container>
           <Grid item xs={2}>
             <Card style={{background:'#555',color:'#fff',height:'550px'}}>

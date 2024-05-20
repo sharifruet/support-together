@@ -9,8 +9,11 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import axios from "../api/axios";
+import GlobalContext from '../GlobalContext';
+import { useNavigate } from 'react-router-dom';
+
 const LOGIN_URL = "/login"; 
 
 
@@ -20,6 +23,10 @@ export default function LogReg() {
 
   let [ email, setUsername ] = useState();
   let [ password, setPassword ] = useState();
+
+  const gContext = useContext(GlobalContext);
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -35,18 +42,11 @@ export default function LogReg() {
       const accessToken = response?.data?.token;
       //console.log(response.data.userRoles);
       if(accessToken !==''){
-        response.data.userRoles.forEach(element => {
-          // console.log(element.role);
-          if(element.role === 'Customer' || element.role === 'Support'){
-             window.location.replace('/Supportdashboard');
-          }else if(element.role === 'Admin'){
-             window.location.replace('/Admindashboard');
-          }else{
-             window.location.replace('/Dashboard');
-          }
-         });
+         gContext.loginSuccess(response?.data);
+         navigate("/Dashboard");
+         // window.location.replace('/Dashboard');
       }
-     
+
     } catch (err) {
       if (!err?.response) {
         alert("No Server Response");

@@ -1,10 +1,10 @@
-@BASE_URL = http://localhost:3000/api
-
+//@BASE_URL = {{BASE_URL}}
+@BASE_URL = http://support.i2gether.com/api
 ### Run status check
 GET {{BASE_URL}}
 
 ### Create a ticket
-POST http://localhost:3000/api/tickets
+POST {{BASE_URL}}/tickets
 Content-Type: application/json
 
 {
@@ -18,7 +18,7 @@ Content-Type: application/json
 }
 
 ### Update a ticket
-PUT http://localhost:3000/api/tickets/1
+PUT {{BASE_URL}}/tickets/1
 Content-Type: application/json
 
 {
@@ -31,11 +31,11 @@ Content-Type: application/json
 }
 
 ### Delete a ticket
-DELETE http://localhost:3000/api/tickets/1
+DELETE {{BASE_URL}}/tickets/1
 
 
 ### Create Organization (POST /api/organizations)
-POST http://localhost:3000/api/organizations
+POST {{BASE_URL}}/organizations
 Content-Type: application/json
 
 {
@@ -45,13 +45,13 @@ Content-Type: application/json
 }
 
 ### Get All Organizations (GET /api/organizations)
-GET http://localhost:3000/api/organizations
+GET {{BASE_URL}}/organizations
 
 ### Get Organization by ID (GET /api/organizations/:id)
-GET http://localhost:3000/api/organizations/1
+GET {{BASE_URL}}/organizations/1
 
 ### Update Organization (PUT /api/organizations/:id)
-PUT http://localhost:3000/api/organizations/1
+PUT {{BASE_URL}}/organizations/1
 Content-Type: application/json
 
 {
@@ -61,10 +61,10 @@ Content-Type: application/json
 }
 
 ### Delete Organization (DELETE /api/organizations/:id)
-DELETE http://localhost:3000/api/organizations/1
+DELETE {{BASE_URL}}/organizations/1
 
 ### Create Project (POST /api/projects)
-POST http://localhost:3000/api/projects
+POST {{BASE_URL}}/projects
 Content-Type: application/json
 
 {
@@ -76,13 +76,13 @@ Content-Type: application/json
 
 
 ### Get All Projects (GET /api/projects)
-GET http://localhost:3000/api/projects
+GET {{BASE_URL}}/projects
 
 ### Get project by id
-GET http://localhost:3000/api/projects
+GET {{BASE_URL}}/projects
 
 ### Update Project (PUT /api/projects/:id)
-PUT http://localhost:3000/api/projects/1
+PUT {{BASE_URL}}/projects/1
 Content-Type: application/json
 
 {
@@ -92,10 +92,10 @@ Content-Type: application/json
 }
 
 ### Delete a project
-DELETE http://localhost:3000/api/projects/1
+DELETE {{BASE_URL}}/projects/1
 
 ### Create Topic (POST /api/topics)
-POST http://localhost:3000/api/topics
+POST {{BASE_URL}}/topics
 Content-Type: application/json
 
 {
@@ -105,13 +105,13 @@ Content-Type: application/json
 }
 
 ### Get All Topics (GET /api/topics)
-GET http://localhost:3000/api/topics
+GET {{BASE_URL}}/topics
 
 ### Get Topic by ID (GET /api/topics/:id)
-GET http://localhost:3000/api/topics/1
+GET {{BASE_URL}}/topics/1
 
 ### Update Topic (PUT /api/topics/:id)
-PUT http://localhost:3000/api/topics/1
+PUT {{BASE_URL}}/topics/1
 Content-Type: application/json
 
 {
@@ -120,10 +120,10 @@ Content-Type: application/json
 }
 
 ### Delete Topic (DELETE /api/topics/:id)
-DELETE http://localhost:3000/api/topics/1
+DELETE {{BASE_URL}}/topics/1
 
 ### User Registration
-POST http://localhost:3000/api/register
+POST {{BASE_URL}}/register
 Content-Type: application/json
 
 {
@@ -134,7 +134,7 @@ Content-Type: application/json
 }
 
 ### User Login
-POST http://localhost:3000/api/login
+POST {{BASE_URL}}/login
 Content-Type: application/json
 
 {
@@ -143,7 +143,7 @@ Content-Type: application/json
 }
 
 ### Change Password
-PUT http://localhost:3000/api/change-password
+PUT {{BASE_URL}}/change-password
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInJvbGVzIjpbXSwiaWF0IjoxNzE0NjMxOTcyLCJleHAiOjE3MTQ2MzU1NzJ9.qVYtfq6kIt0HQP1Ii8OWxgyZNkijGdataUtpSzvTckw
 Content-Type: application/json
 
@@ -154,18 +154,18 @@ Content-Type: application/json
 }
 
 ### Assign Role to User for a Project
-POST http://localhost:3000/api/user-roles
+POST {{BASE_URL}}/user-roles
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInJvbGVzIjpbXSwiaWF0IjoxNzE0NjQ5NzE3LCJleHAiOjE3MTQ2NTMzMTd9.IXUfuo0csbSXSia4yJzpFRGIxqh_ZkCXUK7_pnLIGec
 Content-Type: application/json
 
 {
-  "userId": 1,
+  "userId": 3,
   "projectId": 1,
-  "role": "Admin"
+  "role": "Customer"
 }
 
 ### Update User Role for a Project
-PUT http://localhost:3000/api/user-roles/:id
+PUT {{BASE_URL}}/user-roles/:id
 Authorization: Bearer <JWT token>
 Content-Type: application/json
 
@@ -174,5 +174,5 @@ Content-Type: application/json
 }
 
 ### Delete User Role for a Project
-DELETE http://localhost:3000/api/user-roles/:id
+DELETE {{BASE_URL}}/user-roles/:id
 Authorization: Bearer <JWT token>

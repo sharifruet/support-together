@@ -1,23 +1,12 @@
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
 import { FaFacebook, FaGoogle, FaLinkedin, FaTwitter, FaYoutube } from 'react-icons/fa';
 const Footer = () =>{
     return (
-        <Container fluid style={{position:'fixed',left:'0',bottom:'0',right:'0',color:'#ffffff'}}>
-            <Row className='bg-secondary' style={{padding:'10px'}}>
-                <Col sm={3}>
-                     <ButtonGroup variant="contained" aria-label="outlined primary button group">
-                        <Button size="small"><FaFacebook/></Button>
-                        <Button size="small"><FaGoogle/></Button>
-                        <Button size="small"><FaYoutube/></Button>
-                        <Button size="small"><FaTwitter/></Button>
-                    </ButtonGroup>
-                </Col>
-                <Col sm={6}>Copyright @ 2023 Open-Support</Col>
-                <Col sm={3}></Col>
+        <Container fluid style={{position:'fixed', bottom:'0'}}>
+            <Row className='bg-secondary p-2 text-white' >
+                <Col>Powered by <a className='link-light link-underline link-underline-opacity-0' href="https://www.i2gether.com"> <img src="https://hirebangladeshi.com/uploads/company/logo/9edcc8ca-8965-428a-8b69-bfb63a920f9c/Together_logo.png" style={{height:20}}/> Together Initiatives (p) Limites</a></Col>
             </Row>
         </Container>
     );

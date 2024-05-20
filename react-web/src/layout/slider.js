@@ -13,7 +13,7 @@ const Slider = () =>{
                 <Carousel.Item>
                     <img
                     className="d-block w-100 rounded"
-                    src="./sup1.png"
+                    src="https://i2gether.com/img/bgi2.png"
                     alt="First"
                     height={300}
                     />

@@ -10,7 +10,7 @@ import Admindashboard from "./page/admindashboard";
 import Supportdashboard from "./page/supportdashboard";
 import SupportForm from "./component/supportform";
 import ProjectListOrgwise from "./component/projectlistorgwise";
-const RouteComponent = () =>{
+const RouteComponent = (ctx) =>{
     return(
         <div>
             <Routes>
