@@ -16,23 +16,10 @@ const NavBar = () =>{
             <Row>
                 <Navbar bg="dark" className="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
                     <ul className="navbar-nav">
-                        <li className="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} className="nav-link active" to='/home'>Home  {gContext.loggedIn}  </Link></li>
-                        <li className="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} className="nav-link" to='/about'>Support</Link></li>
-                        {gContext?.roles?.length>0? (
-                            <li className='text-white'> {gContext.roles[0].role} </li>
-                        ) : (
-                            <li className='text-white'> </li>
-                        )}
 
-                        
+                        <li className="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} className="nav-link active" to='/dashboard'> <img style={{height:30}} src="support-together.png"/> Home</Link></li>
+                        <li className="nav-item"><Link style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}} className="nav-link" to='/about'>Support</Link></li>          
                     </ul>
-                    <NavDropdown title="Why Us" id="nav-dropdown" style={{color:'#fff',fontWeight:'400',fontFamily: 'revert'}}>
-                        <NavDropdown.Item eventKey="4.1">Policy</NavDropdown.Item>
-                        <NavDropdown.Item eventKey="4.2">Administration Action</NavDropdown.Item>
-                        <NavDropdown.Item eventKey="4.3">24/Help</NavDropdown.Item>
-                        <NavDropdown.Divider />
-                        <NavDropdown.Item eventKey="4.4">Complain Box</NavDropdown.Item>
-                    </NavDropdown>
                     <ul className="navbar-nav" style={{marginLeft:'Auto',paddingRight:'10px'}}>
                         {gContext.loggedIn===false?(
                             <>
