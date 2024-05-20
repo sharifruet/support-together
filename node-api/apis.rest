@@ -1,5 +1,7 @@
+@BASE_URL = http://localhost:3000/api
+
 ### Run status check
-GET http://localhost:3000/
+GET {{BASE_URL}}
 
 ### Create a ticket
 POST http://localhost:3000/api/tickets
@@ -37,9 +39,9 @@ POST http://localhost:3000/api/organizations
 Content-Type: application/json
 
 {
-  "code": "org1",
-  "name": "My Organization",
-  "address": "123 Main St"
+  "code": "TIL",
+  "name": "Together Initiatives (p) Limited",
+  "address": "147/E Green Road, Dhaka"
 }
 
 ### Get All Organizations (GET /api/organizations)
@@ -67,9 +69,9 @@ Content-Type: application/json
 
 {
   "organizationId": 1,
-  "code": "proj1",
-  "name": "My Project",
-  "description": "Project description"
+  "code": "LIC",
+  "name": "LIC Application",
+  "description": "LIC Application"
 }
 
 
@@ -125,8 +127,8 @@ POST http://localhost:3000/api/register
 Content-Type: application/json
 
 {
-  "name": "John Doe",
-  "email": "john@example.com",
+  "name": "John Doe 1",
+  "email": "john1@example.com",
   "phoneNumber": "1234567890",
   "password": "password123"
 }
@@ -136,13 +138,13 @@ POST http://localhost:3000/api/login
 Content-Type: application/json
 
 {
-  "email": "john@example.com",
+  "email": "john1@example.com",
   "password": "password123"
 }
 
 ### Change Password
 PUT http://localhost:3000/api/change-password
-Authorization: Bearer <JWT token>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInJvbGVzIjpbXSwiaWF0IjoxNzE0NjMxOTcyLCJleHAiOjE3MTQ2MzU1NzJ9.qVYtfq6kIt0HQP1Ii8OWxgyZNkijGdataUtpSzvTckw
 Content-Type: application/json
 
 {
@@ -153,7 +155,7 @@ Content-Type: application/json
 
 ### Assign Role to User for a Project
 POST http://localhost:3000/api/user-roles
-Authorization: Bearer <JWT token>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInJvbGVzIjpbXSwiaWF0IjoxNzE0NjQ5NzE3LCJleHAiOjE3MTQ2NTMzMTd9.IXUfuo0csbSXSia4yJzpFRGIxqh_ZkCXUK7_pnLIGec
 Content-Type: application/json
 
 {

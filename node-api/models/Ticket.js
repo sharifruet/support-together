@@ -22,7 +22,7 @@ const Ticket = db.define('Ticket', {
   },
   requestedBy: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   createdAt: {
     type: DataTypes.DATE,
