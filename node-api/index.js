@@ -1,19 +1,19 @@
 const express = require('express');
 const cors = require('cors');
 const schedule = require('node-schedule');
+const authenticate = require('./middleware/authMiddleware');
 
 const app = express();
-app.use(cors({origin: '*', credentials: true }));
+app.use(cors({ origin: '*', credentials: true }));
 
 const port = process.env.PORT || 3000;
-const db = require('./db'); // Import Sequelize instance
+const db = require('./db');
 
 // Middleware function to log incoming requests
 const logRequests = (req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  next(); // Call next to move to the next middleware function
+  next();
 };
-
 
 // Add middleware to log requests
 app.use(logRequests);
@@ -24,9 +24,13 @@ const organizationRoutes = require('./routes/organizationRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const topicRoutes = require('./routes/topicRoutes');
 const attachmentRoutes = require('./routes/attachmentRoutes');
-const authRoutes = require('./routes/authRoutes'); // Import auth routes
-const projectMembershipRoutes = require('./routes/projectMembershipRoutes'); // Import project membership routes
-const userRoleRoutes = require('./routes/userRoleRoutes'); // Import user role routes
+const authRoutes = require('./routes/authRoutes');
+const projectMembershipRoutes = require('./routes/projectMembershipRoutes');
+const userRoleRoutes = require('./routes/userRoleRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
+const emailTemplateRoutes = require('./routes/emailTemplateRoutes');
+const emailRoutes = require('./routes/emailRoutes');
+
 const worker = require('./services/screduleService');
 
 const job = schedule.scheduleJob("*/1 * * * *", worker.run);
@@ -44,14 +48,18 @@ app.get('/api', (req, res) => {
 });
 
 // Use routes
+app.use('/api', authRoutes);
+app.use('/api', uploadRoutes);
+app.use(authenticate); // Apply the authentication middleware to all routes after this line
 app.use('/api', ticketRoutes);
 app.use('/api', organizationRoutes);
 app.use('/api', projectRoutes);
 app.use('/api', topicRoutes);
 app.use('/api', attachmentRoutes);
-app.use('/api', authRoutes); // Add auth routes here
-app.use('/api', projectMembershipRoutes); // Add project membership routes here
-app.use('/api', userRoleRoutes); // Add user role routes here
+app.use('/api', projectMembershipRoutes);
+app.use('/api', userRoleRoutes);
+app.use('/api', emailTemplateRoutes);
+app.use('/api', emailRoutes);
 
 // Sync models with database
 db.sync()

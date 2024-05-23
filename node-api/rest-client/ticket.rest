@@ -1,7 +1,9 @@
-@baseURL = http://localhost:3000/api
+@BASE_URL = http://support.i2gether.com/api
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGVzIjpbeyJwcm9qZWN0SWQiOjEsInJvbGUiOiJDdXN0b21lciJ9XSwiaWF0IjoxNzE2NDY4NTU2LCJleHAiOjE3MTY0NzIxNTZ9.2aZWZ8yeH0XSqmYzrhff_MjCK-TEms2Da7LqU-4Iw_8
 
 ### Create a new ticket
-POST {{baseURL}}/tickets
+POST {{BASE_URL}}/tickets
+Authorization: Bearer {{TOKEN}}
 Content-Type: application/json
 
 {
@@ -15,7 +17,7 @@ Content-Type: application/json
 }
 
 ### Update an existing ticket
-PUT {{baseURL}}/tickets/1
+PUT {{BASE_URL}}/tickets/1
 Content-Type: application/json
 
 {
@@ -24,10 +26,10 @@ Content-Type: application/json
 }
 
 ### Delete a ticket by ID
-DELETE {{baseURL}}/tickets/1
+DELETE {{BASE_URL}}/tickets/1
 
 ### Get all tickets
-GET {{baseURL}}/tickets
+GET {{BASE_URL}}/tickets
 
 ### Get a ticket by ID
-GET {{baseURL}}/tickets/1
+GET {{BASE_URL}}/tickets/1

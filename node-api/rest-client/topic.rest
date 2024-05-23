@@ -1,0 +1,30 @@
+@BASE_URL = http://support.i2gether.com/api
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGVzIjpbeyJwcm9qZWN0SWQiOjEsInJvbGUiOiJDdXN0b21lciJ9XSwiaWF0IjoxNzE2NDY4NTU2LCJleHAiOjE3MTY0NzIxNTZ9.2aZWZ8yeH0XSqmYzrhff_MjCK-TEms2Da7LqU-4Iw_8
+
+### Create Topic (POST /api/topics)
+POST {{BASE_URL}}/topics
+Content-Type: application/json
+
+{
+  "projectId": 1,
+  "name": "Topic 1",
+  "description": "Description of Topic 1"
+}
+
+### Get All Topics (GET /api/topics)
+GET {{BASE_URL}}/topics
+
+### Get Topic by ID (GET /api/topics/:id)
+GET {{BASE_URL}}/topics/1
+
+### Update Topic (PUT /api/topics/:id)
+PUT {{BASE_URL}}/topics/1
+Content-Type: application/json
+
+{
+  "name": "Updated Topic 1",
+  "description": "Updated description of Topic 1"
+}
+
+### Delete Topic (DELETE /api/topics/:id)
+DELETE {{BASE_URL}}/topics/1

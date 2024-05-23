@@ -1,16 +1,15 @@
 // routes/ticketRoutes.js
-
 const express = require('express');
 const router = express.Router();
 const Ticket = require('../models/Ticket');
 const Attachment = require('../models/Attachment');
 const FYITo = require('../models/FYITo');
 const { sendEmail } = require('../services/emailService');
+const authenticate = require('../middleware/authMiddleware');
 
 // Function to send ticket created email
 const sendTicketCreatedEmail = async (ticket) => {
   try {
-    // Get ticket creator's email dynamically (example)
     const ticketCreatorEmail = "sharifruet@gmail.com";
 
     await sendEmail(ticketCreatorEmail, 'Ticket Created Successfully', `Dear ${ticketCreatorEmail},\n\nYour ticket has been successfully created.\n\nTicket Details:\nTitle: ${ticket.title}\nDescription: ${ticket.description}\nPriority: ${ticket.priority}\n\nThank you.`);
@@ -36,7 +35,7 @@ const createOrUpdateFYIToRecipients = async (ticketId, fyiTo) => {
 };
 
 // Get all tickets
-router.get('/tickets', async (req, res) => {
+router.get('/tickets', authenticate, async (req, res) => {
   try {
     const tickets = await Ticket.findAll();
     res.json(tickets);
@@ -47,7 +46,7 @@ router.get('/tickets', async (req, res) => {
 });
 
 // Get a single ticket by ID
-router.get('/tickets/:id', async (req, res) => {
+router.get('/tickets/:id', authenticate, async (req, res) => {
   const { id } = req.params;
   try {
     const ticket = await Ticket.findByPk(id);
@@ -62,11 +61,12 @@ router.get('/tickets/:id', async (req, res) => {
 });
 
 // Create ticket
-router.post('/tickets', async (req, res) => {
+router.post('/tickets', authenticate, async (req, res) => {
   try {
-    const { topicId, title, description, priority, requestedBy, attachments, fyiTo } = req.body;
+    const { topicId, title, description, priority, attachments, fyiTo } = req.body;
+    const createdBy = req.user.id; // Get user ID from req.user
 
-    const ticket = await Ticket.create({ topicId, title, description, priority, requestedBy });
+    const ticket = await Ticket.create({ topicId, title, description, priority, createdBy });
 
     // Create attachments
     await createOrUpdateAttachments(ticket.id, attachments);
@@ -85,16 +85,16 @@ router.post('/tickets', async (req, res) => {
 });
 
 // Update ticket
-router.put('/tickets/:id', async (req, res) => {
+router.put('/tickets/:id', authenticate, async (req, res) => {
   const { id } = req.params;
-  const { title, description, priority, requestedBy, attachments, fyiTo } = req.body;
+  const { title, description, priority, attachments, fyiTo } = req.body;
   try {
     const ticket = await Ticket.findByPk(id);
     if (!ticket) {
       return res.status(404).json({ error: 'Ticket not found' });
     }
 
-    await ticket.update({ title, description, priority, requestedBy });
+    await ticket.update({ title, description, priority });
 
     // Update attachments
     await createOrUpdateAttachments(id, attachments);
@@ -110,7 +110,7 @@ router.put('/tickets/:id', async (req, res) => {
 });
 
 // Delete ticket
-router.delete('/tickets/:id', async (req, res) => {
+router.delete('/tickets/:id', authenticate, async (req, res) => {
   const { id } = req.params;
   try {
     const ticket = await Ticket.findByPk(id);
