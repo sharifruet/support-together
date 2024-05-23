@@ -24,11 +24,11 @@ export default function Dashboard() {
         <CssBaseline />
 
         <Grid container>
-          <Grid item xs={2}>
+          {/* <Grid item xs={2}>
             <Card style={{background:'#555',color:'#fff',height:'550px'}}><SupportList/></Card>
-          </Grid>
+          </Grid> */}
           <Grid item xs={1}></Grid>
-          <Grid item xs={8}>
+          <Grid item xs={10}>
               <ProjectList/>
               <br/><br/>
           </Grid>

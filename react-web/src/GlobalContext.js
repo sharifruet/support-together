@@ -14,21 +14,31 @@ const GlobalProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [projects, setProjects] = useState([]);
   const [organizations, setOrganizations] = useState([]);
+  const [accesstoken, setAccesstoken] = useState(null);
+
   const navigate = useNavigate();
 
 
   useEffect(() => {
-    axios.get("/organizations").then((response) => {
+    axios.get("/organizations", headerConfig()).then((response) => {
       setOrganizations(response.data);
     }).catch(error => {
       toast.error(error.response.data.error);
       console.log(error.response.data.error)
    });
-  }, []);
+  }, [accesstoken]);
+
+  useEffect(() => {
+    if(roles.length > 0){
+      roles.forEach(r=>{loadProject(r.id)});
+    }
+  }, [roles]);
 
   const loginSuccess = (response) => {
     if (response?.token) {
-      Cookies.set('accessToken', response.token);
+      console.log(response.token);
+      setAccesstoken(response.token);
+      console.log("AT="+ accesstoken);
       if (response?.userRoles) {
         setRoles(response.userRoles);
       }
@@ -36,13 +46,16 @@ const GlobalProvider = ({ children }) => {
       toast.success('you are logged in');
       setLoggedIn(true);
     }
-    if(roles.length > 0){
-      roles.forEach(r=>{loadProject(r.id)});
-    }
+    
+  }
+
+  const headerConfig = ()=>{
+    console.log("HC AT" + accesstoken);
+    return  {headers: { Authorization: `Bearer ${accesstoken}` } };
   }
 
   const loadProject = (projectId) => {
-    axios.get("/projects/"+projectId)
+    axios.get("/projects/"+projectId, headerConfig())
     .then((response) => {
       setProjects([...projects, response.data]);
     })
@@ -55,7 +68,7 @@ const GlobalProvider = ({ children }) => {
 
   const onLogout = () => {
     localStorage.clear()
-    Cookies.remove('accessToken');
+    setAccesstoken(null);
     setLoggedIn(false);
     setProjects([]);
     navigate("/Home");
@@ -64,7 +77,7 @@ const GlobalProvider = ({ children }) => {
 
   return (
     <GlobalContext.Provider
-      value={{user, setUser, loginSuccess, onLogout, roles, setRoles, loggedIn, projects, organizations }}
+      value={{user, setUser, loginSuccess, onLogout, roles, setRoles, loggedIn, projects, organizations, headerConfig }}
     >
       {children}
     </GlobalContext.Provider>

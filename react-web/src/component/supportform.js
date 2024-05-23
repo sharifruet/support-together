@@ -7,9 +7,12 @@ import Button from '@mui/material/Button';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import { Card } from 'react-bootstrap';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import axios from "../api/axios";
 import { TextareaAutosize } from '@mui/material';
+import GlobalContext from '../GlobalContext';
+import { useNavigate } from 'react-router-dom';
+import Upload from './upload';
 const TICKET_URL = "/tickets"; 
 const TOPIC_URL = "/topics";
 
@@ -31,11 +34,19 @@ export default function SupportForm() {
   let [ description, setDescription ] = useState();
   let [ requestedBy, setRequestedBy ] = useState();
   let [ topiclist, setTopiclist] = useState();
-  
+  let [ fyito, setFyito] = useState([]);
+  let [filepth, setFilepth] = useState();
+  const gContext = useContext(GlobalContext);
+  const navigate = useNavigate();
+
+  // const handleRemoveFile = (index) => {
+  //   const newFiles = [...files];
+  //   newFiles.splice(index, 1);
+  //   setFiles(newFiles);
+  // };
   React.useEffect(() => {
-    axios.get(TOPIC_URL).then((response) => {
+    axios.get(TOPIC_URL, gContext.headerConfig()).then((response) => {
       setTopiclist(response.data);
-      
     });
 
   }, []);
@@ -44,14 +55,12 @@ export default function SupportForm() {
     e.preventDefault();
     try {
         await axios.post(
-        TICKET_URL,
-        JSON.stringify({ title, topicId, priority, description, requestedBy }),
-        {
-          headers: { "Content-Type": "application/json" },
-          
-        }
+        TICKET_URL, 
+        JSON.stringify({ title, topicId, priority, description, requestedBy, fyito }),
+        gContext.headerConfig()
       );
       alert('Data inserted successfully.');
+      navigate("/Dashboard");
     } catch (err) {
       if (!err?.response) {
         alert("No Server Response");
@@ -62,12 +71,16 @@ export default function SupportForm() {
       }
     }
   };
+
+  const cb = (d)=>{
+    setFilepth(d.filePath);
+  }
   if (!topiclist) return null;
   return (
     <React.Fragment>
       <Card style={{padding:'50px'}}>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item sm={6}>
             <TextField
               required
               id="title"
@@ -91,7 +104,7 @@ export default function SupportForm() {
             />
           </Grid>
           <Grid item sm={6}></Grid>
-          <Grid item xs={6} >
+          <Grid item sm={6} >
             <FormControl variant="standard" sx={{ minWidth: 330 }}>
               <InputLabel id="demo-simple-select-standard-label">Select Topic *</InputLabel>
               <Select label="Topic" name="topicId" id="topicId"
@@ -101,7 +114,7 @@ export default function SupportForm() {
             </FormControl>
           </Grid>
           <Grid item sm={6}></Grid>
-          <Grid item xs={6}>
+          <Grid item sm={6}>
               <FormControl variant="standard" sx={{ minWidth: 330 }}>
                   <InputLabel id="demo-simple-select-standard-label">Select Priority *</InputLabel>
                   <Select label="Priority" name="priority" id="priority"
@@ -114,7 +127,7 @@ export default function SupportForm() {
                   </Select>
               </FormControl>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item sm={12}>
             <TextareaAutosize 
             id="description"
             name="description"
@@ -127,9 +140,39 @@ export default function SupportForm() {
             onChange={e => setDescription(e.target.value)}
             value={description}>
             </TextareaAutosize>
+            <br/>
           </Grid>
-          <Grid item xs={12}>
-              <Button type="submit" className='btn btn-primary' onClick={handleSubmit}>Submit</Button>
+          <Grid item sm={12}>
+            <TextField
+                required
+                id="fyito"
+                name="fyito"
+                label="FyiTo"
+                fullWidth
+                autoComplete="fyito"
+                variant="standard"
+                onChange={e => setFyito(e.target.value)}
+                value={fyito}
+              />
+          </Grid>
+          <Grid item sm={6}>
+            <br/>
+            <label>Attached your document : &nbsp;</label>
+            <Upload cb={cb}/>
+            {/* <ol>
+            {files.map((file, index) => (
+              <li key={index}>
+                {file.name}
+                &nbsp; <HighlightOffIcon onClick={() => handleRemoveFile(index)}/>
+              </li>
+            ))}
+          </ol> */}
+          </Grid>
+          <Grid sm={6}>
+            {filepth && <img src={'https://support.i2gether.com/'+filepth} alt="Uploaded content"/>}
+          </Grid>
+          <Grid item sm={12}>
+              <Button type="submit" variant="outlined"  onClick={handleSubmit}>Submit</Button>
           </Grid>
         </Grid>
       </Card>
