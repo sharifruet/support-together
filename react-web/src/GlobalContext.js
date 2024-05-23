@@ -24,7 +24,7 @@ const GlobalProvider = ({ children }) => {
       setOrganizations(response.data);
     }).catch(error => {
       toast.error(error.response.data.error);
-      console.log(error.response.data.error)
+    //  console.log(error.response.data.error)
    });
   }, [accesstoken]);
 
@@ -36,9 +36,9 @@ const GlobalProvider = ({ children }) => {
 
   const loginSuccess = (response) => {
     if (response?.token) {
-      console.log(response.token);
+    //  console.log(response.token);
       setAccesstoken(response.token);
-      console.log("AT="+ accesstoken);
+    //  console.log("AT="+ accesstoken);
       if (response?.userRoles) {
         setRoles(response.userRoles);
       }
@@ -50,7 +50,7 @@ const GlobalProvider = ({ children }) => {
   }
 
   const headerConfig = ()=>{
-    console.log("HC AT" + accesstoken);
+   // console.log("HC AT" + accesstoken);
     return  {headers: { Authorization: `Bearer ${accesstoken}` } };
   }
 
@@ -61,7 +61,7 @@ const GlobalProvider = ({ children }) => {
     })
     .catch(error => {
       toast.success(error);
-      console.log(error.response.data.error)
+    //  console.log(error.response.data.error)
    })
 
   }
