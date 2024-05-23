@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import {useState} from 'react';
 import Card from '@mui/material/Card';
@@ -7,11 +7,15 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import axios from "../api/axios";
+import GlobalContext from '../GlobalContext';
+
 const ORG_URL = "/organizations";
+
 export default function OrgtList() {
     const [organizations, setOrganizations] = useState([]);
+    const gContext = useContext(GlobalContext);
     React.useEffect(() => {
-        axios.get(ORG_URL).then((response) => {
+        axios.get(ORG_URL, gContext.headerConfig()).then((response) => {
           setOrganizations(response.data);
         });
       }, []);

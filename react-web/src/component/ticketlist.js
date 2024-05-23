@@ -4,6 +4,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TableRow from '@mui/material/TableRow';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -16,8 +17,9 @@ import InputLabel from '@mui/material/InputLabel';
 import { TextareaAutosize } from '@mui/material';
 import TableHead from '@mui/material/TableHead';
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { useState } from 'react';
-import { useEffect } from 'react';
+import GlobalContext from '../GlobalContext';
+import { useNavigate } from 'react-router-dom';
+import { useState , useEffect, useContext} from 'react';
 import axios from "../api/axios";
 const TICKET_URL = "/tickets";
 const TOPIC_URL = "/topics";
@@ -45,9 +47,21 @@ export default function TicketList() {
   const [edittopicid, setEdittopicid] = useState();
   const [editdescription, setEditdescription ] = useState();
   const [topiclist, setTopiclist] = useState();
+  const [editfyito, setEditfyito] = useState([]);
+  const [files, setFiles] = useState([]);
+  const gContext = useContext(GlobalContext);
+  const navigate = useNavigate();
 
+  const handleFileChange = (event) => {
+    setFiles([...files, ...event.target.files]);
+  };
+  const handleRemoveFile = (index) => {
+    const newFiles = [...files];
+    newFiles.splice(index, 1);
+    setFiles(newFiles);
+  };
   useEffect(() => {
-    axios.get(`${TICKET_URL}/${tid}`)
+    axios.get(`${TICKET_URL}/${tid}`, gContext.headerConfig())
     .then((response) => {
       setDatabyid(response.data);
     })
@@ -57,12 +71,12 @@ export default function TicketList() {
 }, [show, tid]);
 
 useEffect(() => {
-  axios.get(TOPIC_URL).then((response) => {
+  axios.get(TOPIC_URL, gContext.headerConfig())
+  .then((response) => {
     setTopiclist(response.data);
     console.log(topiclist);
   });
-
-},[databyid]);
+}, [databyid]);
 
 useEffect(() => {
   if (databyid) {
@@ -70,16 +84,48 @@ useEffect(() => {
     setEditrequisby(databyid.requestedBy);
     setEdittopicid(databyid.topicId);
     setEditdescription(databyid.description);
+    setEditfyito(databyid.fyito);
   }
 }, [databyid]);
 
   useEffect(() => {
-    axios.get(TICKET_URL).then((response) => {
+    axios.get(TICKET_URL, gContext.headerConfig()).then((response) => {
       setTickets(response.data);
     });
 
   }, []);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+     const formData = new FormData();
+     files.forEach((file, index) => {
+        formData.append(`files[${index}]`, file);
+      });
+      axios.post('/uploads', formData, gContext.headerConfig() )
+      .then(data => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+      try {
+          await axios.put(
+          `${TICKET_URL}/${tid}`,
+          JSON.stringify({ edittitle, editrequisby, edittopicid, editdescription, editfyito, tid }),
+          gContext.headerConfig()
+        );
+      alert('Data update successfully.');
+      navigate("/Dashboard");
+      } catch (err) {
+        if (!err?.response) {
+          alert("No Server Response");
+        } else if (err.response?.status === 401) {
+          alert("Unauthorized");
+        } else {
+          alert("Failed Updated");
+        }
+      }
+    };
   return (
     <>
     <Modal show={show} onHide={handleClose} style={{marginTop:'40px'}}>
@@ -141,8 +187,31 @@ useEffect(() => {
               onChange={e => setEditdescription(e.target.value)}
               value={editdescription}>
             </TextareaAutosize>
+            <br/> 
+            <TextField
+                required
+                id="fyito"
+                name="fyito"
+                label="FyiTo"
+                fullWidth
+                autoComplete="fyito"
+                variant="standard"
+                onChange={e => setEditfyito(e.target.value)}
+                value={editfyito}
+            />
             <br/><br/>
-            <Button variant="primary">
+            <label>Attached your document : &nbsp;</label>
+            <input type="file" multiple onChange={handleFileChange} />
+            <ol>
+              {Array.from(files).map((file, index) => (
+                <li key={index}>
+                  {file.name}
+                  &nbsp; <HighlightOffIcon onClick={() => handleRemoveFile(index)}/>
+                </li>
+              ))}
+            </ol>
+           <br/>
+            <Button variant="primary" onClick={handleSubmit} className='btn-sm'>
               UPDATE
             </Button>
           </Grid>
@@ -168,7 +237,7 @@ useEffect(() => {
                   return (
                     <TableRow>
                       <TableCell align="left">{row.title}</TableCell>
-                      <TableCell align="right"><button variant="outlined" size="small" onClick={() => handleShow(setTid(row.id))}><i class="bi bi-pencil-square"></i></button></TableCell>
+                      <TableCell align="right"><i class="bi bi-pencil-square" role="button" onClick={() => handleShow(setTid(row.id))}></i></TableCell>
                     </TableRow>
                   );
                 })}

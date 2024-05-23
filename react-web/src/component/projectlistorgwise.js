@@ -1,27 +1,30 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {useState} from 'react';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import axios from "../api/axios";
+import GlobalContext from '../GlobalContext';
 const PROJECT_URL = "/projects";
 const ORG_URL = "/organizations";
+
 
 
 export default function ProjectListOrgwise() {
     const [project, setProject] = useState([]);
     const [organizations, setOrganizations] = useState([]);
+    const gContext = useContext(GlobalContext);
   
     React.useEffect(() => {
-      axios.get(PROJECT_URL).then((response) => {
+      axios.get(PROJECT_URL, gContext.headerConfig()).then((response) => {
         setProject(response.data);
       });
 
     }, []);
 
     React.useEffect(() => {
-        axios.get(ORG_URL).then((response) => {
+        axios.get(ORG_URL, gContext.headerConfig()).then((response) => {
           setOrganizations(response.data);
         });
   

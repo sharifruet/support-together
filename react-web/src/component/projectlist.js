@@ -70,7 +70,7 @@ export default function ProjectList() {
                             </Typography>
                             <hr/>
                             <Typography sx={{ fontSize: 14 }}  gutterBottom>
-                                <Button size="small" onClick={toggleComponent}>Create Ticket</Button>
+                                <Button size="small" variant="outlined" onClick={toggleComponent}>Create Ticket</Button>
                             </Typography>
                             <CardActions>
                               <TicketList />

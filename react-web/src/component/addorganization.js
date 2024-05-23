@@ -5,6 +5,7 @@ import { Card } from 'react-bootstrap';
 import { TextareaAutosize } from '@mui/material';
 import { useState } from 'react';
 import axios from "../api/axios";
+import GlobalContext from '../GlobalContext';
 const ORG_URL = "/organizations";
 
 const textareaStyle = {
@@ -21,6 +22,7 @@ export default function Addorg() {
   let [ code, setCode ] = useState();
   let [ name, setName ] = useState();
   let [ address, setAddress] = useState();
+  const gContext = React.useContext(GlobalContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,10 +30,7 @@ export default function Addorg() {
         await axios.post(
         ORG_URL,
         JSON.stringify({ code, name, address}),
-        {
-          headers: { "Content-Type": "application/json" },
-          
-        }
+        gContext.headerConfig()
       );
       alert('Data inserted successfully.');
       window.location.replace('/Admindashboard');
