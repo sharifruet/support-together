@@ -1,0 +1,45 @@
+@BASE_URL = http://support.i2gether.com/api
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGVzIjpbeyJwcm9qZWN0SWQiOjEsInJvbGUiOiJDdXN0b21lciJ9XSwiaWF0IjoxNzE2NDY4NTU2LCJleHAiOjE3MTY0NzIxNTZ9.2aZWZ8yeH0XSqmYzrhff_MjCK-TEms2Da7LqU-4Iw_8
+
+### Create an email template
+POST {{BASE_URL}}/email-templates
+Content-Type: application/json
+
+{
+  "name": "Welcome Email",
+  "subject": "Welcome to Our Service",
+  "body": "Hello {{name}}, welcome to our service. We are glad to have you."
+}
+
+### Get all email templates
+GET {{BASE_URL}}/email-templates
+
+### Get an email template by ID
+GET {{BASE_URL}}/email-templates/1
+
+### Update an email template
+PUT {{BASE_URL}}/email-templates/1
+Content-Type: application/json
+
+{
+  "name": "Updated Welcome Email",
+  "subject": "Updated Welcome to Our Service",
+  "body": "Hello {{name}}, we are still glad to have you."
+}
+
+### Delete an email template
+DELETE {{BASE_URL}}/email-templates/1
+
+### Send an email using a template
+POST {{BASE_URL}}/send-email
+Content-Type: application/json
+
+{
+  "templateId": 1,
+  "recipient": "sharifruet@gmail.com",
+  "placeholders": {
+    "name": "John Doe",
+    "date": "2024-05-21"
+  }
+}
+

@@ -1,0 +1,76 @@
+
+@BASE_URL = http://support.i2gether.com/api
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGVzIjpbeyJwcm9qZWN0SWQiOjEsInJvbGUiOiJDdXN0b21lciJ9XSwiaWF0IjoxNzE2NDY4NTU2LCJleHAiOjE3MTY0NzIxNTZ9.2aZWZ8yeH0XSqmYzrhff_MjCK-TEms2Da7LqU-4Iw_8
+
+### Run status check
+GET {{BASE_URL}}
+
+### User Registration
+POST {{BASE_URL}}/register
+Content-Type: application/json
+
+{
+  "name": "John Doe 1",
+  "email": "john1@example.com",
+  "phoneNumber": "1234567890",
+  "password": "password123"
+}
+
+### User Login
+# @name postLogin
+POST {{BASE_URL}}/login
+Content-Type: application/json
+
+{
+  "email": "john1@example.com",
+  "password": "password123"
+}
+### Get Token
+@TOKEN = {{postLogin.response.body.token}}
+
+### Change Password
+PUT {{BASE_URL}}/change-password
+Authorization: Bearer {{@TOKEN}}
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "currentPassword": "password123",
+  "newPassword": "newpassword456"
+}
+
+### Assign Role to User for a Project
+POST {{BASE_URL}}/user-roles
+Authorization: Bearer {{@TOKEN}}
+Content-Type: application/json
+
+{
+  "userId": 3,
+  "projectId": 1,
+  "role": "Customer"
+}
+
+### Update User Role for a Project
+PUT {{BASE_URL}}/user-roles/:id
+Authorization: Bearer {{@TOKEN}}
+Content-Type: application/json
+
+{
+  "role": "Support"
+}
+
+### Delete User Role for a Project
+DELETE {{BASE_URL}}/user-roles/:id
+Authorization: Bearer {{@TOKEN}}
+
+### Upload a file
+POST {{BASE_URL}}/uploads
+Authorization: Bearer {{@TOKEN}}
+Content-Type: multipart/form-data; boundary=---011000010111000001101001
+
+---011000010111000001101001
+Content-Disposition: form-data; name="file"; filename="leaves-6975462_1280.png"
+Content-Type: image/png
+
+< ../react-web/public/24_7.png
+---011000010111000001101001--

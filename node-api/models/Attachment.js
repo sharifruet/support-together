@@ -12,10 +12,11 @@ const Attachment = db.define('Attachment', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  TicketId: {
-    type: DataTypes.INTEGER,
+  filePath: {
+    type: DataTypes.STRING,
     allowNull: false
   }
 });
 
 module.exports = Attachment;
+ 

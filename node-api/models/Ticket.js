@@ -1,6 +1,6 @@
-// models/Ticket.js
 const { DataTypes } = require('sequelize');
 const db = require('../db');
+const User = require('./User'); // Assuming User model is defined in './User'
 
 const Ticket = db.define('Ticket', {
   id: {
@@ -23,6 +23,31 @@ const Ticket = db.define('Ticket', {
   requestedBy: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  status: {
+    type: DataTypes.ENUM('Created', 'Open', 'Resolved', 'Closed'),
+    allowNull: false,
+    defaultValue: 'Created'
+  },
+  assignmentStatus: {
+    type: DataTypes.ENUM(
+      'Assigned (L1)',
+      'Assigned (L2)',
+      'Assigned (L3)',
+      'Acknowledged (L1)',
+      'Acknowledged (L2)',
+      'Acknowledged (L3)'
+    ),
+    allowNull: true,
+    defaultValue: null
+  },
+  createdBy: {
+    type: DataTypes.INTEGER, // Assuming createdBy is the ID of the user
+    allowNull: false,
+    references: {
+      model: User,
+      key: 'id'
+    }
   },
   createdAt: {
     type: DataTypes.DATE,

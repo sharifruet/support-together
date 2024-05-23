@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const EmailTemplate = require('../models/EmailTemplate');
 
 // Configure Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -27,4 +28,34 @@ const sendEmail = async (recipient, subject, text) => {
     }
 };
 
-module.exports = { sendEmail };
+// Function to send email using a template
+const sendEmailWithTemplate = async (templateId, recipient, placeholders) => {
+    try {
+        // Fetch the email template from the database
+        const emailTemplate = await EmailTemplate.findByPk(templateId);
+        if (!emailTemplate) {
+            throw new Error('Email template not found');
+        }
+
+        // Replace placeholders in the template body
+        let emailBody = emailTemplate.body;
+        for (const [key, value] of Object.entries(placeholders)) {
+            const regex = new RegExp(`{{${key}}}`, 'g');
+            emailBody = emailBody.replace(regex, value);
+        }
+
+        // Send the email
+        const info = await transporter.sendMail({
+            from: 'supporttogether@i2gether.com',
+            to: recipient,
+            subject: emailTemplate.subject,
+            text: emailBody
+        });
+
+        console.log('Email sent:', info.messageId);
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
+};
+
+module.exports = { sendEmail, sendEmailWithTemplate };

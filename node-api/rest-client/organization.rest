@@ -1,0 +1,32 @@
+
+@BASE_URL = http://support.i2gether.com/api
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGVzIjpbeyJwcm9qZWN0SWQiOjEsInJvbGUiOiJDdXN0b21lciJ9XSwiaWF0IjoxNzE2NDY4NTU2LCJleHAiOjE3MTY0NzIxNTZ9.2aZWZ8yeH0XSqmYzrhff_MjCK-TEms2Da7LqU-4Iw_8
+
+### Create Organization (POST /api/organizations)
+POST {{BASE_URL}}/organizations
+Content-Type: application/json
+
+{
+  "code": "TIL",
+  "name": "Together Initiatives (p) Limited",
+  "address": "147/E Green Road, Dhaka"
+}
+
+### Get All Organizations (GET /api/organizations)
+GET {{BASE_URL}}/organizations
+
+### Get Organization by ID (GET /api/organizations/:id)
+GET {{BASE_URL}}/organizations/1
+
+### Update Organization (PUT /api/organizations/:id)
+PUT {{BASE_URL}}/organizations/1
+Content-Type: application/json
+
+{
+  "code": "org1",
+  "name": "Updated Organization",
+  "address": "456 Elm St"
+}
+
+### Delete Organization (DELETE /api/organizations/:id)
+DELETE {{BASE_URL}}/organizations/1
