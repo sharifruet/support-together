@@ -43,7 +43,7 @@ export default function LogReg() {
       //console.log(response.data.userRoles);
       if(accessToken !==''){
          gContext.loginSuccess(response?.data);
-         navigate("/Dashboard");
+         navigate("/dashboard");
          // window.location.replace('/Dashboard');
       }
 

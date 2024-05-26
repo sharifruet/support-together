@@ -10,10 +10,14 @@ function App() {
     <div className="App">
       <GlobalProvider>
         <header>
-          <NavBar/>
-          <RouteComponent/>
-          <Footer/>
+          <NavBar />
         </header>
+        <main>
+          <RouteComponent />
+        </main>
+        <footer>
+          <Footer />
+        </footer>
       </GlobalProvider>
     </div>
   );
