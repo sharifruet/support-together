@@ -8,7 +8,7 @@ Content-Type: application/json
 {
   "name": "Welcome Email",
   "subject": "Welcome to Our Service",
-  "body": "Hello {{name}}, welcome to our service. We are glad to have you."
+  "body": "Hello, welcome to our service. We are glad to have you."
 }
 
 ### Get all email templates
@@ -24,7 +24,7 @@ Content-Type: application/json
 {
   "name": "Updated Welcome Email",
   "subject": "Updated Welcome to Our Service",
-  "body": "Hello {{name}}, we are still glad to have you."
+  "body": "Hello, we are still glad to have you."
 }
 
 ### Delete an email template
