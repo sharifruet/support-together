@@ -25,7 +25,19 @@ const textareaStyle = {
   borderRadius: '4px',  
   marginTop: '20px'
 };
-
+const imgstyle = {
+  overflow: 'hidden', 
+  minHeight: '90px',  
+  width: '80px',
+  border: '1px solid #888',  
+}
+const inputArr = [
+  {
+    type: "text",
+    id: 1,
+    value: ""
+  }
+];
 export default function SupportForm() {
 
   let [ title, setTitle ] = useState();
@@ -34,8 +46,10 @@ export default function SupportForm() {
   let [ description, setDescription ] = useState();
   let [ requestedBy, setRequestedBy ] = useState();
   let [ topiclist, setTopiclist] = useState();
-  let [ fyito, setFyito] = useState([]);
-  let [filepth, setFilepth] = useState();
+  let [ fyiTo, setFyiTo] = useState([]);
+  let [filepth, setFilepth] = useState([]);
+  let [attachments, setAttachments] = useState([]);
+  const [arr, setArr] = useState([inputArr]);
   const gContext = useContext(GlobalContext);
   const navigate = useNavigate();
 
@@ -44,19 +58,43 @@ export default function SupportForm() {
   //   newFiles.splice(index, 1);
   //   setFiles(newFiles);
   // };
+  const addInput = () => {
+    setArr(s => {
+      return [
+        ...s,
+        {
+          type: "text",
+          value: ""
+        }
+      ];
+    });
+    setFyiTo([...fyiTo, '']);
+  };
   React.useEffect(() => {
     axios.get(TOPIC_URL, gContext.headerConfig()).then((response) => {
       setTopiclist(response.data);
     });
 
   }, []);
+  const handleChange = e => {
+    e.preventDefault();
 
+    const index = e.target.id;
+    setArr(s => {
+      const newArr = s.slice();
+      newArr[index].value = e.target.value;
+      const currentValues = newArr.map(field => field.value);
+      setFyiTo(currentValues);
+      return newArr;
+    });
+  };
+  //console.log(fyiTo);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
         await axios.post(
         TICKET_URL, 
-        JSON.stringify({ title, topicId, priority, description, requestedBy, fyito }),
+        JSON.stringify({ topicId, title, description, priority, requestedBy, attachments, fyiTo }),
         gContext.headerConfig()
       );
       alert('Data inserted successfully.');
@@ -71,9 +109,9 @@ export default function SupportForm() {
       }
     }
   };
-
   const cb = (d)=>{
-    setFilepth(d.filePath);
+    setAttachments([...attachments,d.fileName]);
+    setFilepth(...filepth, d.filePath);
   }
   if (!topiclist) return null;
   return (
@@ -100,7 +138,8 @@ export default function SupportForm() {
               fullWidth
               autoComplete="requestedBy"
               variant="standard"
-              onChange={e => setRequestedBy('Harun')}
+              onChange={e => setRequestedBy(e.target.value)}
+              value={requestedBy}
             />
           </Grid>
           <Grid item sm={6}></Grid>
@@ -142,34 +181,33 @@ export default function SupportForm() {
             </TextareaAutosize>
             <br/>
           </Grid>
-          <Grid item sm={12}>
-            <TextField
-                required
-                id="fyito"
-                name="fyito"
-                label="FyiTo"
-                fullWidth
-                autoComplete="fyito"
-                variant="standard"
-                onChange={e => setFyito(e.target.value)}
-                value={fyito}
-              />
+          <Grid item sm={5}>
+              {arr.map((item, i) => {
+                return (
+                  <input
+                    onChange={handleChange}
+                    value={item.value}
+                    id={i}
+                    type={item.type}
+                    size="10"
+                    placeholder='ex@ex.com'
+                    className='form-control'
+                  />
+                );
+              })}
           </Grid>
+          
+          <Grid sm={1}><br/><button className="form-control add"  onClick={addInput} type="button">+</button></Grid>
           <Grid item sm={6}>
             <br/>
             <label>Attached your document : &nbsp;</label>
             <Upload cb={cb}/>
-            {/* <ol>
-            {files.map((file, index) => (
-              <li key={index}>
-                {file.name}
-                &nbsp; <HighlightOffIcon onClick={() => handleRemoveFile(index)}/>
-              </li>
-            ))}
-          </ol> */}
           </Grid>
+          <Grid sm={6}></Grid>
           <Grid sm={6}>
-            {filepth && <img src={'https://support.i2gether.com/'+filepth} alt="Uploaded content"/>}
+            {filepth && <Card style={imgstyle}>
+              <img src={'https://support.i2gether.com/api/'+filepth}/>
+            </Card> }
           </Grid>
           <Grid item sm={12}>
               <Button type="submit" variant="outlined"  onClick={handleSubmit}>Submit</Button>

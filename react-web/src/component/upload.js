@@ -17,7 +17,7 @@ export default function Upload({cb}) {
             
             )
             .then(data => {
-             // console.log('Success:', data.data);
+            //  console.log('Success:', data.data);
               cb(data.data);
             })
             } catch (err) {
