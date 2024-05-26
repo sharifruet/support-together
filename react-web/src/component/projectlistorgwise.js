@@ -39,7 +39,7 @@ export default function ProjectListOrgwise() {
     return (
         <div className='container'>
             <Grid container spacing={2}>
-                <Grid xs={12}>
+                <Grid item xs={12}>
                   <Button>Add Project</Button>
                 </Grid>
                 {project.map((plist) =>

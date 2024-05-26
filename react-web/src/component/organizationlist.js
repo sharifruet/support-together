@@ -22,7 +22,7 @@ export default function OrgtList() {
     return (
         <div className='container'>
             <Grid container spacing={2}>
-                <Grid xs={12}>
+                <Grid item xs={12}>
                 </Grid>
                 {organizations.map((org) =>
                     <Grid item xs={4}>
