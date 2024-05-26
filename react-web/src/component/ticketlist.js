@@ -4,7 +4,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { Card } from 'react-bootstrap';
 import TableRow from '@mui/material/TableRow';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -17,6 +17,7 @@ import InputLabel from '@mui/material/InputLabel';
 import { TextareaAutosize } from '@mui/material';
 import TableHead from '@mui/material/TableHead';
 import "bootstrap-icons/font/bootstrap-icons.css";
+import Upload from './upload';
 import GlobalContext from '../GlobalContext';
 import { useNavigate } from 'react-router-dom';
 import { useState , useEffect, useContext} from 'react';
@@ -34,6 +35,19 @@ const textareaStyle = {
   borderRadius: '4px',  
   marginTop: '20px'
 };
+const imgstyle = {
+  overflow: 'hidden', 
+  minHeight: '90px',  
+  width: '80px',
+  border: '1px solid #888',  
+}
+const inputArr = [
+  {
+    type: "text",
+    id: 1,
+    value: ""
+  }
+];
 
 export default function TicketList() {
   const [tickets, setTickets] = useState([]);
@@ -42,15 +56,19 @@ export default function TicketList() {
   const handleClose = () => setShow(false);
   const [tid, setTid] = useState();
   const [databyid, setDatabyid] = useState();
-  const [edittitle, setEdittitle] = useState();
-  const [editrequisby, setEditrequisby] = useState();
-  const [edittopicid, setEdittopicid] = useState();
-  const [editdescription, setEditdescription ] = useState();
+  const [title, setTitle] = useState();
+  const [priority, setPriority] = useState();
+  const [requestedBy, setRequestedBy] = useState();
+  const [topicId, setTopicId] = useState();
+  const [description, setDescription ] = useState();
   const [topiclist, setTopiclist] = useState();
-  const [editfyito, setEditfyito] = useState([]);
+  const [fyiTo, setFyiTo] = useState([]);
+  const [attachments, setAttachments] = useState([]);
   const [files, setFiles] = useState([]);
+  const [arr, setArr] = useState([inputArr]);
   const gContext = useContext(GlobalContext);
   const navigate = useNavigate();
+  const [filepth, setFilepth] = useState([]);
 
   const handleFileChange = (event) => {
     setFiles([...files, ...event.target.files]);
@@ -80,11 +98,12 @@ useEffect(() => {
 
 useEffect(() => {
   if (databyid) {
-    setEdittitle(databyid.title);
-    setEditrequisby(databyid.requestedBy);
-    setEdittopicid(databyid.topicId);
-    setEditdescription(databyid.description);
-    setEditfyito(databyid.fyito);
+    setTitle(databyid.title);
+    setRequestedBy(databyid.requestedBy);
+    setTopicId(databyid.topicId);
+    setDescription(databyid.description);
+    setFyiTo(databyid.fyiTo);
+    setPriority(databyid.priority);
   }
 }, [databyid]);
 
@@ -94,7 +113,29 @@ useEffect(() => {
     });
 
   }, []);
-
+  const addInput = () => {
+    setArr(s => {
+      return [
+        ...s,
+        {
+          type: "text",
+          value: ""
+        }
+      ];
+    });
+    setFyiTo([...fyiTo, '']);
+  };
+  const handleChange = e => {
+    e.preventDefault();
+    const index = e.target.id;
+    setArr(s => {
+      const newArr = s.slice();
+      newArr[index].value = e.target.value;
+      const currentValues = newArr.map(field => field.value);
+      setFyiTo(currentValues);
+      return newArr;
+    });
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
      const formData = new FormData();
@@ -111,7 +152,7 @@ useEffect(() => {
       try {
           await axios.put(
           `${TICKET_URL}/${tid}`,
-          JSON.stringify({ edittitle, editrequisby, edittopicid, editdescription, editfyito, tid }),
+          JSON.stringify({ title, requestedBy, topicId, description, fyiTo, priority, attachments, tid }),
           gContext.headerConfig()
         );
       alert('Data update successfully.');
@@ -126,6 +167,10 @@ useEffect(() => {
         }
       }
     };
+    const cb = (d)=>{
+      setAttachments([...attachments,d.fileName]);
+      setFilepth(...filepth, d.filePath);
+    }
   return (
     <>
     <Modal show={show} onHide={handleClose} style={{marginTop:'40px'}}>
@@ -139,10 +184,10 @@ useEffect(() => {
               hidden
               id="id"
               name="id"
-              onChange={e => setEdittitle(e.target.value)}
+              onChange={e => setTitle(e.target.value)}
               value={tid}
             />
-             <TextField
+            <TextField
               required
               id="title"
               name="title"
@@ -151,8 +196,8 @@ useEffect(() => {
               autoComplete="title"
               variant="standard"
               focused
-              onChange={e => setEdittitle(e.target.value)}
-              value={edittitle}
+              onChange={e => setTitle(e.target.value)}
+              value={title}
             />
              <TextField
               required
@@ -163,15 +208,26 @@ useEffect(() => {
               focused
               autoComplete="requestedBy"
               variant="standard"
-              onChange={e => setEditrequisby(e.target.value)}
-              value={editrequisby}
+              onChange={e => setRequestedBy(e.target.value)}
+              value={requestedBy}
             />
              <FormControl variant="standard" sx={{ minWidth: 330 }}>
               <InputLabel id="demo-simple-select-standard-label">Select Topic *</InputLabel>
               <Select label="Topic" name="topicId" id="topicId"
-                onChange={e => setEdittopicid(e.target.value)}>
+                onChange={e => setTopicId(e.target.value)}>
                 {topiclist?.map((tlist) => <MenuItem value={tlist.id}>{tlist.name}</MenuItem>)}
               </Select>
+            </FormControl>
+            <FormControl variant="standard" sx={{ minWidth: 330 }}>
+              <InputLabel id="demo-simple-select-standard-label">Select Priority *</InputLabel>
+                  <Select label="Priority" name="priority" id="priority"
+                  onChange={e => setPriority(e.target.value)}>
+                      <MenuItem value={'P1'}>P1</MenuItem>
+                      <MenuItem value={'P2'}>P2</MenuItem>
+                      <MenuItem value={'P3'}>P3</MenuItem>
+                      <MenuItem value={'P4'}>P4</MenuItem>
+                      <MenuItem value={'P5'}>P5</MenuItem>
+                  </Select>
             </FormControl>
           </Grid>
           <Grid item xs={12}>
@@ -184,32 +240,44 @@ useEffect(() => {
               variant="standard"
               placeholder='Description...'
               style={textareaStyle}
-              onChange={e => setEditdescription(e.target.value)}
-              value={editdescription}>
+              onChange={e => setDescription(e.target.value)}
+              value={description}>
             </TextareaAutosize>
-            <br/> 
-            <TextField
-                required
-                id="fyito"
-                name="fyito"
-                label="FyiTo"
-                fullWidth
-                autoComplete="fyito"
-                variant="standard"
-                onChange={e => setEditfyito(e.target.value)}
-                value={editfyito}
-            />
-            <br/><br/>
-            <label>Attached your document : &nbsp;</label>
-            <input type="file" multiple onChange={handleFileChange} />
-            <ol>
-              {Array.from(files).map((file, index) => (
-                <li key={index}>
-                  {file.name}
-                  &nbsp; <HighlightOffIcon onClick={() => handleRemoveFile(index)}/>
-                </li>
-              ))}
-            </ol>
+          </Grid>
+          <Grid item xs={10}>
+            <label>FyiTo : &nbsp;</label>
+            {arr.map((item, i) => {
+                return (
+                  <input
+                    onChange={handleChange}
+                    value={item.value}
+                    id={i}
+                    type={item.type}
+                    size="10"
+                    placeholder='ex@ex.com'
+                    className='form-control'
+                  />
+                );
+              })}
+            </Grid>
+            <Grid sm={2}><br/><br/><button className="form-control add"  onClick={addInput} type="button">+</button></Grid>
+            <Grid item xs={12}>
+                <label>Attached your document : &nbsp;</label>
+                {/* <input type="file" multiple onChange={handleFileChange} />
+                <ol>
+                  {Array.from(files).map((file, index) => (
+                    <li key={index}>
+                      {file.name}
+                      &nbsp; <HighlightOffIcon onClick={() => handleRemoveFile(index)}/>
+                    </li>
+                  ))}
+                </ol> */}
+                <label>Attached your document : &nbsp;</label>
+                <br/>
+                <Upload cb={cb}/>
+                  {filepth && <Card style={imgstyle}>
+                  <img src={'https://support.i2gether.com/api/'+filepth}/>
+                </Card> }
            <br/>
             <Button variant="primary" onClick={handleSubmit} className='btn-sm'>
               UPDATE

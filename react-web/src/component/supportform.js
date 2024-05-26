@@ -27,9 +27,8 @@ const textareaStyle = {
 };
 const imgstyle = {
   overflow: 'hidden', 
-  minHeight: '90px',  
-  width: '80px',
-  border: '1px solid #888',  
+  height: '100px',  
+  width: '150px', 
 }
 const inputArr = [
   {
@@ -78,7 +77,6 @@ export default function SupportForm() {
   }, []);
   const handleChange = e => {
     e.preventDefault();
-
     const index = e.target.id;
     setArr(s => {
       const newArr = s.slice();
@@ -196,15 +194,15 @@ export default function SupportForm() {
                 );
               })}
           </Grid>
-          
           <Grid sm={1}><br/><button className="form-control add"  onClick={addInput} type="button">+</button></Grid>
+          <Grid sm={6}></Grid>
           <Grid item sm={6}>
             <br/>
             <label>Attached your document : &nbsp;</label>
             <Upload cb={cb}/>
           </Grid>
-          <Grid sm={6}></Grid>
-          <Grid sm={6}>
+          <Grid sm={1}></Grid>
+          <Grid sm={5}>
             {filepth && <Card style={imgstyle}>
               <img src={'https://support.i2gether.com/api/'+filepth}/>
             </Card> }

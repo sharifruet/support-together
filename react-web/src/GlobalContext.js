@@ -51,7 +51,7 @@ const GlobalProvider = ({ children }) => {
 
   const headerConfig = ()=>{
    // console.log("HC AT" + accesstoken);
-    return  {headers: { Authorization: `Bearer ${accesstoken}` } };
+    return  {headers: { Authorization: `Bearer ${accesstoken}`, "Content-Type":"application/json" } };
   }
 
   const loadProject = (projectId) => {
