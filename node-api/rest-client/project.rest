@@ -4,6 +4,7 @@
 
 ### Create Project (POST /api/projects)
 POST {{BASE_URL}}/projects
+Authorization: Bearer {{TOKEN}}
 Content-Type: application/json
 
 {
@@ -16,12 +17,14 @@ Content-Type: application/json
 
 ### Get All Projects (GET /api/projects)
 GET {{BASE_URL}}/projects
+Authorization: Bearer {{TOKEN}}
 
 ### Get project by id
 GET {{BASE_URL}}/projects
-
+Authorization: Bearer {{TOKEN}}
 ### Update Project (PUT /api/projects/:id)
 PUT {{BASE_URL}}/projects/1
+Authorization: Bearer {{TOKEN}}
 Content-Type: application/json
 
 {
@@ -32,3 +35,4 @@ Content-Type: application/json
 
 ### Delete a project
 DELETE {{BASE_URL}}/projects/1
+Authorization: Bearer {{TOKEN}}

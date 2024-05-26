@@ -18,6 +18,7 @@ Content-Type: application/json
 
 ### Update an existing ticket
 PUT {{BASE_URL}}/tickets/1
+Authorization: Bearer {{TOKEN}}
 Content-Type: application/json
 
 {
@@ -27,9 +28,12 @@ Content-Type: application/json
 
 ### Delete a ticket by ID
 DELETE {{BASE_URL}}/tickets/1
+Authorization: Bearer {{TOKEN}}
 
 ### Get all tickets
 GET {{BASE_URL}}/tickets
+Authorization: Bearer {{TOKEN}}
 
 ### Get a ticket by ID
 GET {{BASE_URL}}/tickets/1
+Authorization: Bearer {{TOKEN}}
