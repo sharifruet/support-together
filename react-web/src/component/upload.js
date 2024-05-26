@@ -6,6 +6,8 @@ const uploads = "/uploads";
 export default function Upload({cb}) {
     const gContext = useContext(GlobalContext);
     const onChangeVal = (event) => {
+        let config = gContext.headerConfig();
+        config.headers['Content-Type']="multipart/form-data"
        const file = event.target.files[0];
        const formData = new FormData();
         formData.append('file', file);
@@ -13,11 +15,11 @@ export default function Upload({cb}) {
             axios.post(
             uploads,
             formData,
-            gContext.headerConfig(),
+            config,
             
             )
             .then(data => {
-             // console.log('Success:', data.data);
+            //  console.log('Success:', data.data);
               cb(data.data);
             })
             } catch (err) {

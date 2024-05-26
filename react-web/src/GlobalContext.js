@@ -21,17 +21,13 @@ const GlobalProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("/organizations", headerConfig());
-        setOrganizations(response.data);
-      } catch (error) {
-        toast.error(error.response?.data?.error || "An error occurred");
-      }
-    };
-    if (accesstoken) {
-      fetchData();
-    }
+
+    axios.get("/organizations", headerConfig()).then((response) => {
+      setOrganizations(response.data);
+    }).catch(error => {
+      toast.error(error.response.data.error);
+    //  console.log(error.response.data.error)
+   });
   }, [accesstoken]);
 
   useEffect(() => {
@@ -40,8 +36,10 @@ const GlobalProvider = ({ children }) => {
 
   const loginSuccess = async (response) => {
     if (response?.token) {
+
       setAccesstoken(response.token);
       localStorage.setItem('accessToken', response.token);
+
       if (response?.userRoles) {
         setRoles(response.userRoles);
       }
@@ -50,18 +48,23 @@ const GlobalProvider = ({ children }) => {
     }
   };
 
-  const headerConfig = () => ({
-    headers: { Authorization: `Bearer ${accesstoken}` }
-  });
 
-  const loadProject = async (projectId) => {
-    try {
-      const response = await axios.get(`/projects/${projectId}`, headerConfig());
-      setProjects(prevProjects => [...prevProjects, response.data]);
-    } catch (error) {
-      toast.error(error.response?.data?.error || "An error occurred");
-    }
-  };
+  const headerConfig = ()=>{
+   // console.log("HC AT" + accesstoken);
+    return  {headers: { Authorization: `Bearer ${accesstoken}`, "Content-Type":"application/json" } };
+  }
+
+  const loadProject = (projectId) => {
+    axios.get("/projects/"+projectId, headerConfig())
+    .then((response) => {
+      setProjects([...projects, response.data]);
+    })
+    .catch(error => {
+      toast.success(error);
+    //  console.log(error.response.data.error)
+   })
+
+  }
 
   const onLogout = () => {
     localStorage.removeItem('accessToken');
