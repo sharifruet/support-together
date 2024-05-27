@@ -64,7 +64,8 @@ const Projects = () => {
             const data = await getAllProjects();
             setProjects(data);
         } catch (error) {
-            console.error('Error fetching project:', error);
+            // Handle error here
+            // console.error('Error fetching project:', error);
         }
     };
 
@@ -93,8 +94,8 @@ const Projects = () => {
             <Container>
                 <Row className="mb-3">
                     <Col>
-                        {/* It's open the add EmailTemplate modal */}
                         <div className="col-span-1 flex items-center" onClick={() => handleOpenModal(null, "add")}>
+                        {/* It's open the add EmailTemplate modal */}
                             <OpenModalButton label={"Add Project"} icon={<AddIcon />} />
                         </div>
                     </Col>
@@ -166,6 +167,7 @@ const Projects = () => {
                 project={selectedProject}
                 closeModal={handleCloseModal}
                 fetchProjects={fetchProjects}
+                organization={null}
             />
 
             <TopicModal

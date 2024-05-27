@@ -11,12 +11,13 @@ import GlobalContext from '../GlobalContext';
 const defaultTheme = createTheme();
 
 export default function Dashboard() {
-  const gContext = useContext(GlobalContext);
+  const { loggedIn, onLogout } = useContext(GlobalContext);
   useEffect(()=>{
-    if(gContext.loggedIn===false){
-      gContext.onLogout();
+    console.log('here')
+    if(!loggedIn){
+      onLogout();
     }
-  },[]);
+  },[loggedIn]);
   
   return (
     <ThemeProvider theme={defaultTheme}>

@@ -1,19 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, TextField, CircularProgress } from "@mui/material";
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import useEmailTemplateService from '../../hooks/useEmailTemplateService';
 import { v4 as uuidv4 } from 'uuid';
 import { ReactComponent as CancelIcon } from '../../assets/svgIcons/cancel.svg';
-import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
-import Dropzone from 'react-dropzone';
-import { ArrowDropDown, FormatBold, FormatItalic, FormatUnderlined, Link, Image, Lock, EmojiEmotions, MoreVert } from '@mui/icons-material';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import useEmailTemplateService from '../../hooks/useEmailTemplateService';
 
 const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTemplates }) => {
     const { createEmailTemplate, updateEmailTemplate, deleteEmailTemplate } = useEmailTemplateService();
 
+    // State to manage form data
     const [formData, setFormData] = useState({
         code: uuidv4(),
         name: "",
@@ -23,8 +17,11 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
         error: "",
         id: ""
     });
+
+    // State to manage loading status
     const [loading, setLoading] = useState(false);
 
+    // Effect to initialize form data based on modal type and email template
     useEffect(() => {
         if (modalType === 'edit') {
             const { name, code, body, id, subject } = emailTemplate;
@@ -46,9 +43,9 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
                 id: ""
             });
         }
-    }, [emailTemplate]);
+    }, [emailTemplate, modalType]);
 
-    // Reset error and success messages after 2 seconds
+    // Effect to reset error and success messages after 2 seconds
     useEffect(() => {
         if (formData.error || formData.success) {
             const timer = setTimeout(() => {
@@ -62,34 +59,74 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
         }
     }, [formData.error, formData.success]);
 
+    // Function to handle form input changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-            success: false,
-            error: "",
-        }));
+
+        // Special handling for the body field to automatically add the name after "Dear" or "Hello"
+        if (name === 'body') {
+            let updatedValue = value;
+            const greetingRegex = /\b(Dear|Hello)\b/i;
+            const greetingWithNameRegex = new RegExp(`\\b(Dear|Hello)\\b\\s*${formData.name}`, 'i');
+
+            // Check if the body contains "Dear" or "Hello" without the name
+            if (greetingRegex.test(value) && !greetingWithNameRegex.test(value)) {
+                const lines = value.split('\n');
+                updatedValue = lines.map(line => {
+                    if (greetingRegex.test(line) && !greetingWithNameRegex.test(line)) {
+                        return line.replace(greetingRegex, (match) => `${match} ${formData.name}`);
+                    }
+                    return line;
+                }).join('\n');
+            }
+
+            setFormData((prevData) => ({
+                ...prevData,
+                [name]: updatedValue,
+                success: false,
+                error: "",
+            }));
+        } else {
+            setFormData((prevData) => ({
+                ...prevData,
+                [name]: value,
+                success: false,
+                error: "",
+            }));
+        }
     };
 
+    // Function to handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Define success messages for different modal types
+        const successMessages = {
+            add: "Email Template added successfully",
+            edit: "Email Template updated successfully",
+            delete: "Email Template deleted successfully"
+        };
+
+        // Define actions for different modal types
+        const actions = {
+            add: () => createEmailTemplate(formData),
+            edit: () => updateEmailTemplate(formData.id, formData),
+            delete: () => deleteEmailTemplate(emailTemplate.id)
+        };
+
         try {
             setLoading(true);
-            const createMessage = "Email Template added successfully"
-            const updateMessage = "Email Template updated successfully"
-            const responseData = modalType === "add" ? await createEmailTemplate(formData) : modalType === "edit" ? await updateEmailTemplate(formData.id, formData) : await deleteEmailTemplate(emailTemplate.id);
-            console.log(responseData)
+            const responseData = await actions[modalType]();
 
-            if (responseData.message === updateMessage || typeof responseData === 'object') {
+            // Check the response and update the form data with success or error message
+            if (responseData.message === successMessages[modalType] || typeof responseData === 'object') {
                 fetchEmailTemplates();
                 setFormData({
                     name: "",
                     code: "",
                     body: "",
                     subject: "",
-                    success: responseData.message ? responseData.message : createMessage,
+                    success: responseData.message ? responseData.message : successMessages[modalType],
                     error: "",
                 });
             } else {
@@ -102,26 +139,26 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
             console.error(error);
             setFormData((prevData) => ({
                 ...prevData,
-                error: error,
+                error: error.message,
             }));
         } finally {
             setLoading(false);
         }
     };
+
     return (
         <>
             {/* Black Overlay */}
             <div
                 onClick={closeModal}
-                className={`${modalType ? "" : "hidden"
-                    } fixed top-0 left-0 z-30 w-full h-full bg-black opacity-50`}
+                className={`${modalType ? "" : "hidden"} fixed top-0 left-0 z-30 w-full h-full bg-black opacity-50`}
             />
             {/* Modal */}
             <Modal
                 open={!!modalType}
                 onClose={closeModal}
-                aria-labelledby="add-category-modal-title"
-                aria-describedby="add-category-modal-description"
+                aria-labelledby="email-template-modal-title"
+                aria-describedby="email-template-modal-description"
             >
                 <div className="fixed inset-0 m-4 flex items-center justify-center">
                     <div className="bg-white w-1/3 md:w-3/6 shadow-lg flex flex-col items-center space-y-4 overflow-y-auto px-4 py-4 md:px-8">
@@ -132,9 +169,9 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
                             <span
                                 style={{ background: "#303031" }}
                                 onClick={closeModal}
-                                className="cursor-pointer text-gray-100 c-py-1 c-px-2 rounded-full cancelIcon"
+                                className="cursor-pointer text-gray-100 py-1 px-2 rounded-full"
                             >
-                                <CancelIcon className="w-6 h-6 font-bold cancelSvg" />
+                                <CancelIcon className="w-6 h-6 font-bold" />
                             </span>
                         </div>
                         {formData.error && (
@@ -146,12 +183,8 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
 
                         <form className="w-full" onSubmit={handleSubmit}>
                             {modalType === 'delete' ? (
-                                <>
-                                    <h4> Are you sure you want to delete this Email Template?</h4>
-                                </>
+                                <h4>Are you sure you want to delete this Email Template?</h4>
                             ) : (
-
-
                                 <div>
                                     <div className="flex flex-col space-y-1 w-full mb-4">
                                         <TextField
@@ -176,7 +209,6 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
                                             fullWidth
                                             id="subject"
                                             required
-                                            autoFocus
                                         />
                                     </div>
                                     <div className="flex flex-col space-y-1 w-full mb-4">
@@ -189,26 +221,10 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
                                             fullWidth
                                             id="body"
                                             required
-                                            autoFocus
                                             multiline
                                             rows={10}
                                         />
                                     </div>
-                                    {/* <ReactQuill
-                                        value={message}
-                                        onChange={setMessage}
-                                        theme="snow"
-                                        placeholder="Write your message here..."
-                                        modules={{
-                                            toolbar: [
-                                                [{ 'font': [] }, { 'size': [] }],
-                                                ['bold', 'italic', 'underline'],
-                                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                                ['link', 'image'],
-                                                [{ 'align': [] }],
-                                            ]
-                                        }}
-                                    /> */}
                                 </div>
                             )}
                             <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
@@ -234,4 +250,3 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
 };
 
 export default EmailTemplateModal;
-

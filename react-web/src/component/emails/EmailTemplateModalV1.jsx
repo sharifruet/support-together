@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Table, Container, Row, Col, Form, Button, Modal, Pagination } from 'react-bootstrap';
+import { Table, Container, Row, Col, Form, Button, Pagination } from 'react-bootstrap';
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
 import { format } from 'date-fns';
 import useEmailTemplateService from '../../hooks/useEmailTemplateService';
 import './EmailTemplatesStyles.css';
 import EmailTemplateModal from './EmailTemplateModal';
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify';
 
 const EmailTemplates = () => {
     const { getAllEmailTemplates } = useEmailTemplateService();
-    const [EmailTemplates, setEmailTemplates] = useState([]);
+    const [emailTemplates, setEmailTemplates] = useState([]);
     const [selectedEmailTemplate, setSelectedEmailTemplate] = useState(null);
     const [modalType, setModalType] = useState(null);
 
@@ -19,7 +19,6 @@ const EmailTemplates = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
-    const [isLoaded, setLoaded] = useState(false)
 
     const isFirstRender = useRef(true); // Track the initial render
 
@@ -53,26 +52,26 @@ const EmailTemplates = () => {
     };
 
     const fetchEmailTemplates = useCallback(async () => {
+        console.log('Fetching email templates...');
         try {
             const data = await getAllEmailTemplates();
             setEmailTemplates(data);
-            // toast.success('Fetched Successfully')
         } catch (error) {
-            // toast.error(error)
-            console.log(error);
+            const errorMessage = error.response?.data?.error || 'An unexpected error occurred';
+            toast.error(errorMessage, { toastId: 'fetch-email-templates-error' });
+            console.error(errorMessage);
         }
     }, [getAllEmailTemplates]);
 
     useEffect(() => {
-        if (!isLoaded) {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
             fetchEmailTemplates();
-    
-            setLoaded(true)
-        }     
-    }, []);
+        }
+    }, [fetchEmailTemplates]);
 
-    const filteredEmailTemplates = EmailTemplates.filter((org) =>
-        org.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredEmailTemplates = emailTemplates.filter((template) =>
+        template.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     let sortedEmailTemplates = [...filteredEmailTemplates];
@@ -94,7 +93,6 @@ const EmailTemplates = () => {
                     <Col>
                         <div className="col-span-1 flex items-center">
                             <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-start w-full">
-                                {/* It's open the add EmailTemplate modal */}
                                 <div
                                     style={{ background: "#303031" }}
                                     onClick={() => handleOpenModal(null, "add")}

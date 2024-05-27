@@ -1,29 +1,61 @@
 import React, { useState, useEffect } from "react";
-import { Modal, TextField, Button, CircularProgress, Autocomplete } from "@mui/material";
+import { Modal, TextField, CircularProgress, Autocomplete } from "@mui/material";
 import useTopicService from '../../hooks/useTopicService';
 import useProjectService from '../../hooks/useProjectService';
 import { v4 as uuidv4 } from 'uuid';
 import { ReactComponent as CancelIcon } from '../../assets/svgIcons/cancel.svg';
+import CustomButton from "../common/CustomButton";
+import DeleteText from "../common/DeleteText";
+import { FaTrashAlt, FaEdit } from "react-icons/fa";
+import { FaCirclePlus } from "react-icons/fa6";
 
 const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
+    // Destructuring service or api calls functions
     const { createTopic, updateTopic, deleteTopic } = useTopicService();
     const { getAllProjects } = useProjectService();
 
+    // State to manage form data
     const [formData, setFormData] = useState({
         code: uuidv4(),
-        projectId: "",
-        projectId: "",
+        projectId: project !== null ? project.id : "",
         name: "",
         description: "",
         success: "",
         error: "",
         id: ""
     });
+
+    // State to manage loading status
     const [loading, setLoading] = useState(false);
+    // State to manage Material Ui AutoComplete UI loading status
     const [autocompleteLoading, setAutocompleteLoading] = useState(false);
+    // State to manage Material Ui AutoComplete UI options
     const [options, setOptions] = useState([]);
+    // State to manage Material Ui AutoComplete UI selected option
     const [selectedProject, setSelectedProject] = useState(null);
 
+    // Object to show button labels based on the modal type
+    const buttonLabels = {
+        add: "Create Topic", // Label for the "add" modal type
+        edit: "Update Topic", // Label for the "edit" modal type
+        delete: "Confirm" // Label for the "delete" modal type
+    };
+
+    // Object to show button icons based on the modal type
+    const buttonIcons = {
+        add: <FaCirclePlus />, // Label for the "add" modal type
+        edit: <FaEdit />, // Label for the "edit" modal type
+        delete: <FaTrashAlt /> // Label for the "delete" modal type
+    };
+
+    // Object to show Modal Header Name based on the modal type
+    const modalName = {
+        add: "Add Topic", // Label for the "add" modal type
+        edit: "Edit Topic", // Label for the "edit" modal type
+        delete: "Delete Topic" // Label for the "delete" modal type
+    };
+
+    // loader for Material UI Autocomplete
     useEffect(() => {
         if (modalType === 'add' || modalType === 'edit') {
             // Set autocompleteLoading to true when modal is opened
@@ -34,30 +66,13 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
         } else setSelectedProject(null);
     }, [modalType]);
 
-    const returnMatchedObject = (projectId, options) => {
-        // Find the organization corresponding to the project's organizationId
-        const selectedMatchedProject = options?.find(option => option.id === projectId);
-
-        // Update selectedProject state with the found organization
-        setSelectedProject(selectedMatchedProject);
-    }
-
-    // Set autocomplete value when this modal open from projectList Action section
-    useEffect(() => {
-        if (modalType === 'add' && project !== null && options && options.length > 0) {
-            
-            // To prefilled the material ui AutoComplete component
-            returnMatchedObject(project.id, options);
-            
-        } else setSelectedProject(null);
-    }, [modalType, project]);
-
+    // Fetch all projects for the Autocomplete options
     useEffect(() => {
         const fetchProjects = async () => {
             try {
                 const data = await getAllProjects();
-                const formattedOptions = data.map(organization => ({ id: organization.id, label: organization.name, value: organization.id }));
-                setOptions(data);
+                const formattedOptions = data.map(project => ({ id: project.id, name: project.name, value: project.id }));
+                setOptions(formattedOptions);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -69,13 +84,14 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
         fetchProjects();
     }, []);
 
+    // Effect to initialize form data based on modal type and topic(passed props)
     useEffect(() => {
-        if (modalType === 'edit' && topic && options && options.length > 0 ) {
+        if (modalType === 'edit' && topic && options.length > 0) {
             const { name, code, description, id, ProjectId } = topic;
+            const matchedProject = options.find(option => option.id === ProjectId);
 
             // To prefilled the material ui AutoComplete component
-            returnMatchedObject(ProjectId, options);
-
+            setSelectedProject(matchedProject);
             setFormData({
                 ...formData,
                 projectId: ProjectId || "",
@@ -86,21 +102,32 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                 success: false,
                 error: false,
             });
+        } else if (modalType === 'add' && project !== null) {
+            const matchedProject = options.find(option => option.id === project.id);
+
+            setSelectedProject(matchedProject);
+            setFormData(prevData => ({
+                ...prevData,
+                projectId: project.id,
+            }));
         } else {
             // Clear form data if modalType is not 'edit'
             setFormData({
                 ...formData,
+                projectId: project !== null ? project.id : "",
                 name: "",
                 description: "",
+                success: "",
+                error: "",
                 id: "",
-                projectId: ""
             });
-            // Reset selectedOrganization state
-            project === null && setSelectedProject(null);
-        }
-    }, [modalType, topic, options]);
 
-    // Reset error and success messages after 2 seconds
+            // Reset selectedOrganization state
+            setSelectedProject(null);
+        }
+    }, [modalType, topic, options, project]);
+
+    // Effect to reset error and success messages after 2 seconds
     useEffect(() => {
         if (formData.error || formData.success) {
             const timer = setTimeout(() => {
@@ -114,6 +141,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
         }
     }, [formData.error, formData.success]);
 
+    // Function to handle form Material UI Autocomplete component changes
     const handleAutocompleteChange = (event, newValue) => {
         console.log(newValue)
         setSelectedProject(newValue);
@@ -123,6 +151,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
         }));
     };
 
+    // Function to handle form input changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -133,24 +162,37 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
         }));
     };
 
+    // Function to handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Define success messages for different modal types
+        const successMessages = {
+            add: "Topic added successfully",
+            edit: "Topic updated successfully",
+            delete: "Topic deleted successfully"
+        };
+
+        // Define actions for different modal types
+        const actions = {
+            add: () => createTopic(formData),
+            edit: () => updateTopic(formData.id, formData),
+            delete: () => deleteTopic(topic.id)
+        };
+
         try {
             setLoading(true);
-            const createMessage = "Topic added successfully"
-            const updateMessage = "Topic updated successfully"
-            const responseData = modalType === "add" ? await createTopic(formData) : modalType === "edit" ? await updateTopic(formData.id, formData) : await deleteTopic(topic.id);
+            const responseData = await actions[modalType]();
             console.log(responseData)
-            
-            if (responseData.message === updateMessage || typeof responseData === 'object') {
+
+            if (responseData.message === successMessages[modalType] || typeof responseData === 'object') {
                 fetchTopics && fetchTopics();
                 setFormData({
                     name: "",
                     code: "",
                     description: "",
                     projectId: "",
-                    success: responseData.message ? responseData.message : createMessage,
+                    success: responseData.message ? responseData.message : successMessages[modalType],
                     error: "",
                 });
                 setSelectedProject(null);
@@ -189,7 +231,8 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                     <div className="bg-white w-1/3 md:w-3/6 shadow-lg flex flex-col items-center space-y-4 overflow-y-auto px-4 py-4 md:px-8">
                         <div className="flex items-center justify-between w-full">
                             <span className="text-left font-semibold text-2xl tracking-wider">
-                                {modalType === "add" ? "Add Topic" : modalType === "edit" ? "Edit Topic" : "Delete Topic"}
+                                {/* Modal Name depending on modalType*/}
+                                {modalName[modalType]}
                             </span>
                             <span
                                 style={{ background: "#303031" }}
@@ -208,21 +251,18 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
                         <form className="w-full" onSubmit={handleSubmit}>
                             {modalType === 'delete' ? (
-                                <>
-                                    <h4> Are you sure you want to delete this Topic?</h4>
-                                </>
+                                <DeleteText message={"Project"} />
                             ) : (
                                 <div>
                                     <div className="flex flex-col space-y-1 w-full">
                                         <Autocomplete
                                             disablePortal
                                             id="combo-box-demo"
-                                            loading={autocompleteLoading} // Pass the loading state to the Autocomplete component
+                                            loading={autocompleteLoading}
                                             value={selectedProject}
                                             onChange={handleAutocompleteChange}
                                             options={options}
                                             getOptionLabel={(option) => option.name}
-                                            // renderInput={(params) => <TextField {...params} label="Select Project" />}
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
@@ -275,21 +315,15 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                                 </div>
                             )}
                             <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
-                                <button
-                                    style={{ background: "#303031" }}
+                                <CustomButton
+                                    isLoading={loading}
                                     type="submit"
-                                    className={`bg-gray-800 text-gray-100 rounded-full text-lg font-medium py-2 ${loading ? "cursor-not-allowed" : "cursor-pointer"}`}
+                                    icon={buttonIcons[modalType]}
+                                    label={buttonLabels[modalType]}
                                     disabled={loading}
-                                >
-                                    {loading ? (
-                                        <CircularProgress color="inherit" size={24} />
-                                    ) : (
-                                        modalType === "add" ? "Add Topic" : modalType === "edit" ? "Edit Topic" : "Delete Topic"
-                                    )}
-                                </button>
+                                />
                             </div>
                         </form>
-
                     </div>
                 </div>
             </Modal>

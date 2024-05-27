@@ -17,141 +17,109 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import StarBorder from '@mui/icons-material/StarBorder';
 
 export default function LeftMenu() {
-  const location = useLocation();
+    const location = useLocation();
+    const [openInbox, setOpenInbox] = useState(false);
 
-  const [openOrganization, setOpenOrganization] = useState(false);
-  const [openProject, setOpenProject] = useState(false);
-  const [openInbox, setOpenInbox] = useState(false);
+    useEffect(() => {
+        if (location.pathname.startsWith('/dashboard/topics')) {
+            setOpenInbox(true);
+        }
+    }, [location.pathname]);
 
-  useEffect(() => {
-    if (location.pathname.startsWith('/dashboard/organizations')) {
-      setOpenOrganization(true);
-    }
-    if (location.pathname.startsWith('/dashboard/projects')) {
-      setOpenOrganization(true);
-      setOpenProject(true);
-    }
-    if (location.pathname.startsWith('/dashboard/topics')) {
-      setOpenOrganization(true);
-      setOpenProject(true);
-      setOpenInbox(true);
-    }
-  }, [location.pathname]);
+   
 
-  const handleOrganizationClick = () => {
-    setOpenOrganization(!openOrganization);
-  };
+    const handleInboxClick = () => {
+        setOpenInbox(!openInbox);
+    };
 
-  const handleProjectClick = () => {
-    setOpenProject(!openProject);
-  };
+    return (
+        <List>
+            <ListItemButton
+                selected={location.pathname === '/dashboard'}
+                component={Link}
+                to="/dashboard"
+            >
+                <ListItemIcon>
+                    <DashboardIcon style={{ color: "#fff" }} />
+                </ListItemIcon>
+                <ListItemText primary="Dashboard" />
+            </ListItemButton>
 
-  const handleInboxClick = () => {
-    setOpenInbox(!openInbox);
-  };
+            <ListItemButton
+                selected={location.pathname === '/dashboard/emailTemplates'}
+                component={Link}
+                to="/dashboard/emailTemplates"
+            >
+                <ListItemIcon>
+                    <EmailIcon style={{ color: "#fff" }} />
+                </ListItemIcon>
+                <ListItemText primary="Email Template" />
+            </ListItemButton>
 
-  return (
-    <List>
-      <ListItemButton
-        selected={location.pathname === '/dashboard'}
-        component={Link}
-        to="/dashboard"
-      >
-        <ListItemIcon>
-          <DashboardIcon style={{ color: "#fff" }} />
-        </ListItemIcon>
-        <ListItemText primary="Dashboard" />
-      </ListItemButton>
-
-      <ListItemButton
-        selected={location.pathname === '/dashboard/emailTemplates'}
-        component={Link}
-        to="/dashboard/emailTemplates"
-      >
-        <ListItemIcon>
-          <EmailIcon style={{ color: "#fff" }} />
-        </ListItemIcon>
-        <ListItemText primary="Email Template" />
-      </ListItemButton>
-
-      <ListItemButton
-        selected={location.pathname.startsWith('/dashboard/organizations')}
-        component={Link}
-        to="/dashboard/organizations"
-        onClick={handleOrganizationClick}
-      >
-        <ListItemIcon>
-          <CorporateFareIcon style={{ color: '#14DB8D' }} />
-        </ListItemIcon>
-        <ListItemText primary="Organization" />
-        {openOrganization ? <ExpandLess /> : <ExpandMore />}
-      </ListItemButton>
-
-      <Collapse in={openOrganization} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <ListItemButton
-            selected={location.pathname.startsWith('/dashboard/projects')}
-            sx={{ pl: 4 }}
-            component={Link}
-            to="/dashboard/projects"
-            onClick={handleProjectClick}
-          >
-            <ListItemIcon>
-              <BusinessCenterIcon style={{ color: '#14DB8D' }} />
-            </ListItemIcon>
-            <ListItemText primary="Project" />
-            {openProject ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={openProject} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItemButton
+            <ListItemButton
+                selected={location.pathname.startsWith('/dashboard/organizations')}
+                component={Link}
+                to="/dashboard/organizations"
+            >
+                <ListItemIcon>
+                    <CorporateFareIcon style={{ color: '#14DB8D' }} />
+                </ListItemIcon>
+                <ListItemText primary="Organization" />
+            </ListItemButton>
+            <ListItemButton
+                selected={location.pathname.startsWith('/dashboard/projects')}
+                component={Link}
+                to="/dashboard/projects"
+            >
+                <ListItemIcon>
+                    <BusinessCenterIcon style={{ color: '#14DB8D' }} />
+                </ListItemIcon>
+                <ListItemText primary="Project" />
+            </ListItemButton>
+            <ListItemButton
                 selected={location.pathname === '/dashboard/topics'}
-                sx={{ pl: 8 }}
                 component={Link}
                 to="/dashboard/topics"
-              >
+            >
                 <ListItemIcon>
-                  <TopicIcon style={{ color: '#14DB8D' }} />
+                    <TopicIcon style={{ color: '#14DB8D' }} />
                 </ListItemIcon>
                 <ListItemText primary="Topic" />
-              </ListItemButton>
-            </List>
-          </Collapse>
+            </ListItemButton>
+
+
+            <ListItemButton
+                selected={location.pathname === '/dashboard/organization-add'}
+                component={Link}
+                to="/dashboard/organization-add"
+            >
+                <ListItemIcon>
+                    <AddCircleIcon style={{ color: 'yellow' }} />
+                </ListItemIcon>
+                <ListItemText primary="Organization Add" />
+            </ListItemButton>
+
+            <ListItemButton
+                selected={location.pathname.startsWith('/dashboard/inbox')}
+                onClick={handleInboxClick}
+            >
+                <ListItemIcon>
+                    <InboxIcon />
+                </ListItemIcon>
+                <ListItemText primary="Inbox" />
+                {openInbox ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+
+            <Collapse in={openInbox} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                    <ListItemButton sx={{ pl: 4 }}>
+                        <ListItemIcon>
+                            <StarBorder />
+                        </ListItemIcon>
+                        <ListItemText primary="Starred" />
+                    </ListItemButton>
+                </List>
+            </Collapse>
         </List>
-      </Collapse>
-
-      <ListItemButton
-        selected={location.pathname === '/dashboard/organization-add'}
-        component={Link}
-        to="/dashboard/organization-add"
-      >
-        <ListItemIcon>
-          <AddCircleIcon style={{ color: 'yellow' }} />
-        </ListItemIcon>
-        <ListItemText primary="Organization Add" />
-      </ListItemButton>
-
-      <ListItemButton
-        selected={location.pathname.startsWith('/dashboard/inbox')}
-        onClick={handleInboxClick}
-      >
-        <ListItemIcon>
-          <InboxIcon />
-        </ListItemIcon>
-        <ListItemText primary="Inbox" />
-        {openInbox ? <ExpandLess /> : <ExpandMore />}
-      </ListItemButton>
-
-      <Collapse in={openInbox} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <StarBorder />
-            </ListItemIcon>
-            <ListItemText primary="Starred" />
-          </ListItemButton>
-        </List>
-      </Collapse>
-    </List>
-  );
+    );
 }

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Modal, TextField, CircularProgress } from "@mui/material";
+import React, { Fragment, useContext, useState, useEffect } from "react";
+import { Modal, TextField, CircularProgress, TextareaAutosize, IconButton, Tooltip, Fab } from "@mui/material";
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import useEmailTemplateService from '../../hooks/useEmailTemplateService';
 import { v4 as uuidv4 } from 'uuid';
@@ -7,9 +7,6 @@ import { ReactComponent as CancelIcon } from '../../assets/svgIcons/cancel.svg';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined';
 import Dropzone from 'react-dropzone';
-import { ArrowDropDown, FormatBold, FormatItalic, FormatUnderlined, Link, Image, Lock, EmojiEmotions, MoreVert } from '@mui/icons-material';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 
 const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTemplates }) => {
     const { createEmailTemplate, updateEmailTemplate, deleteEmailTemplate } = useEmailTemplateService();
@@ -24,6 +21,30 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
         id: ""
     });
     const [loading, setLoading] = useState(false);
+
+    // // Update formData with parent ID from context when modal is opened
+    // useEffect(() => {
+    //     if (data.createCategoryModal && data.createCategoryModal.cParentId !== "") {
+    //         setFormData((prevData) => ({
+    //             ...prevData,
+    //             cParentId: data.createCategoryModal.cParentId,
+    //         }));
+    //     }
+    // }, [data.createCategoryModal]);
+
+    // need to remove start here
+
+    const [attachments, setAttachments] = useState([]);
+
+    const handleDrop = (acceptedFiles) => {
+        setAttachments([...attachments, ...acceptedFiles]);
+    };
+
+    const removeAttachment = (file) => {
+        setAttachments(attachments.filter((f) => f !== file));
+    };
+
+    // need to remove end here
 
     useEffect(() => {
         if (modalType === 'edit') {
@@ -48,6 +69,17 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
         }
     }, [emailTemplate]);
 
+    const textareaStyle = {
+        overflow: 'hidden',
+        minHeight: '50px',
+        width: '100%',
+        padding: '8px',
+        border: '1px solid #888',
+        borderRadius: '4px',
+        marginTop: '20px',
+        resize: 'none'
+    };
+
     // Reset error and success messages after 2 seconds
     useEffect(() => {
         if (formData.error || formData.success) {
@@ -61,6 +93,16 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
             return () => clearTimeout(timer);
         }
     }, [formData.error, formData.success]);
+
+    // const fetchData = async () => {
+    //     const responseData = await getAllCategory();
+    //     if (responseData.Categories) {
+    //         dispatch({
+    //             type: "fetchCategoryAndChangeState",
+    //             payload: responseData.Categories,
+    //         });
+    //     }
+    // };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -81,7 +123,7 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
             const updateMessage = "Email Template updated successfully"
             const responseData = modalType === "add" ? await createEmailTemplate(formData) : modalType === "edit" ? await updateEmailTemplate(formData.id, formData) : await deleteEmailTemplate(emailTemplate.id);
             console.log(responseData)
-
+            console.log(typeof responseData)
             if (responseData.message === updateMessage || typeof responseData === 'object') {
                 fetchEmailTemplates();
                 setFormData({
@@ -102,7 +144,7 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
             console.error(error);
             setFormData((prevData) => ({
                 ...prevData,
-                error: error,
+                error: "Something went wrong!",
             }));
         } finally {
             setLoading(false);
@@ -118,7 +160,7 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
             />
             {/* Modal */}
             <Modal
-                open={!!modalType}
+                open={modalType}
                 onClose={closeModal}
                 aria-labelledby="add-category-modal-title"
                 aria-describedby="add-category-modal-description"
@@ -150,66 +192,34 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
                                     <h4> Are you sure you want to delete this Email Template?</h4>
                                 </>
                             ) : (
-
-
-                                <div>
-                                    <div className="flex flex-col space-y-1 w-full mb-4">
-                                        <TextField
-                                            name="name"
-                                            value={formData.name}
-                                            onChange={handleInputChange}
-                                            variant="outlined"
-                                            id="name"
-                                            label="Name"
-                                            fullWidth
-                                            required
-                                            autoFocus
-                                        />
-                                    </div>
-                                    <div className="flex flex-col space-y-1 w-full mb-4">
-                                        <TextField
-                                            name="subject"
-                                            value={formData.subject}
-                                            onChange={handleInputChange}
-                                            label="Subject"
-                                            variant="outlined"
-                                            fullWidth
-                                            id="subject"
-                                            required
-                                            autoFocus
-                                        />
-                                    </div>
-                                    <div className="flex flex-col space-y-1 w-full mb-4">
-                                        <TextField
-                                            name="body"
-                                            value={formData.body}
-                                            onChange={handleInputChange}
-                                            label="Body"
-                                            variant="outlined"
-                                            fullWidth
-                                            id="body"
-                                            required
-                                            autoFocus
-                                            multiline
-                                            rows={10}
-                                        />
-                                    </div>
-                                    {/* <ReactQuill
-                                        value={message}
-                                        onChange={setMessage}
-                                        theme="snow"
-                                        placeholder="Write your message here..."
-                                        modules={{
-                                            toolbar: [
-                                                [{ 'font': [] }, { 'size': [] }],
-                                                ['bold', 'italic', 'underline'],
-                                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                                ['link', 'image'],
-                                                [{ 'align': [] }],
-                                            ]
-                                        }}
-                                    /> */}
-                                </div>
+                                <Container className="mt-5">
+                                    <Row className="justify-content-md-center">
+                                        <Col md={8}>
+                                            <Form>
+                                                <Form.Group controlId="formEmailTo">
+                                                    <TextField fullWidth label="To" variant="outlined" margin="normal" />
+                                                </Form.Group>
+                                                <Form.Group controlId="formEmailSubject">
+                                                    <TextField fullWidth label="Subject" variant="outlined" margin="normal" />
+                                                </Form.Group>
+                                                <Form.Group controlId="formEmailBody">
+                                                    <TextField
+                                                        fullWidth
+                                                        label="Message"
+                                                        variant="outlined"
+                                                        margin="normal"
+                                                        multiline
+                                                        rows={10}
+                                                    />
+                                                </Form.Group>
+                                                
+                                                <Button variant="primary" type="submit" className="mt-3">
+                                                    <SendOutlinedIcon /> Send
+                                                </Button>
+                                            </Form>
+                                        </Col>
+                                    </Row>
+                                </Container>
                             )}
                             <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
                                 <button
@@ -226,6 +236,7 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
                                 </button>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </Modal>

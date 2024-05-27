@@ -10,11 +10,9 @@ import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
 
 const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organization }) => {
-    // Destructuring service or api calls functions
     const { createProject, updateProject, deleteProject } = useProjectService();
     const { getAllOrganizations } = useOrganizationService();
 
-    // State to manage form data
     const [formData, setFormData] = useState({
         code: uuidv4(),
         organizationId: organization !== null ? organization.id : "",
@@ -25,40 +23,31 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
         id: "",
     });
 
-    // State to manage loading status
     const [loading, setLoading] = useState(false);
-    // State to manage Material Ui AutoComplete UI loading status
     const [autocompleteLoading, setAutocompleteLoading] = useState(false);
-    // State to manage Material Ui AutoComplete UI options
     const [options, setOptions] = useState([]);
-    // State to manage Material Ui AutoComplete UI selected option
     const [selectedOrganization, setSelectedOrganization] = useState(null);
 
-    // Object to show button labels based on the modal type
     const buttonLabels = {
-        add: "Create Project", // Label for the "add" modal type
-        edit: "Update Project", // Label for the "edit" modal type
-        delete: "Confirm" // Label for the "delete" modal type
+        add: "Create Project",
+        edit: "Update Project",
+        delete: "Confirm"
     };
 
-    // Object to show button icons based on the modal type
     const buttonIcons = {
-        add: <FaCirclePlus />, // Label for the "add" modal type
-        edit: <FaEdit />, // Label for the "edit" modal type
-        delete: <FaTrashAlt /> // Label for the "delete" modal type
+        add: <FaCirclePlus />,
+        edit: <FaEdit />,
+        delete: <FaTrashAlt />
     };
 
-    // Object to show Modal Header Name based on the modal type
     const modalName = {
-        add: "Add Project", // Label for the "add" modal type
-        edit: "Edit Project", // Label for the "edit" modal type
-        delete: "Delete Project" // Label for the "delete" modal type
+        add: "Add Project",
+        edit: "Edit Project",
+        delete: "Delete Project"
     };
 
-    // loader for Material UI Autocomplete
     useEffect(() => {
         if (modalType === 'add' || modalType === 'edit') {
-            // Set autocompleteLoading to true when modal is opened
             setAutocompleteLoading(true);
             setTimeout(() => {
                 setAutocompleteLoading(false);
@@ -66,7 +55,6 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
         } else setSelectedOrganization(null);
     }, [modalType]);
 
-    // Fetch all organizations for the Autocomplete options
     useEffect(() => {
         const fetchOrganizations = async () => {
             try {
@@ -74,10 +62,8 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                 const formattedOptions = data.map(organization => ({ id: organization.id, name: organization.name, value: organization.id }));
                 setOptions(formattedOptions);
             } catch (error) {
-                // Handle error here
-                // console.log(error);
+                console.error(error);
             } finally {
-                // Set autocompleteLoading to false when data is fetched
                 setAutocompleteLoading(false);
             }
         };
@@ -85,18 +71,15 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
         fetchOrganizations();
     }, []);
 
-    // Effect to initialize form data based on modal type and project(passed props)
     useEffect(() => {
         if (modalType === 'edit' && project && options.length > 0) {
             const { name, code, description, id, OrganizationId } = project;
             const matchedOrganization = options.find(option => option.id === OrganizationId);
 
-            // To prefilled the material ui AutoComplete component
             setSelectedOrganization(matchedOrganization);
             setFormData({
-                ...formData,
+                code,
                 organizationId: OrganizationId || "",
-                code: code,
                 name: name || "",
                 description: description || "",
                 id: id || "",
@@ -112,9 +95,8 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                 organizationId: organization.id,
             }));
         } else {
-            // Clear form data if modalType is not 'edit'
             setFormData({
-                ...formData,
+                code: uuidv4(),
                 organizationId: organization !== null ? organization.id : "",
                 name: "",
                 description: "",
@@ -122,17 +104,14 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                 error: "",
                 id: "",
             });
-
-            // Reset selectedOrganization state
             setSelectedOrganization(null);
         }
     }, [modalType, project, options, organization]);
 
-    // Effect to reset error and success messages after 2 seconds
     useEffect(() => {
         if (formData.error || formData.success) {
             const timer = setTimeout(() => {
-                setFormData((prevData) => ({
+                setFormData(prevData => ({
                     ...prevData,
                     success: false,
                     error: "",
@@ -142,20 +121,17 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
         }
     }, [formData.error, formData.success]);
 
-    // Function to handle form Material UI Autocomplete component changes
     const handleAutocompleteChange = (event, newValue) => {
-        console.log(newValue)
         setSelectedOrganization(newValue);
-        setFormData((prevData) => ({
+        setFormData(prevData => ({
             ...prevData,
             organizationId: newValue ? newValue.id : "",
         }));
     };
 
-    // Function to handle form input changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({
+        setFormData(prevData => ({
             ...prevData,
             [name]: value,
             success: false,
@@ -163,18 +139,15 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
         }));
     };
 
-    // Function to handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Define success messages for different modal types
         const successMessages = {
             add: "Project added successfully",
             edit: "Project updated successfully",
             delete: "Project deleted successfully"
         };
 
-        // Define actions for different modal types
         const actions = {
             add: () => createProject(formData),
             edit: () => updateProject(formData.id, formData),
@@ -184,55 +157,50 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
         try {
             setLoading(true);
             const responseData = await actions[modalType]();
-            console.log(responseData)
-            // Check the response and update the form data with success or error message
             if (responseData.message === successMessages[modalType] || typeof responseData === 'object') {
                 fetchProjects && fetchProjects();
                 setFormData({
-                    name: "",
-                    code: "",
-                    description: "",
+                    code: uuidv4(),
                     organizationId: "",
-                    success: responseData.message ? responseData.message : successMessages[modalType],
+                    name: "",
+                    description: "",
+                    success: successMessages[modalType],
                     error: "",
+                    id: "",
                 });
                 setSelectedOrganization(null);
             } else {
-                setFormData((prevData) => ({
+                setFormData(prevData => ({
                     ...prevData,
                     error: responseData.message,
                 }));
             }
         } catch (error) {
-            console.log(error);
-            setFormData((prevData) => ({
+            setFormData(prevData => ({
                 ...prevData,
-                error: error,
+                error: error.message || "Something went wrong",
             }));
         } finally {
             setLoading(false);
         }
     };
+
     return (
         <>
-            {/* Black Overlay */}
             <div
                 onClick={closeModal}
-                className={`${modalType ? "" : "hidden"
-                    } fixed top-0 left-0 z-30 w-full h-full bg-black opacity-50`}
+                className={`${modalType ? "" : "hidden"} fixed top-0 left-0 z-30 w-full h-full bg-black opacity-50`}
             />
-            {/* Modal */}
             <Modal
                 open={!!modalType}
                 onClose={closeModal}
-                aria-labelledby="add-category-modal-title"
-                aria-describedby="add-category-modal-description"
+                aria-labelledby="project-modal-title"
+                aria-describedby="project-modal-description"
             >
                 <div className="fixed inset-0 m-4 flex items-center justify-center">
                     <div className="bg-white w-1/3 md:w-3/6 shadow-lg flex flex-col items-center space-y-4 overflow-y-auto px-4 py-4 md:px-8">
                         <div className="flex items-center justify-between w-full">
                             <span className="text-left font-semibold text-2xl tracking-wider">
-                                {/* Modal Name depending on modalType*/}
                                 {modalName[modalType]}
                             </span>
                             <span
@@ -258,7 +226,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                                     <div className="flex flex-col space-y-1 w-full">
                                         <Autocomplete
                                             disablePortal
-                                            id="combo-box-demo"
+                                            id="organization-autocomplete"
                                             loading={autocompleteLoading}
                                             value={selectedOrganization}
                                             onChange={handleAutocompleteChange}
@@ -267,7 +235,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
-                                                    label="Select Project"
+                                                    label="Select Organization"
                                                     InputProps={{
                                                         ...params.InputProps,
                                                         endAdornment: (
@@ -308,7 +276,6 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                                             onChange={handleInputChange}
                                             fullWidth
                                             required
-                                            autoFocus
                                             multiline
                                             rows={3}
                                         />
@@ -333,4 +300,3 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
 };
 
 export default ProjectModal;
-

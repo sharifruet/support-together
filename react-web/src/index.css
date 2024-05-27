@@ -479,3 +479,72 @@ code {
 }
 
 
+/* React Toast custom css start here */
+
+/* toastStyles.css */
+
+.Toastify__toast-container {
+  width: auto !important; /* Set the width to auto to adjust dynamically based on content */
+  max-width: 100%; /* Optionally, set a maximum width */
+}
+
+.Toastify__toast {
+  white-space: nowrap !important; /* Prevent text wrapping */
+  overflow: hidden !important;    /* Hide overflow */
+  text-overflow: ellipsis !important; /* Add ellipsis for overflow text */
+}
+
+.Toastify__toast-body {
+  color: #fff !important; /* Set text color to white */
+}
+
+.Toastify__toast-icon svg {
+  fill: #fff !important; /* Set success icon color to white */
+}
+
+.Toastify__toast-icon--error svg {
+  fill: #fff; /* Set error icon color to white */
+}
+
+.Toastify__close-button {
+  color: #fff; /* Set cancel icon color to white */
+  margin-top: 10px; /* Adjust margin to align cancel icon with text */
+}
+
+.Toastify__close-button:hover {
+  color: red;
+}
+
+.toast-success {
+  background-color: #4caf50 !important; /* Green background */
+  color: #fff !important;               /* White text */
+}
+
+.toast-error {
+  background-color: #f44336 !important; /* Red background */
+  color: #fff !important;               /* White text */
+}
+
+.toast-info {
+  background-color: #2196f3 !important; /* Blue background */
+  color: #fff !important;               /* White text */
+}
+
+.toast-warning {
+  background-color: #ff9800 !important; /* Orange background */
+  color: #fff !important;               /* White text */
+}
+
+.toast-update {
+  background-color: #ffc107 !important; /* Yellow background */
+  color: #000 !important;               /* Black text */
+}
+
+.toast-custom {
+  background-color: #9c27b0 !important; /* Purple background */
+  color: #fff !important;               /* White text */
+}
+
+/* React Toast custom css end here */
+
+

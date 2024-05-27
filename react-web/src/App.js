@@ -3,7 +3,9 @@ import './App.css';
 import RouteComponent from './basicRouting'
 import NavBar from './layout/navbar';
 import Footer from './layout/footer';
-import { GlobalProvider } from './GlobalContext'
+import { GlobalProvider } from './GlobalContext';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
         <footer>
           <Footer />
         </footer>
+        <ToastContainer />
       </GlobalProvider>
     </div>
   );
