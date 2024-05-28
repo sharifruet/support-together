@@ -1,38 +1,47 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
+import React, { useState, useContext } from 'react';
+import { Button, CssBaseline, TextField, FormControlLabel, Grid, Box, Container, Checkbox } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from "../api/axios";
 import GlobalContext from '../GlobalContext';
-import { useNavigate } from 'react-router-dom';
 
 const LOGIN_URL = "/login";
-
 const defaultTheme = createTheme();
 
-export default function LogReg() {
+export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
 
-    const gContext = useContext(GlobalContext);
+    const { loginSuccess } = useContext(GlobalContext);
     const navigate = useNavigate();
+
+    const validateFields = () => {
+        let isValid = true;
+
+        if (!email) {
+            setEmailError("Email is required");
+            isValid = false;
+        } else {
+            setEmailError("");
+        }
+
+        if (!password) {
+            setPasswordError("Password is required");
+            isValid = false;
+        } else {
+            setPasswordError("");
+        }
+
+        return isValid;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!email || !password) {
-            setError("Email and password are required");
-            return;
-        }
+        if (!validateFields()) return;
 
         setLoading(true);
         setError('');
@@ -46,20 +55,29 @@ export default function LogReg() {
 
             const accessToken = response?.data?.token;
             if (accessToken) {
-                gContext.loginSuccess(response?.data);
+                loginSuccess(response.data);
                 navigate("/dashboard");
             } else {
                 setError("Invalid response from server");
             }
         } catch (err) {
             if (!err.response) {
-                setError("No Server Response");
-            } else if (err.response.status === 400) {
-                setError("Missing Username or Password");
-            } else if (err.response.status === 401) {
-                setError("Unauthorized");
+                setError("No Server Response. Please check your network connection.");
             } else {
-                setError("Login Failed");
+                switch (err.response.status) {
+                    case 400:
+                        setError("Missing Email or Password");
+                        break;
+                    case 401:
+                        setError("Unauthorized. Incorrect Email or Password");
+                        break;
+                    case 500:
+                        setError("Internal Server Error. Please try again later.");
+                        break;
+                    default:
+                        setError("Login Failed. Please try again.");
+                        break;
+                }
             }
         } finally {
             setLoading(false);
@@ -70,14 +88,7 @@ export default function LogReg() {
         <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
-                <Box
-                    sx={{
-                        marginTop: 2,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
+                <Box sx={{ marginTop: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
                             margin="normal"
@@ -90,8 +101,8 @@ export default function LogReg() {
                             autoFocus
                             onChange={e => setEmail(e.target.value)}
                             value={email}
-                            error={Boolean(error && !email)}
-                            helperText={error && !email && error}
+                            error={Boolean(emailError)}
+                            helperText={emailError}
                             disabled={loading}
                             aria-label="email"
                         />
@@ -105,17 +116,19 @@ export default function LogReg() {
                             id="password"
                             onChange={e => setPassword(e.target.value)}
                             value={password}
-                            error={Boolean(error && !password)}
-                            helperText={error && !password && error}
+                            error={Boolean(passwordError)}
+                            helperText={passwordError}
                             disabled={loading}
                             autoComplete="current-password"
                             aria-label="password"
                         />
-
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                        />
+                        <div className="text-left">
+                            <FormControlLabel
+                                control={<Checkbox sx={{ paddingLeft: 0 }} value="remember" color="primary" />}
+                                label="Remember me"
+                                sx={{ alignSelf: 'flex-start', ml: 0 }}
+                            />
+                        </div>
                         <Button
                             type="submit"
                             fullWidth
@@ -124,31 +137,24 @@ export default function LogReg() {
                                 mt: 3,
                                 mb: 2,
                                 backgroundColor: loading ? 'grey' : 'primary.main',
-                                '&:hover': {
-                                    backgroundColor: loading ? 'grey' : 'primary.dark',
-                                },
-                                // This ensures the correct application of the cursor property.
-                                '.Mui-disabled &': {
-                                    cursor: 'not-allowed',
-                                }
+                                '&:hover': { backgroundColor: loading ? 'grey' : 'primary.dark' },
+                                '&.MuiButton-disabled': { cursor: 'not-allowed' }
                             }}
-                            style={{ cursor: loading ? 'not-allowed' : 'pointer' }}
                             disabled={loading}
                         >
                             {loading ? 'Signing In...' : 'Sign In'}
                         </Button>
-                        {error && (
-                            <Box sx={{ color: 'error.main', textAlign: 'center' }}>{error}</Box>
-                        )}
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="/ForgotPass" variant="body2">
+                        {error && <Box sx={{ color: 'error.main', textAlign: 'center' }}>{error}</Box>}
+                        <Grid container sx={{ mt: 2, justifyContent: 'space-between' }}>
+                            <Grid item>
+                                <Link role="button" to="/forgotPass" className="text-primary" style={{ textDecoration: 'none', fontSize: '14px', '&:hover': { color: 'primary.dark', textDecoration: 'underline' } }}>
                                     Forgot password?
                                 </Link>
                             </Grid>
                             <Grid item>
-                                <Link href="/signup" variant="body2">
-                                    {"Don't have an account? Please Sign Up"}
+                                Don't have account?
+                                <Link to="/signup" className="text-primary" style={{ textDecoration: 'none', fontSize: '14px', '&:hover': { color: 'primary.dark', textDecoration: 'underline' } }}>
+                                    <span className="ms-1">Sign Up</span>
                                 </Link>
                             </Grid>
                         </Grid>

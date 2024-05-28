@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Table, Container, Row, Col, Form, Button, Modal, Pagination } from 'react-bootstrap';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Table, Container, Row, Col, Form, Button, Pagination } from 'react-bootstrap';
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
 import { format } from 'date-fns';
+import { Tooltip } from "@mui/material";
 import useEmailTemplateService from '../../hooks/useEmailTemplateService';
 import './EmailTemplatesStyles.css';
 import EmailTemplateModal from './EmailTemplateModal';
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
-import { toast } from 'react-toastify'
+import OpenModalButton from '../common/OpenModalButton';
 
 const EmailTemplates = () => {
     const { getAllEmailTemplates } = useEmailTemplateService();
@@ -20,8 +21,6 @@ const EmailTemplates = () => {
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
     const [isLoaded, setLoaded] = useState(false)
-
-    const isFirstRender = useRef(true); // Track the initial render
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
@@ -64,11 +63,11 @@ const EmailTemplates = () => {
     }, [getAllEmailTemplates]);
 
     useEffect(() => {
-        if (!isLoaded) {
-            fetchEmailTemplates();
-    
-            setLoaded(true)
-        }     
+        // if (!isLoaded) {
+        fetchEmailTemplates();
+
+        //     setLoaded(true)
+        // }     
     }, []);
 
     const filteredEmailTemplates = EmailTemplates.filter((org) =>
@@ -92,18 +91,9 @@ const EmailTemplates = () => {
             <Container>
                 <Row className="mb-3">
                     <Col>
-                        <div className="col-span-1 flex items-center">
-                            <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-start w-full">
-                                {/* It's open the add EmailTemplate modal */}
-                                <div
-                                    style={{ background: "#303031" }}
-                                    onClick={() => handleOpenModal(null, "add")}
-                                    className="cursor-pointer rounded-full p-2 flex items-center justify-center text-gray-100 font-semibold text-sm uppercase"
-                                >
-                                    <AddIcon className="w-6 h-6 text-gray-100 mr-2" />
-                                    Add Email Template
-                                </div>
-                            </div>
+                        <div className="col-span-1 flex items-center" onClick={() => handleOpenModal(null, "add")}>
+                            {/* It's open the add EmailTemplate modal */}
+                            <OpenModalButton label={"Add Organization"} icon={<AddIcon />} />
                         </div>
                     </Col>
                     <Col>
@@ -131,15 +121,21 @@ const EmailTemplates = () => {
                                 <td>{emailTemplate.address}</td>
                                 <td>{format(new Date(emailTemplate.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
-                                    <Button variant="standard" className='text-primary' onClick={() => handleOpenModal(emailTemplate, "edit")}>
-                                        <FaEdit />
-                                    </Button>{' '}
-                                    <Button variant="standard" className='text-success' onClick={() => handleOpenModal(emailTemplate, "view")}>
-                                        <FaEye />
-                                    </Button>{' '}
-                                    <Button variant="standard" className='text-danger' onClick={() => handleOpenModal(emailTemplate, "delete")}>
-                                        <FaTrashAlt />
-                                    </Button>
+                                    <Tooltip title={`Edit this ${emailTemplate.name} Organization`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0' onClick={() => handleOpenModal(emailTemplate, "edit")}>
+                                            <FaEdit />
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip title={`View this ${emailTemplate.name} Organization`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0' onClick={() => handleOpenModal(emailTemplate, "view")}>
+                                            <FaEye />
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip title={`Delete this ${emailTemplate.name} Organization`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-danger border-0' onClick={() => handleOpenModal(emailTemplate, "delete")}>
+                                            <FaTrashAlt />
+                                        </Button>
+                                    </Tooltip>
                                 </td>
                             </tr>
                         ))}

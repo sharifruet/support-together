@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation } from "react-router-dom";
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -15,111 +15,99 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import StarBorder from '@mui/icons-material/StarBorder';
+import GlobalContext from '../GlobalContext'; // Assuming you have a global context for user data
 
-export default function LeftMenu() {
+const LeftMenu = () => {
     const location = useLocation();
     const [openInbox, setOpenInbox] = useState(false);
+    const { roles: userRoles } = useContext(GlobalContext); // Get user data from context
 
     useEffect(() => {
-        if (location.pathname.startsWith('/dashboard/topics')) {
+        if (location.pathname.endsWith('/topics')) {
             setOpenInbox(true);
         }
     }, [location.pathname]);
-
-   
 
     const handleInboxClick = () => {
         setOpenInbox(!openInbox);
     };
 
+
+
+    // Function to check if a role is allowed for the current user
+    const isRoleAllowed = (role) => {
+        const roles = userRoles.map(userRole => userRole.role);
+        return roles.includes(role);
+    };
+
     return (
         <List>
-            <ListItemButton
-                selected={location.pathname === '/dashboard'}
-                component={Link}
-                to="/dashboard"
-            >
-                <ListItemIcon>
-                    <DashboardIcon style={{ color: "#fff" }} />
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" />
-            </ListItemButton>
+            {isRoleAllowed('Admin') && (
+                <ListItemButton
+                    selected={location.pathname === '/dashboard'}
+                    component={Link}
+                    to="/dashboard"
+                >
+                    <ListItemIcon>
+                        <DashboardIcon style={{ color: location.pathname.endsWith('/dashboard') ? '#14DB8D' : '#fff' }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Dashboard" style={{ color: location.pathname.endsWith('/dashboard') ? '#14DB8D' : '#fff' }} />
+                </ListItemButton>
+            )}
 
-            <ListItemButton
-                selected={location.pathname === '/dashboard/emailTemplates'}
-                component={Link}
-                to="/dashboard/emailTemplates"
-            >
-                <ListItemIcon>
-                    <EmailIcon style={{ color: "#fff" }} />
-                </ListItemIcon>
-                <ListItemText primary="Email Template" />
-            </ListItemButton>
+            {isRoleAllowed('Admin') && (
+                <ListItemButton
+                    selected={location.pathname === '/dashboard/emailTemplates'}
+                    component={Link}
+                    to="/dashboard/emailTemplates"
+                >
+                    <ListItemIcon>
+                        <EmailIcon style={{ color: location.pathname.endsWith('/emailTemplates') ? '#14DB8D' : '#fff' }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Email Template" style={{ color: location.pathname.endsWith('/emailTemplates') ? '#14DB8D' : '#fff' }} />
+                </ListItemButton>
+            )}
 
-            <ListItemButton
-                selected={location.pathname.startsWith('/dashboard/organizations')}
-                component={Link}
-                to="/dashboard/organizations"
-            >
-                <ListItemIcon>
-                    <CorporateFareIcon style={{ color: '#14DB8D' }} />
-                </ListItemIcon>
-                <ListItemText primary="Organization" />
-            </ListItemButton>
-            <ListItemButton
-                selected={location.pathname.startsWith('/dashboard/projects')}
-                component={Link}
-                to="/dashboard/projects"
-            >
-                <ListItemIcon>
-                    <BusinessCenterIcon style={{ color: '#14DB8D' }} />
-                </ListItemIcon>
-                <ListItemText primary="Project" />
-            </ListItemButton>
-            <ListItemButton
-                selected={location.pathname === '/dashboard/topics'}
-                component={Link}
-                to="/dashboard/topics"
-            >
-                <ListItemIcon>
-                    <TopicIcon style={{ color: '#14DB8D' }} />
-                </ListItemIcon>
-                <ListItemText primary="Topic" />
-            </ListItemButton>
+            {isRoleAllowed('Admin') && (
+                <ListItemButton
+                    selected={location.pathname.endsWith('/organizations')}
+                    component={Link}
+                    to="/dashboard/organizations"
+                >
+                    <ListItemIcon>
+                        <CorporateFareIcon style={{ color: location.pathname.endsWith('/organizations') ? '#14DB8D' : '#fff' }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Organization" style={{ color: location.pathname.endsWith('/organizations') ? '#14DB8D' : '#fff' }} />
+                </ListItemButton>
+            )}
 
+            {isRoleAllowed('Admin') && (
+                <ListItemButton
+                    selected={location.pathname.endsWith('/projects')}
+                    component={Link}
+                    to="/dashboard/projects"
+                >
+                    <ListItemIcon>
+                        <BusinessCenterIcon style={{ color: location.pathname.endsWith('/projects') ? '#14DB8D' : '#fff' }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Project" style={{ color: location.pathname.endsWith('/projects') ? '#14DB8D' : '#fff' }} />
+                </ListItemButton>
+            )}
 
-            <ListItemButton
-                selected={location.pathname === '/dashboard/organization-add'}
-                component={Link}
-                to="/dashboard/organization-add"
-            >
-                <ListItemIcon>
-                    <AddCircleIcon style={{ color: 'yellow' }} />
-                </ListItemIcon>
-                <ListItemText primary="Organization Add" />
-            </ListItemButton>
-
-            <ListItemButton
-                selected={location.pathname.startsWith('/dashboard/inbox')}
-                onClick={handleInboxClick}
-            >
-                <ListItemIcon>
-                    <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="Inbox" />
-                {openInbox ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-
-            <Collapse in={openInbox} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                    <ListItemButton sx={{ pl: 4 }}>
-                        <ListItemIcon>
-                            <StarBorder />
-                        </ListItemIcon>
-                        <ListItemText primary="Starred" />
-                    </ListItemButton>
-                </List>
-            </Collapse>
+            {isRoleAllowed('Admin') && (
+                <ListItemButton
+                    selected={location.pathname === '/dashboard/topics'}
+                    component={Link}
+                    to="/dashboard/topics"
+                >
+                    <ListItemIcon>
+                        <TopicIcon style={{ color: location.pathname.endsWith('/topics') ? '#14DB8D' : '#fff' }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Topic" style={{ color: location.pathname.endsWith('/topics') ? '#14DB8D' : '#fff' }} />
+                </ListItemButton>
+            )}
         </List>
     );
-}
+};
+
+export default LeftMenu;

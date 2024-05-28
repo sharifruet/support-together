@@ -70,7 +70,7 @@ function Signup() {
   //   .then(responseData => {
   //     if(responseData.message === 'Registration Successfully Completed') {
   //       alert(responseData.message)
-  //       window.location.replace('/loginreg');
+  //       window.location.replace('/login');
   //     } else {
   //       alert(responseData.message)
   //     }
@@ -157,7 +157,7 @@ function Signup() {
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <br/>
-                <Link href="/loginreg" variant="body2">
+                <Link href="/login" variant="body2">
                   Already have an account? Please Sign in
                 </Link>
               </Grid>

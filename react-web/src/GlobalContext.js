@@ -3,8 +3,6 @@ import Cookies from 'js-cookie'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import axios from './api/axios'
-//import { deleteAllCookies } from '../interceptor'
-//import useApiHelper from 'src/api'
 
 const GlobalContext = React.createContext()
 
@@ -18,13 +16,6 @@ const GlobalProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  // useEffect(()=>{
-  //   if(!loggedIn){
-  //     console.log('here')
-  //     onLogout();
-  //   }
-  // },[loggedIn]);
-
   useEffect(() => {
     if (!loggedIn) {
       localStorage.clear();
@@ -33,7 +24,6 @@ const GlobalProvider = ({ children }) => {
       setAccesstoken(null);
       setProjects([]);
       navigate("/Home");
-      // toast.success('👋 You have successfully logged out!', { className: 'toast-success' });
     }
   }, [loggedIn, navigate]);
 
@@ -41,7 +31,6 @@ const GlobalProvider = ({ children }) => {
     axios.get("/organizations", headerConfig()).then((response) => {
       setOrganizations(response.data);
     }).catch(error => {
-      // toast.error(error.response.data.error, { className: 'toast-error' });
       console.log(error.response.data.error)
     });
   }, [accesstoken]);
@@ -54,13 +43,10 @@ const GlobalProvider = ({ children }) => {
 
   const loginSuccess = (response) => {
     if (response?.token) {
-       console.log(response);
       setAccesstoken(response.token);
-      //  console.log("AT="+ accesstoken);
       if (response?.userRoles) {
         setRoles(response.userRoles);
       }
-      //setUser(response.user)
       toast.success('🎉 You have successfully logged in!', { className: 'toast-success' });
       setLoggedIn(true);
     }
@@ -68,7 +54,6 @@ const GlobalProvider = ({ children }) => {
   }
 
   const headerConfig = () => {
-    // console.log("HC AT" + accesstoken);
     return { headers: { Authorization: `Bearer ${accesstoken}`, "Content-Type": "application/json" } };
   }
 
@@ -78,22 +63,10 @@ const GlobalProvider = ({ children }) => {
         setProjects([...projects, response.data]);
       })
       .catch(error => {
-        toast.success(error);
-        //  console.log(error.response.data.error)
+        toast.error(error);
       })
 
   }
-
-  // const onLogout = () => {
-  //   if(loggedIn) {
-  //     localStorage.clear()
-  //     setAccesstoken(null);
-  //     setLoggedIn(false);
-  //     setProjects([]);
-  //     navigate("/Home");
-  //     toast.success('👋 You have successfully logged out!', { className: 'toast-success' });
-  //   }
-  // }
 
   const onLogout = () => {
     if (loggedIn) {

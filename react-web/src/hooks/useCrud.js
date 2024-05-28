@@ -7,7 +7,7 @@ const BASE_URL = 'http://support.i2gether.com/api';
 const useCrud = () => {
     const getToken = () => localStorage.getItem('accessToken');
 
-    const { onLogout, accesstoken } = useContext(GlobalContext);
+    const { onLogout, accesstoken, loggedIn } = useContext(GlobalContext);
 
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -26,6 +26,7 @@ const useCrud = () => {
         try {
             const token = getToken() || accesstoken;
             if (!token) throw new Error('Token not found');
+            console.log(token)
 
             const requestConfig = {
                 url: endpoint,
@@ -59,23 +60,23 @@ const useCrud = () => {
     // }, [error]);
 
     const getAll = useCallback((endpoint) => {
-        return fetchApi(endpoint, 'GET');
+        return loggedIn && fetchApi(endpoint, 'GET');
     }, [fetchApi]);
 
     const getById = useCallback((endpoint, id) => {
-        return fetchApi(`${endpoint}/${id}`, 'GET');
+        return loggedIn && fetchApi(`${endpoint}/${id}`, 'GET');
     }, [fetchApi]);
 
     const create = useCallback((endpoint, payload) => {
-        return fetchApi(endpoint, 'POST', payload);
+        return loggedIn && fetchApi(endpoint, 'POST', payload);
     }, [fetchApi]);
 
     const update = useCallback((endpoint, id, payload) => {
-        return fetchApi(`${endpoint}/${id}`, 'PUT', payload);
+        return loggedIn && fetchApi(`${endpoint}/${id}`, 'PUT', payload);
     }, [fetchApi]);
 
     const remove = useCallback((endpoint, id) => {
-        return fetchApi(`${endpoint}/${id}`, 'DELETE');
+        return loggedIn && fetchApi(`${endpoint}/${id}`, 'DELETE');
     }, [fetchApi]);
 
     return { data, loading, error, getAll, getById, create, update, remove };

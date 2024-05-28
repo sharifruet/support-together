@@ -64,7 +64,7 @@ const Organizations = () => {
             const data = await getAllOrganizations();
             setOrganizations(data);
         } catch (error) {
-            console.error('Error fetching organizations:', error);
+            console.error(error);
         }
     };
 

@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Modal, TextField, CircularProgress, Autocomplete } from "@mui/material";
+import React, { useState, useEffect, useRef } from "react";
+import { TextField, CircularProgress, Autocomplete } from "@mui/material";
 import useTopicService from '../../hooks/useTopicService';
 import useProjectService from '../../hooks/useProjectService';
-import { v4 as uuidv4 } from 'uuid';
-import { ReactComponent as CancelIcon } from '../../assets/svgIcons/cancel.svg';
 import CustomButton from "../common/CustomButton";
 import DeleteText from "../common/DeleteText";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
+import ModalOverlay from "../common/ModalOverlay";
 
 const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
     // Destructuring service or api calls functions
@@ -16,13 +15,21 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
     // State to manage form data
     const [formData, setFormData] = useState({
-        code: uuidv4(),
+        code: "",
         projectId: project !== null ? project.id : "",
         name: "",
         description: "",
         success: "",
         error: "",
         id: ""
+    });
+
+    // State to manage individual field errors
+    const [fieldErrors, setFieldErrors] = useState({
+        code: "",
+        name: "",
+        description: "",
+        projectId: "",
     });
 
     // State to manage loading status
@@ -33,6 +40,8 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
     const [options, setOptions] = useState([]);
     // State to manage Material Ui AutoComplete UI selected option
     const [selectedProject, setSelectedProject] = useState(null);
+    // Reference for the autocomplete field
+    const autocompleteRef = useRef(null);
 
     // Object to show button labels based on the modal type
     const buttonLabels = {
@@ -62,6 +71,9 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
             setAutocompleteLoading(true);
             setTimeout(() => {
                 setAutocompleteLoading(false);
+                if (autocompleteRef.current) {
+                    autocompleteRef.current.focus();  // AutoFocus on the autocomplete field
+                }
             }, 1000);
         } else setSelectedProject(null);
     }, [modalType]);
@@ -74,6 +86,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                 const formattedOptions = data.map(project => ({ id: project.id, name: project.name, value: project.id }));
                 setOptions(formattedOptions);
             } catch (error) {
+                // Handle error here
                 console.log(error);
             } finally {
                 // Set autocompleteLoading to false when data is fetched
@@ -115,11 +128,20 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
             setFormData({
                 ...formData,
                 projectId: project !== null ? project.id : "",
+                code: "",
                 name: "",
                 description: "",
                 success: "",
                 error: "",
                 id: "",
+            });
+
+            // Clear empty field error on close modal
+            setFieldErrors({
+                code: "",
+                name: "",
+                description: "",
+                projectId: "",
             });
 
             // Reset selectedOrganization state
@@ -143,12 +165,25 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
     // Function to handle form Material UI Autocomplete component changes
     const handleAutocompleteChange = (event, newValue) => {
-        console.log(newValue)
         setSelectedProject(newValue);
         setFormData((prevData) => ({
             ...prevData,
             projectId: newValue ? newValue.id : "",
         }));
+
+        // Clear error message for the field when it receives a value
+        if (newValue) {
+            setFieldErrors((prevErrors) => ({
+                ...prevErrors,
+                projectId: "", // Clear error message if field has a value
+            }));
+        } else {
+            // If field value becomes empty, show error message
+            setFieldErrors((prevErrors) => ({
+                ...prevErrors,
+                projectId: "Organization is required",
+            }));
+        }
     };
 
     // Function to handle form input changes
@@ -160,11 +195,50 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
             success: false,
             error: "",
         }));
+
+        // Clear error message for the field when it receives a value
+        if (value.trim()) {
+            setFieldErrors((prevErrors) => ({
+                ...prevErrors,
+                [name]: "", // Clear error message if field has a value
+            }));
+        } else {
+            // If field value becomes empty, show error message
+            setFieldErrors((prevErrors) => ({
+                ...prevErrors,
+                [name]: `${name.charAt(0).toUpperCase() + name.slice(1)} is required`,
+            }));
+        }
+    };
+
+    // Function to handle empty input or select field
+    const validateForm = (fields) => {
+        const errors = {};
+        fields.forEach(({ name, value }) => {
+            if (!value && !value.trim()) {
+                errors[name] = `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
+            }
+        });
+        return errors;
     };
 
     // Function to handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Define fields to validate
+        const fieldsToValidate = [
+            { name: "code", value: formData.code },
+            { name: "name", value: formData.name },
+            { name: "description", value: formData.description },
+            { name: "projectId", value: formData.projectId }
+        ];
+
+        // Validate all fields before submission
+        const errors = validateForm(fieldsToValidate);
+
+        // Update field errors
+        setFieldErrors(errors);
 
         // Define success messages for different modal types
         const successMessages = {
@@ -182,9 +256,10 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
         try {
             setLoading(true);
-            const responseData = await actions[modalType]();
+            const responseData = Object.keys(errors).length === 0 && await actions[modalType]();
             console.log(responseData)
 
+            // Check the response and update the form data with success or error message
             if (responseData.message === successMessages[modalType] || typeof responseData === 'object') {
                 fetchTopics && fetchTopics();
                 setFormData({
@@ -212,121 +287,110 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
             setLoading(false);
         }
     };
+
+
     return (
         <>
-            {/* Black Overlay */}
-            <div
-                onClick={closeModal}
-                className={`${modalType ? "" : "hidden"
-                    } fixed top-0 left-0 z-30 w-full h-full bg-black opacity-50`}
-            />
-            {/* Modal */}
-            <Modal
-                open={!!modalType}
-                onClose={closeModal}
-                aria-labelledby="add-category-modal-title"
-                aria-describedby="add-category-modal-description"
+            <ModalOverlay
+                modalType={modalType}
+                closeModal={closeModal}
+                modalName={modalName[modalType]}
+                formData={formData}
             >
-                <div className="fixed inset-0 m-4 flex items-center justify-center">
-                    <div className="bg-white w-1/3 md:w-3/6 shadow-lg flex flex-col items-center space-y-4 overflow-y-auto px-4 py-4 md:px-8">
-                        <div className="flex items-center justify-between w-full">
-                            <span className="text-left font-semibold text-2xl tracking-wider">
-                                {/* Modal Name depending on modalType*/}
-                                {modalName[modalType]}
-                            </span>
-                            <span
-                                style={{ background: "#303031" }}
-                                onClick={closeModal}
-                                className="cursor-pointer text-gray-100 c-py-1 c-px-2 rounded-full cancelIcon"
-                            >
-                                <CancelIcon className="w-6 h-6 font-bold cancelSvg" />
-                            </span>
-                        </div>
-                        {formData.error && (
-                            <div className="bg-red-200 py-2 px-4 w-full">{formData.error}</div>
-                        )}
-                        {formData.success && (
-                            <div className="bg-green-200 py-2 px-4 w-full">{formData.success}</div>
-                        )}
-
-                        <form className="w-full" onSubmit={handleSubmit}>
-                            {modalType === 'delete' ? (
-                                <DeleteText message={"Project"} />
-                            ) : (
-                                <div>
-                                    <div className="flex flex-col space-y-1 w-full">
-                                        <Autocomplete
-                                            disablePortal
-                                            id="combo-box-demo"
-                                            loading={autocompleteLoading}
-                                            value={selectedProject}
-                                            onChange={handleAutocompleteChange}
-                                            options={options}
-                                            getOptionLabel={(option) => option.name}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    label="Select Project"
-                                                    InputProps={{
-                                                        ...params.InputProps,
-                                                        endAdornment: (
-                                                            <>
-                                                                {autocompleteLoading ? <CircularProgress color="inherit" size={20} /> : null}
-                                                                {params.InputProps.endAdornment}
-                                                            </>
-                                                        ),
-                                                    }}
-                                                />
-                                            )}
-                                            getOptionKey={(option) => option.id}
-                                        />
-                                    </div>
-                                    <div className="flex flex-col space-y-1 w-full py-4">
+                {/* Content of the modal */}
+                <form className="w-full" onSubmit={handleSubmit}>
+                    {modalType === 'delete' ? (
+                        <DeleteText message={"Topic"} />
+                    ) : (
+                        <div>
+                            <div className="flex flex-col space-y-1 w-full">
+                                <Autocomplete
+                                    disablePortal
+                                    id="combo-box-demo"
+                                    loading={autocompleteLoading}
+                                    value={selectedProject}
+                                    onChange={handleAutocompleteChange}
+                                    options={options}
+                                    getOptionLabel={(option) => option.name}
+                                    renderInput={(params) => (
                                         <TextField
-                                            name="name"
-                                            value={formData.name}
-                                            onChange={handleInputChange}
-                                            variant="outlined"
-                                            className="w-full"
-                                            id="name"
-                                            label="Name"
-                                            fullWidth
-                                            autoComplete="name"
-                                            required
-                                            autoFocus
+                                            {...params}
+                                            label="Select Project"
+                                            inputRef={autocompleteRef}
+                                            InputProps={{
+                                                ...params.InputProps,
+                                                endAdornment: (
+                                                    <>
+                                                        {autocompleteLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                                                        {params.InputProps.endAdornment}
+                                                    </>
+                                                ),
+                                            }}
+                                            error={Boolean(fieldErrors.projectId)} // Set error prop based on field error
+                                            helperText={fieldErrors.projectId} // Provide the error message
                                         />
-                                    </div>
-                                    <div className="flex flex-col space-y-1 w-full">
-                                        <TextField
-                                            id="description"
-                                            variant="outlined"
-                                            name="description"
-                                            label="Description"
-                                            autoComplete="description"
-                                            value={formData.description}
-                                            onChange={handleInputChange}
-                                            fullWidth
-                                            required
-                                            autoFocus
-                                            multiline
-                                            rows={3}
-                                        />
-                                    </div>
-                                </div>
-                            )}
-                            <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
-                                <CustomButton
-                                    isLoading={loading}
-                                    type="submit"
-                                    icon={buttonIcons[modalType]}
-                                    label={buttonLabels[modalType]}
-                                    disabled={loading}
+                                    )}
+                                    getOptionKey={(option) => option.id}
+                                    autoFocus
                                 />
                             </div>
-                        </form>
+                            <div className="flex flex-col space-y-1 w-full py-4">
+                                <TextField
+                                    id="code"
+                                    variant="outlined"
+                                    name="code"
+                                    autoComplete="code"
+                                    label="Code"
+                                    value={formData.code}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    error={Boolean(fieldErrors.code)} // Set error prop based on field error
+                                    helperText={fieldErrors.code} // Provide the error message
+                                />
+                            </div>
+                            <div className="flex flex-col space-y-1 w-full mb-4">
+                                <TextField
+                                    id="name"
+                                    variant="outlined"
+                                    name="name"
+                                    autoComplete="name"
+                                    label="Name"
+                                    value={formData.name}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    error={Boolean(fieldErrors.code)} // Set error prop based on field error
+                                    helperText={fieldErrors.code} // Provide the error message
+                                />
+                            </div>
+                            <div className="flex flex-col space-y-1 w-full">
+                                <TextField
+                                    id="description"
+                                    variant="outlined"
+                                    name="description"
+                                    autoComplete="description"
+                                    label="Description"
+                                    value={formData.description}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    multiline
+                                    rows={3}
+                                    error={Boolean(fieldErrors.description)} // Set error prop based on field error
+                                    helperText={fieldErrors.description} // Provide the error message
+                                />
+                            </div>
+                        </div>
+                    )}
+                    <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
+                        <CustomButton
+                            isLoading={loading}
+                            type="submit"
+                            icon={buttonIcons[modalType]}
+                            label={buttonLabels[modalType]}
+                            disabled={loading}
+                        />
                     </div>
-                </div>
-            </Modal>
+                </form>
+            </ModalOverlay>
         </>
     );
 };

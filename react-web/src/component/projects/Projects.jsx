@@ -65,7 +65,7 @@ const Projects = () => {
             setProjects(data);
         } catch (error) {
             // Handle error here
-            // console.error('Error fetching project:', error);
+            console.error('Error fetching project:', error);
         }
     };
 
