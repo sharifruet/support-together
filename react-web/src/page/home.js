@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Box from '@mui/material/Box';
 import '../App.css';
 import Slider from '../layout/slider';
-import LogReg from './loginreg';
+import LogReg from './Login';
 import GlobalContext from '../GlobalContext';
 import { useNavigate } from 'react-router-dom';
 

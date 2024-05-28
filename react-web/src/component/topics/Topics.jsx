@@ -1,11 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Container, Row, Col, Form, Button, Modal, Pagination } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Table, Container, Row, Col, Form, Button, Pagination } from 'react-bootstrap';
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
+import { Tooltip } from "@mui/material";
 import { format } from 'date-fns';
 import useTopicService from '../../hooks/useTopicService';
 import './TopicsStyles.css';
 import TopicModal from './TopicModal';
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
+import OpenModalButton from '../common/OpenModalButton';
+
 
 const Topics = () => {
     const { getAllTopics } = useTopicService();
@@ -56,6 +59,7 @@ const Topics = () => {
             const data = await getAllTopics();
             setTopics(data);
         } catch (error) {
+            // Handle error here
             console.error('Error fetching Topic:', error);
         }
     };
@@ -85,18 +89,9 @@ const Topics = () => {
             <Container>
                 <Row className="mb-3">
                     <Col>
-                        <div className="col-span-1 flex items-center">
-                            <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-start w-full">
-                                {/* It's open the add topic modal */}
-                                <div
-                                    style={{ background: "#303031" }}
-                                    onClick={() => handleOpenModal(null, "add")}
-                                    className="cursor-pointer rounded-full p-2 flex items-center justify-center text-gray-100 font-semibold text-sm uppercase"
-                                >
-                                    <AddIcon className="w-6 h-6 text-gray-100 mr-2" />
-                                    Add Topic
-                                </div>
-                            </div>
+                        <div className="col-span-1 flex items-center" onClick={() => handleOpenModal(null, "add")}>
+                            {/* It's open the add EmailTemplate modal */}
+                            <OpenModalButton label={"Add Topic"} icon={<AddIcon />} />
                         </div>
                     </Col>
                     <Col>
@@ -124,15 +119,22 @@ const Topics = () => {
                                 <td>{topic.address}</td>
                                 <td>{format(new Date(topic.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
-                                    <Button variant="standard" className='text-primary' onClick={() => handleOpenModal(topic, "edit")}>
-                                        <FaEdit />
-                                    </Button>{' '}
-                                    <Button variant="standard" className='text-success' onClick={() => handleOpenModal(topic, "view")}>
-                                        <FaEye />
-                                    </Button>{' '}
-                                    <Button variant="standard" className='text-danger' onClick={() => handleOpenModal(topic, "delete")}>
-                                        <FaTrashAlt />
-                                    </Button>
+                                    <Tooltip title={`Edit this ${topic.name} Topic`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0' onClick={() => handleOpenModal(topic, "edit")}>
+                                            <FaEdit />
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip title={`View this ${topic.name} Topic`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0' onClick={() => handleOpenModal(topic, "view")}>
+                                            <FaEye />
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip title={`Delete this ${topic.name} Topic`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-danger border-0' onClick={() => handleOpenModal(topic, "delete")}>
+                                            <FaTrashAlt />
+                                        </Button>
+                                    </Tooltip>
+
                                 </td>
                             </tr>
                         ))}

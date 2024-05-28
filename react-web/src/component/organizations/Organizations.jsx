@@ -1,19 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Container, Row, Col, Form, Button, Modal, Pagination } from 'react-bootstrap';
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
+import { FaCirclePlus } from "react-icons/fa6";
+import { Tooltip } from "@mui/material";
 import { format } from 'date-fns';
 import useOrganizationService from '../../hooks/useOrganizationService';
 import './OrganizationsStyles.css';
 import OrganizationModal from './OrganizationModal';
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
-
+import OpenModalButton from '../common/OpenModalButton';
+import ProjectModal from '../projects/ProjectModal';
 
 const Organizations = () => {
     const { getAllOrganizations } = useOrganizationService();
     const [organizations, setOrganizations] = useState([]);
     const [selectedOrganization, setSelectedOrganization] = useState(null);
-    const [openModal, setOpenModal] = useState(false);
     const [modalType, setModalType] = useState(null);
+    const [modalTypeForProject, setModalTypeForProject] = useState(null);
 
     const [page, setPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -33,11 +36,15 @@ const Organizations = () => {
     const handleOpenModal = (organization, modalType) => {
         setSelectedOrganization(organization);
         setModalType(modalType);
-        setOpenModal(true);
+    };
+
+    const handleOpenProjectModal = (organization, modalType) => {
+        setSelectedOrganization(organization);
+        setModalTypeForProject(modalType);
     };
 
     const handleCloseModal = () => {
-        setOpenModal(false);
+        setModalTypeForProject(null);
         setModalType(null);
         setSelectedOrganization(null);
     };
@@ -57,7 +64,7 @@ const Organizations = () => {
             const data = await getAllOrganizations();
             setOrganizations(data);
         } catch (error) {
-            console.error('Error fetching organizations:', error);
+            console.error(error);
         }
     };
 
@@ -86,18 +93,9 @@ const Organizations = () => {
             <Container>
                 <Row className="mb-3">
                     <Col>
-                        <div className="col-span-1 flex items-center">
-                            <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-start w-full">
-                                {/* It's open the add organization modal */}
-                                <div
-                                    style={{ background: "#303031" }}
-                                    onClick={() => handleOpenModal(null, "add")}
-                                    className="cursor-pointer rounded-full p-2 flex items-center justify-center text-gray-100 font-semibold text-sm uppercase"
-                                >
-                                    <AddIcon className="w-6 h-6 text-gray-100 mr-2" />
-                                    Add Organization
-                                </div>
-                            </div>
+                        <div className="col-span-1 flex items-center" onClick={() => handleOpenModal(null, "add")}>
+                            {/* It's open the add organization modal */}
+                            <OpenModalButton label={"Add Organization"} icon={<AddIcon />} />
                         </div>
                     </Col>
                     <Col>
@@ -125,15 +123,26 @@ const Organizations = () => {
                                 <td>{organization.address}</td>
                                 <td>{format(new Date(organization.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
-                                    <Button variant="standard" className='text-primary' onClick={() => handleOpenModal(organization, "edit")}>
-                                        <FaEdit />
-                                    </Button>{' '}
-                                    <Button variant="standard" className='text-success' onClick={() => handleOpenModal(organization, "view")}>
-                                        <FaEye />
-                                    </Button>{' '}
-                                    <Button variant="standard" className='text-danger' onClick={() => handleOpenModal(organization, "delete")}>
-                                        <FaTrashAlt />
-                                    </Button>
+                                    <Tooltip title={`Add Project to this ${organization.name} Organization`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0'>
+                                            <FaCirclePlus onClick={() => handleOpenProjectModal(organization, "add")} />
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip title={`Edit this ${organization.name} Organization`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0'>
+                                            <FaEdit onClick={() => handleOpenModal(organization, "edit")} />
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip title={`View this ${organization.name} Organization`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0' onClick={() => handleOpenModal(organization, "view")}>
+                                            <FaEye />
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip title={`Delete this ${organization.name} Organization`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-danger border-0' onClick={() => handleOpenModal(organization, "delete")}>
+                                            <FaTrashAlt />
+                                        </Button>
+                                    </Tooltip>
                                 </td>
                             </tr>
                         ))}
@@ -157,6 +166,14 @@ const Organizations = () => {
                 organization={selectedOrganization}
                 closeModal={handleCloseModal}
                 fetchOrganizations={fetchOrganizations}
+            />
+
+            <ProjectModal
+                modalType={modalTypeForProject}
+                topic={null}
+                closeModal={handleCloseModal}
+                fetchTopics={null}
+                organization={selectedOrganization}
             />
         </>
     );
