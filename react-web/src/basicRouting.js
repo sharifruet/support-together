@@ -30,7 +30,9 @@ const RouteComponent = () => {
 
             {/* Routes that should be wrapped by the SideBar component */}
             <Route path='dashboard' element={<SideBar />}>
+
                 <Route index element={<Dashboard />} /> 
+
                 <Route element={<ProtectedRoute roles={['Admin']} />}>
                     <Route path='adminDashboard' element={<AdminDashboard />} />
                     <Route path='emailTemplates' element={<EmailTemplates />} />

@@ -22,7 +22,7 @@ export default function Dashboard() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box>
-        <CssBaseline />
+        {/* <CssBaseline /> */}
 
         <Grid container>
           <Grid item xs={2}>

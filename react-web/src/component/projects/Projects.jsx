@@ -8,8 +8,10 @@ import useProjectService from '../../hooks/useProjectService';
 import './ProjectsStyles.css';
 import ProjectModal from './ProjectModal';
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
+import { LuUserPlus2 } from "react-icons/lu";
 import OpenModalButton from '../common/OpenModalButton';
 import TopicModal from '../topics/TopicModal';
+import InviteUsers from '../inviteUsers/InviteUsersModal';
 
 const Projects = () => {
     const { getAllProjects } = useProjectService();
@@ -17,13 +19,14 @@ const Projects = () => {
     const [selectedProject, setSelectedProject] = useState(null);
     const [modalType, setModalType] = useState(null);
     const [modalTypeForTopic, setModalTypeForTopic] = useState(null);
+    const [modalTypeForInviteUsers, setModalTypeForInviteUsers] = useState(false);
 
     const [page, setPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchQuery, setSearchQuery] = useState('');
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
-
+    
     const handlePageChange = (newPage) => {
         setPage(newPage);
     };
@@ -43,10 +46,16 @@ const Projects = () => {
         setModalTypeForTopic(modalType);
     };
 
+    const handleOpenInviteModal = (project, modalType) => {
+        setSelectedProject(project);
+        setModalTypeForInviteUsers(modalType);
+    };
+
     const handleCloseModal = () => {
         setModalTypeForTopic(null);
         setModalType(null);
         setSelectedProject(null);
+        setModalTypeForInviteUsers(null);
     };
 
     const handleSearchChange = (event) => {
@@ -124,6 +133,12 @@ const Projects = () => {
                                 <td>{project.address}</td>
                                 <td>{format(new Date(project.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
+                                    
+                                    <Tooltip title={`Assign user to this ${project.name} Project`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-secondary border-0'>
+                                            <LuUserPlus2 className='fs-5' onClick={() => handleOpenInviteModal(project, "invite")} />
+                                        </Button>
+                                    </Tooltip>
                                     <Tooltip title={`Add Topic to this ${project.name} Project`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0'>
                                             <FaCirclePlus onClick={() => handleOpenTopicModal(project, "add")} />
@@ -176,6 +191,13 @@ const Projects = () => {
                 closeModal={handleCloseModal}
                 fetchTopics={null}
                 project={selectedProject}
+            />
+
+            <InviteUsers 
+                modalType={modalTypeForInviteUsers}
+                project={selectedProject}
+                closeModal={handleCloseModal}
+                fetchProjects={fetchProjects}
             />
         </>
     );
