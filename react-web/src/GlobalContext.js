@@ -62,6 +62,7 @@ const GlobalProvider = ({ children }) => {
       setAccesstoken(response.token);
       if (response?.userRoles) {
         setRoles(response.userRoles);
+        console.log(response)
       }
       toast.success('🎉 You have successfully logged in!', { className: 'toast-success' });
       setLoggedIn(true);

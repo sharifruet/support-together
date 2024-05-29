@@ -2,7 +2,7 @@ import { useState, useCallback, useContext, useEffect } from 'react';
 import GlobalContext from '../GlobalContext';
 import axios from 'axios';
 
-const BASE_URL = 'http://support.i2gether.com/api';
+const BASE_URL = 'https://support.i2gether.com/api';
 
 const useCrud = () => {
     const getToken = () => localStorage.getItem('accessToken');

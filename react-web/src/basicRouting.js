@@ -16,6 +16,7 @@ import Projects from "./component/projects/Projects";
 import Topics from "./component/topics/Topics";
 import EmailTemplates from "./component/emails/EmailTemplates";
 import ProtectedRoute from "./component/ProtectedRoute";
+import ChangePassword from "./page/ChangePassword";
 
 const RouteComponent = () => {
     return (
@@ -31,6 +32,7 @@ const RouteComponent = () => {
             {/* Routes that should be wrapped by the SideBar component */}
             <Route path='dashboard' element={<SideBar />}>
                 <Route index element={<Dashboard />} />
+                <Route path='changePassword' element={<ChangePassword />} />
                 <Route element={<ProtectedRoute roles={['Admin']} />}>
                     <Route path='adminDashboard' element={<AdminDashboard />} />
                     <Route path='emailTemplates' element={<EmailTemplates />} />
