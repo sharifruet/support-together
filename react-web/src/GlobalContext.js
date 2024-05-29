@@ -17,9 +17,23 @@ const GlobalProvider = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // useEffect(() => {
+  //   const pathname = location.pathname;
+  //   if (!loggedIn && !pathname.endsWith('/about') || !loggedIn && !pathname.endsWith('/login') || !loggedIn && !pathname.endsWith('/signup' || !loggedIn && !pathname.endsWith('/forgotPass'))) {
+  //     localStorage.clear();
+  //     Cookies.remove('accessToken');
+  //     setLoggedIn(false);
+  //     setAccesstoken(null);
+  //     setProjects([]);
+  //     navigate("/home");
+  //   }
+  // }, [loggedIn, navigate, location.pathname]);
+
   useEffect(() => {
-    const pathname = location.pathname;
-    if (!loggedIn && !pathname.endsWith('/about') && !pathname.endsWith('/login') && !pathname.endsWith('/signup')) {
+    const publicPaths = ['/about', '/login', '/signup', '/forgotPass'];
+    const currentPath = location.pathname;
+
+    if (!loggedIn && !publicPaths.some(path => currentPath.endsWith(path))) {
       localStorage.clear();
       Cookies.remove('accessToken');
       setLoggedIn(false);

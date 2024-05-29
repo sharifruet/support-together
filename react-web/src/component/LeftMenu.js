@@ -42,18 +42,17 @@ const LeftMenu = () => {
 
     return (
         <List>
-            {isRoleAllowed('Admin') && (
-                <ListItemButton
-                    selected={location.pathname === '/dashboard'}
-                    component={Link}
-                    to="/dashboard"
-                >
-                    <ListItemIcon>
-                        <DashboardIcon style={{ color: location.pathname.endsWith('/dashboard') ? '#14DB8D' : '#fff' }} />
-                    </ListItemIcon>
-                    <ListItemText primary="Dashboard" style={{ color: location.pathname.endsWith('/dashboard') ? '#14DB8D' : '#fff' }} />
-                </ListItemButton>
-            )}
+
+            <ListItemButton
+                selected={location.pathname === '/dashboard'}
+                component={Link}
+                to="/dashboard"
+            >
+                <ListItemIcon>
+                    <DashboardIcon style={{ color: location.pathname.endsWith('/dashboard') ? '#14DB8D' : '#fff' }} />
+                </ListItemIcon>
+                <ListItemText primary="Dashboard" style={{ color: location.pathname.endsWith('/dashboard') ? '#14DB8D' : '#fff' }} />
+            </ListItemButton>
 
             {isRoleAllowed('Admin') && (
                 <ListItemButton

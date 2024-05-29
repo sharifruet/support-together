@@ -26,7 +26,6 @@ const useCrud = () => {
         try {
             const token = getToken() || accesstoken;
             if (!token) throw new Error('Token not found');
-            console.log(token)
 
             const requestConfig = {
                 url: endpoint,
@@ -49,15 +48,6 @@ const useCrud = () => {
             setLoading(false);
         }
     }, [axiosInstance]);
-
-    // useEffect(() => {
-    //     if(error === "Invalid token.") { //|| !error?.response
-    //         console.log(error)
-    //         // const errorMessage = "Invalid token.";
-    //         // errorMessage == error && 
-    //         onLogout();
-    //     }
-    // }, [error]);
 
     const getAll = useCallback((endpoint) => {
         return loggedIn && fetchApi(endpoint, 'GET');

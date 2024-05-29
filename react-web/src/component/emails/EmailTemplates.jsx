@@ -93,7 +93,7 @@ const EmailTemplates = () => {
                     <Col>
                         <div className="col-span-1 flex items-center" onClick={() => handleOpenModal(null, "add")}>
                             {/* It's open the add EmailTemplate modal */}
-                            <OpenModalButton label={"Add Organization"} icon={<AddIcon />} />
+                            <OpenModalButton label={"Add Email Template"} icon={<AddIcon />} />
                         </div>
                     </Col>
                     <Col>
@@ -121,17 +121,17 @@ const EmailTemplates = () => {
                                 <td>{emailTemplate.address}</td>
                                 <td>{format(new Date(emailTemplate.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
-                                    <Tooltip title={`Edit this ${emailTemplate.name} Organization`} arrow placement="top">
+                                    <Tooltip title={`Edit this ${emailTemplate.name} Email Template`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0' onClick={() => handleOpenModal(emailTemplate, "edit")}>
                                             <FaEdit />
                                         </Button>
                                     </Tooltip>
-                                    <Tooltip title={`View this ${emailTemplate.name} Organization`} arrow placement="top">
+                                    <Tooltip title={`View this ${emailTemplate.name} Email Template`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0' onClick={() => handleOpenModal(emailTemplate, "view")}>
                                             <FaEye />
                                         </Button>
                                     </Tooltip>
-                                    <Tooltip title={`Delete this ${emailTemplate.name} Organization`} arrow placement="top">
+                                    <Tooltip title={`Delete this ${emailTemplate.name} Email Template`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-danger border-0' onClick={() => handleOpenModal(emailTemplate, "delete")}>
                                             <FaTrashAlt />
                                         </Button>

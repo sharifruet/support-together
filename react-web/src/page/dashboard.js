@@ -22,11 +22,11 @@ export default function Dashboard() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box>
-        <CssBaseline />
+        {/* <CssBaseline /> */}
 
         <Grid container>
           <Grid item xs={2}>
-            <Card style={{background:'#555',color:'#fff',height:'550px'}}><SupportList/></Card>
+            {/* <Card style={{background:'#555',color:'#fff',height:'550px'}}><SupportList/></Card> */}
           </Grid>
           <Grid item xs={1}></Grid>
           <Grid item xs={10}>
