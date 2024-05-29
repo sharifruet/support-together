@@ -151,12 +151,12 @@ export default function Login() {
                                     Forgot password?
                                 </Link>
                             </Grid>
-                            <Grid item>
+                            {/* <Grid item>
                                 Don't have account?
                                 <Link to="/signup" className="text-primary" style={{ textDecoration: 'none', fontSize: '14px', '&:hover': { color: 'primary.dark', textDecoration: 'underline' } }}>
                                     <span className="ms-1">Sign Up</span>
                                 </Link>
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                     </Box>
                 </Box>
