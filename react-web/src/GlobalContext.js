@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import Cookies from 'js-cookie'
-import { toast } from 'react-toastify'
-import { useNavigate } from 'react-router-dom'
-import axios from './api/axios'
+import React, { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from './api/axios';
 
 const GlobalContext = React.createContext()
 
@@ -15,17 +15,19 @@ const GlobalProvider = ({ children }) => {
   const [accesstoken, setAccesstoken] = useState(null);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    if (!loggedIn) {
+    const pathname = location.pathname;
+    if (!loggedIn && !pathname.endsWith('/about') && !pathname.endsWith('/login') && !pathname.endsWith('/signup')) {
       localStorage.clear();
       Cookies.remove('accessToken');
       setLoggedIn(false);
       setAccesstoken(null);
       setProjects([]);
-      navigate("/Home");
+      navigate("/home");
     }
-  }, [loggedIn, navigate]);
+  }, [loggedIn, navigate, location.pathname]);
 
   useEffect(() => {
     axios.get("/organizations", headerConfig()).then((response) => {

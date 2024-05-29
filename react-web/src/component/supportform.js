@@ -204,7 +204,7 @@ export default function SupportForm() {
           <Grid sm={1}></Grid>
           <Grid sm={5}>
             {filepth && <Card style={imgstyle}>
-              <img src={'https://support.i2gether.com/api/'+filepth}/>
+              <img src={'https://support.i2gether.com/api/'+filepth} alt= "photo" />
             </Card> }
           </Grid>
           <Grid item sm={12}>

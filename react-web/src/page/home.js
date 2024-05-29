@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Box from '@mui/material/Box';
 import '../App.css';
 import Slider from '../layout/slider';
-import LogReg from './Login';
+import Login from './Login';
 import GlobalContext from '../GlobalContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,14 +24,14 @@ const Home = () =>{
         <Container>
             <Row>
                 <Col sm={6}>
-                    <i>If you can't find a solution to your problems in our knowledgebase, you can submit a ticket by selecting the appropriate topic.</i>
+                    <i>If you can't find a solution to your problems in our knowledge base, you can submit a ticket by selecting the appropriate topic.</i>
                     <Box><Slider/></Box>
                 </Col>
                 <Col sm={2}>
                    
                 </Col>
                 <Col sm={4}>
-                    <LogReg/> 
+                    <Login/> 
                 </Col>
             </Row>
         </Container>
