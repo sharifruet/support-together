@@ -1,6 +1,18 @@
 @BASE_URL = http://support.i2gether.com/api
 @TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGVzIjpbeyJwcm9qZWN0SWQiOjEsInJvbGUiOiJDdXN0b21lciJ9XSwiaWF0IjoxNzE2NDY4NTU2LCJleHAiOjE3MTY0NzIxNTZ9.2aZWZ8yeH0XSqmYzrhff_MjCK-TEms2Da7LqU-4Iw_8
 
+### User Login
+# @name postLogin
+POST {{BASE_URL}}/login
+Content-Type: application/json
+
+{
+  "email": "john1@example.com",
+  "password": "password123"
+}
+### Get Token
+@TOKEN = {{postLogin.response.body.token}}
+
 
 ### Create Project (POST /api/projects)
 POST {{BASE_URL}}/projects
@@ -36,3 +48,15 @@ Content-Type: application/json
 ### Delete a project
 DELETE {{BASE_URL}}/projects/1
 Authorization: Bearer {{TOKEN}}
+
+
+### Invite User to Project
+POST {{BASE_URL}}/invite
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "email": "sharifruet@gmail.com",
+  "projectId": 1,
+  "role": "Support"
+}
