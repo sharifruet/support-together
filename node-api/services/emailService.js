@@ -40,7 +40,7 @@ const sendEmailWithTemplate = async (templateId, recipient, placeholders) => {
         // Replace placeholders in the template body
         let emailBody = emailTemplate.body;
         for (const [key, value] of Object.entries(placeholders)) {
-            const regex = new RegExp(`{{${key}}}`, 'g');
+            const regex = new RegExp(`{${key}}`, 'g');
             emailBody = emailBody.replace(regex, value);
         }
 

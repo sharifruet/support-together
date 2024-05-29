@@ -23,12 +23,13 @@ const textareaStyle = {
   padding: '8px',  
   border: '1px solid #888',  
   borderRadius: '4px',  
-  marginTop: '20px'
+  marginTop: '20px',
+  marginBottom: '20px'
 };
 const imgstyle = {
   overflow: 'hidden', 
   height: '100px',  
-  width: '150px', 
+  width: '190px', 
 }
 const inputArr = [
   {
@@ -37,6 +38,15 @@ const inputArr = [
     value: ""
   }
 ];
+const fyitoStyle = 
+ {
+  paddingLeft: "15px"
+ } 
+
+const formtitle = {
+  border: "1px solid #ddd",
+  padding: "10px"
+}
 export default function SupportForm() {
 
   let [ title, setTitle ] = useState();
@@ -114,45 +124,45 @@ export default function SupportForm() {
   if (!topiclist) return null;
   return (
     <React.Fragment>
-      <Card style={{padding:'50px'}}>
-        <Grid container spacing={2}>
-          <Grid item sm={6}>
-            <TextField
-              required
-              id="title"
-              name="title"
-              label="Title"
-              fullWidth
-              autoComplete="title"
-              variant="standard"
-              onChange={e => setTitle(e.target.value)}
-              value={title}
-            />
-             <TextField
-              required
-              id="requestedBy"
-              name="requestedBy"
-              label="RequestedBy"
-              fullWidth
-              autoComplete="requestedBy"
-              variant="standard"
-              onChange={e => setRequestedBy(e.target.value)}
-              value={requestedBy}
-            />
-          </Grid>
-          <Grid item sm={6}></Grid>
-          <Grid item sm={6} >
-            <FormControl variant="standard" sx={{ minWidth: 330 }}>
-              <InputLabel id="demo-simple-select-standard-label">Select Topic *</InputLabel>
-              <Select label="Topic" name="topicId" id="topicId"
-                onChange={e => setTopic(e.target.value)}>
-                {topiclist.map((tlist) => <MenuItem value={tlist.id}>{tlist.name}</MenuItem>)}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item sm={6}></Grid>
-          <Grid item sm={6}>
-              <FormControl variant="standard" sx={{ minWidth: 330 }}>
+      <Grid container spacing={2}>
+        <Grid item sm={2}></Grid>
+        <Grid item sm={8}>
+          <Card style={{padding:'50px'}}>
+            <Grid item sm={12} style={formtitle}><h5>Create a new ticket</h5></Grid>
+            <Grid container spacing={2}>
+              <Grid item sm={12}>
+              <br/><br/>
+                <TextField
+                  required
+                  id="title"
+                  name="title"
+                  label="Title"
+                  fullWidth
+                  autoComplete="title"
+                  variant="standard"
+                  onChange={e => setTitle(e.target.value)}
+                  value={title}
+                />
+                <TextField
+                  required
+                  id="requestedBy"
+                  name="requestedBy"
+                  label="RequestedBy"
+                  fullWidth
+                  autoComplete="requestedBy"
+                  variant="standard"
+                  onChange={e => setRequestedBy(e.target.value)}
+                  value={requestedBy}
+                /><br/><br/>
+                <FormControl variant="standard" sx={{ minWidth: 330 }}>
+                  <InputLabel id="demo-simple-select-standard-label">Select Topic *</InputLabel>
+                  <Select label="Topic" name="topicId" id="topicId"
+                    onChange={e => setTopic(e.target.value)}>
+                    {topiclist.map((tlist) => <MenuItem value={tlist.id}>{tlist.name}</MenuItem>)}
+                  </Select>
+                </FormControl>
+                
+                <FormControl variant="standard" sx={{ minWidth: 330 }}>
                   <InputLabel id="demo-simple-select-standard-label">Select Priority *</InputLabel>
                   <Select label="Priority" name="priority" id="priority"
                   onChange={e => setPriority(e.target.value)}>
@@ -162,56 +172,58 @@ export default function SupportForm() {
                       <MenuItem value={'P4'}>P4</MenuItem>
                       <MenuItem value={'P5'}>P5</MenuItem>
                   </Select>
-              </FormControl>
-          </Grid>
-          <Grid item sm={12}>
-            <TextareaAutosize 
-            id="description"
-            name="description"
-            label="Description"
-            fullWidth
-            autoComplete="description"
-            variant="standard"
-            placeholder='Description...'
-            style={textareaStyle}
-            onChange={e => setDescription(e.target.value)}
-            value={description}>
-            </TextareaAutosize>
-            <br/>
-          </Grid>
-          <Grid item sm={5}>
-              {arr.map((item, i) => {
-                return (
-                  <input
-                    onChange={handleChange}
-                    value={item.value}
-                    id={i}
-                    type={item.type}
-                    size="10"
-                    placeholder='ex@ex.com'
-                    className='form-control'
-                  />
-                );
-              })}
-          </Grid>
-          <Grid sm={1}><br/><button className="form-control add"  onClick={addInput} type="button">+</button></Grid>
-          <Grid sm={6}></Grid>
-          <Grid item sm={6}>
-            <br/>
-            <label>Attached your document : &nbsp;</label>
-            <Upload cb={cb}/>
-          </Grid>
-          <Grid sm={1}></Grid>
-          <Grid sm={5}>
-            {filepth && <Card style={imgstyle}>
-              <img src={'https://support.i2gether.com/api/'+filepth} alt= "photo" />
-            </Card> }
-          </Grid>
-          <Grid item sm={12}>
-              <Button type="submit" variant="outlined"  onClick={handleSubmit}>Submit</Button>
-          </Grid>
+                </FormControl>
+                <br/><br/>
+                <TextareaAutosize 
+                  id="description"
+                  name="description"
+                  label="Description"
+                  fullWidth
+                  autoComplete="description"
+                  variant="standard"
+                  placeholder='Description...'
+                  style={textareaStyle}
+                  onChange={e => setDescription(e.target.value)}
+                  value={description}>
+                </TextareaAutosize>
+              </Grid>
+              <Grid sm={11} style={fyitoStyle}>
+                {arr.map((item, i) => {
+                    return (
+                      <input
+                        onChange={handleChange}
+                        value={item.value}
+                        id={i}
+                        type={item.type}
+                        size="10"
+                        placeholder='CC...'
+                        className='form-control'
+                      />
+                    );
+                  })}
+              </Grid>
+              <Grid sm={1}><button className="btn btn-info add"  onClick={addInput} type="button">+</button></Grid>
+              <Grid sm={7} style={fyitoStyle}>
+                <br/>
+                <label>Attached your document : &nbsp;</label>
+                <Upload cb={cb}/>
+              </Grid>
+              <Grid sm={1}></Grid>
+              <Grid sm={4}>
+                <br/>
+                {filepth && <Card style={imgstyle}>
+                <img src={'https://support.i2gether.com/api/'+filepth}/>
+                </Card> }
+              </Grid>
+              <Grid item sm={12}>
+                <hr/>
+                <Button variant="contained"  onClick={handleSubmit}><strong>Submit</strong></Button>
+              </Grid>
+            </Grid>
+          </Card>
         </Grid>
-      </Card>
+        <Grid item sm={2}></Grid>
+      </Grid>
     </React.Fragment>
   );
 }

@@ -30,6 +30,7 @@ const userRoleRoutes = require('./routes/userRoleRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const emailTemplateRoutes = require('./routes/emailTemplateRoutes');
 const emailRoutes = require('./routes/emailRoutes');
+const inviteRoutes = require('./routes/inviteRoutes');
 
 const worker = require('./services/screduleService');
 
@@ -60,6 +61,7 @@ app.use('/api', projectMembershipRoutes);
 app.use('/api', userRoleRoutes);
 app.use('/api', emailTemplateRoutes);
 app.use('/api', emailRoutes);
+app.use('/api', inviteRoutes);
 
 // Sync models with database
 db.sync()

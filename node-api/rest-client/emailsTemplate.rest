@@ -1,30 +1,46 @@
 @BASE_URL = http://support.i2gether.com/api
 @TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGVzIjpbeyJwcm9qZWN0SWQiOjEsInJvbGUiOiJDdXN0b21lciJ9XSwiaWF0IjoxNzE2NDY4NTU2LCJleHAiOjE3MTY0NzIxNTZ9.2aZWZ8yeH0XSqmYzrhff_MjCK-TEms2Da7LqU-4Iw_8
 
+### User Login
+# @name postLogin
+POST {{BASE_URL}}/login
+Content-Type: application/json
+
+{
+  "email": "john1@example.com",
+  "password": "password123"
+}
+### Get Token
+@TOKEN = {{postLogin.response.body.token}}
+
 ### Create an email template
 POST {{BASE_URL}}/email-templates
+Authorization: Bearer {{TOKEN}}
 Content-Type: application/json
 
 {
   "name": "Welcome Email",
-  "subject": "Welcome to Our Service",
-  "body": "Hello {{name}}, welcome to our service. We are glad to have you."
+  "subject": "Welcome to Our System",
+  "body": "Hello,\n\nYou have been invited to our system. Your password is: {password} \n\nPlease log in and change your password as soon as possible.\n\nThank you."
 }
+
 
 ### Get all email templates
 GET {{BASE_URL}}/email-templates
+Authorization: Bearer {{TOKEN}}
 
 ### Get an email template by ID
 GET {{BASE_URL}}/email-templates/1
 
 ### Update an email template
 PUT {{BASE_URL}}/email-templates/1
+Authorization: Bearer {{TOKEN}}
 Content-Type: application/json
 
 {
   "name": "Updated Welcome Email",
   "subject": "Updated Welcome to Our Service",
-  "body": "Hello {{name}}, we are still glad to have you."
+  "body": "Hello, we are still glad to have you."
 }
 
 ### Delete an email template
