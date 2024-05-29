@@ -12,7 +12,7 @@ const NavBar = () => {
         { title: 'Home', path: '/dashboard', imgPath: '/support-together.png', icon: '', condition: true, action: '', itemType: 'navigation' },
         { title: 'Support', path: '/about', imgPath: '', icon: '', condition: true, action: '', itemType: 'navigation' },
         { title: 'Login', path: '/login', imgPath: '', icon: <FaSignInAlt />, condition: !loggedIn, action: '', itemType: 'authentication' },
-        { title: 'Signup', path: '/signup', imgPath: '', icon: '', condition: !loggedIn, action: '', itemType: 'authentication' },
+        // { title: 'Signup', path: '/signup', imgPath: '', icon: '', condition: !loggedIn, action: '', itemType: 'authentication' },
         { title: 'Logout', path: '', imgPath: '', icon: <FaSignOutAlt />, condition: loggedIn, action: onLogout, itemType: 'authentication' },
     ];
 

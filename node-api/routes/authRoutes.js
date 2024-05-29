@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const UserRole = require('../models/UserRole');
+const EmailTemplate = require('../models/EmailTemplate');
+const { sendEmailWithTemplate } = require('../services/emailService');
 
 // User registration
 router.post('/register', async (req, res) => {
@@ -59,10 +61,57 @@ router.put('/change-password', async (req, res) => {
     // Hash and update the new password
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
     await user.update({ password: hashedNewPassword });
+
+    // Fetch the email template and send the email
+    const templateId = 3; // Assumes the template ID for forgot password is 2
+    const placeholders = {
+      name: user.name
+    };
+    await sendEmailWithTemplate(templateId, user.email, placeholders);
+
     res.json({ message: 'Password updated successfully' });
   } catch (error) {
     console.error('Error changing password:', error);
     res.status(500).json({ error: 'Failed to change password' });
+  }
+});
+
+// Forgot password
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const generateRandomPassword = () => {
+      const length = 8;
+      const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let password = '';
+      for (let i = 0, n = charset.length; i < length; ++i) {
+        password += charset.charAt(Math.floor(Math.random() * n));
+      }
+      return password;
+    };
+
+    const newPassword = generateRandomPassword();
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await user.update({ password: hashedPassword });
+
+    // Fetch the email template and send the email
+    const templateId = 5; // Assumes the template ID for forgot password is 2
+    const placeholders = {
+      name: user.name,
+      newPassword: newPassword
+    };
+    await sendEmailWithTemplate(templateId, user.email, placeholders);
+
+    res.json({ message: 'New password has been sent to your email.' });
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    res.status(500).json({ error: 'Failed to reset password' });
   }
 });
 
