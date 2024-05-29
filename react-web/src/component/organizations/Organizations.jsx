@@ -111,7 +111,6 @@ const Organizations = () => {
                     <thead>
                         <tr>
                             <th onClick={() => handleSortChange('name')}>Name</th>
-                            <th onClick={() => handleSortChange('address')}>Address</th>
                             <th onClick={() => handleSortChange('createdAt')}>Created At</th>
                             <th>Actions</th>
                         </tr>
@@ -120,7 +119,6 @@ const Organizations = () => {
                         {paginatedOrganizations.map((organization) => (
                             <tr key={organization.id}>
                                 <td>{organization.name}</td>
-                                <td>{organization.address}</td>
                                 <td>{format(new Date(organization.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
                                     <Tooltip title={`Add Project to this ${organization.name} Organization`} arrow placement="top">
