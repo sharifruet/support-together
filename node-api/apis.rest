@@ -1,12 +1,12 @@
 //@BASE_URL = {{BASE_URL}}
 @BASE_URL = http://support.i2gether.com/api
 ### Run status check
-GET {{BASE_URL}}
+GET {{BASE_URL}}/tickets
 
 ### Create a ticket
 POST {{BASE_URL}}/tickets
 Content-Type: application/json
-
+Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGVzIjpbeyJwcm9qZWN0SWQiOjEsInJvbGUiOiJDdXN0b21lciJ9XSwiaWF0IjoxNzE2NzAwNDU5LCJleHAiOjE3MTY3MDQwNTl9.LEVY0L9XblmE9AVpFEIRWVvOC8cuicpnkg9TvF43eK0"
 {
   "topicId": 1,
   "title": "Ticket Title",
@@ -31,7 +31,7 @@ Content-Type: application/json
 }
 
 ### Delete a ticket
-DELETE {{BASE_URL}}/tickets/1
+DELETE {{BASE_URL}}/tickets/6
 
 
 ### Create Organization (POST /api/organizations)
