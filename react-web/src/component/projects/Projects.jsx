@@ -121,7 +121,6 @@ const Projects = () => {
                     <thead>
                         <tr>
                             <th onClick={() => handleSortChange('name')}>Name</th>
-                            <th onClick={() => handleSortChange('address')}>Address</th>
                             <th onClick={() => handleSortChange('createdAt')}>Created At</th>
                             <th>Actions</th>
                         </tr>
@@ -130,7 +129,6 @@ const Projects = () => {
                         {paginatedProjects.map((project) => (
                             <tr key={project.id}>
                                 <td>{project.name}</td>
-                                <td>{project.address}</td>
                                 <td>{format(new Date(project.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
                                     

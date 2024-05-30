@@ -1,8 +1,21 @@
 @BASE_URL = http://support.i2gether.com/api
 @TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGVzIjpbeyJwcm9qZWN0SWQiOjEsInJvbGUiOiJDdXN0b21lciJ9XSwiaWF0IjoxNzE2NDY4NTU2LCJleHAiOjE3MTY0NzIxNTZ9.2aZWZ8yeH0XSqmYzrhff_MjCK-TEms2Da7LqU-4Iw_8
 
+### User Login
+# @name postLogin
+POST {{BASE_URL}}/login
+Content-Type: application/json
+
+{
+  "email": "john1@example.com",
+  "password": "password123"
+}
+### Get Token
+@TOKEN = {{postLogin.response.body.token}}
+
 ### Create Topic (POST /api/topics)
 POST {{BASE_URL}}/topics
+Authorization: Bearer {{TOKEN}}
 Content-Type: application/json
 
 {
@@ -13,12 +26,14 @@ Content-Type: application/json
 
 ### Get All Topics (GET /api/topics)
 GET {{BASE_URL}}/topics
-
+Authorization: Bearer {{TOKEN}}
 ### Get Topic by ID (GET /api/topics/:id)
 GET {{BASE_URL}}/topics/1
+Authorization: Bearer {{TOKEN}}
 
 ### Update Topic (PUT /api/topics/:id)
 PUT {{BASE_URL}}/topics/1
+Authorization: Bearer {{TOKEN}}
 Content-Type: application/json
 
 {
@@ -28,3 +43,4 @@ Content-Type: application/json
 
 ### Delete Topic (DELETE /api/topics/:id)
 DELETE {{BASE_URL}}/topics/1
+Authorization: Bearer {{TOKEN}}

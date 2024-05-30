@@ -107,7 +107,6 @@ const Topics = () => {
                     <thead>
                         <tr>
                             <th onClick={() => handleSortChange('name')}>Name</th>
-                            <th onClick={() => handleSortChange('address')}>Address</th>
                             <th onClick={() => handleSortChange('createdAt')}>Created At</th>
                             <th>Actions</th>
                         </tr>
@@ -116,7 +115,6 @@ const Topics = () => {
                         {paginatedTopics.map((topic) => (
                             <tr key={topic.id}>
                                 <td>{topic.name}</td>
-                                <td>{topic.address}</td>
                                 <td>{format(new Date(topic.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
                                     <Tooltip title={`Edit this ${topic.name} Topic`} arrow placement="top">

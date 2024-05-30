@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import Button from '@mui/material/Button';
+import React, { useState, useEffect, useContext } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { RiLockPasswordFill } from "react-icons/ri";
-import usePasswordChangeService from '../hooks/usePasswordChangeService';
+import { toast } from 'react-toastify';
+import useCrud from '../hooks/useCrud';
 import CustomButton from "../component/common/CustomButton";
+import GlobalContext from '../GlobalContext';
 
 const defaultTheme = createTheme();
 
 export default function ChangePassword() {
-    const { createPasswordChange, updatePasswordChange, deletePasswordChange } = usePasswordChangeService();
+    const { user } = useContext(GlobalContext);
+    const { changePassword, loading: isLoading } = useCrud();
+    const changePasswordUrl = "/change-password";
 
     // State to manage form data
     const [formData, setFormData] = useState({
-        userId: "",
+        // userId: user.user.id,
         currentPassword: "",
         newPassword: "",
         success: "",
@@ -78,8 +79,9 @@ export default function ChangePassword() {
     const validateForm = (fields) => {
         const errors = {};
         fields.forEach(({ name, value }) => {
-            if (!value && !value.trim()) {
-                errors[name] = `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
+            if (!value || !value.trim()) {
+                const formattedName = name.split(/(?=[A-Z])/).join(" "); // Splits camelCase to separate words
+                errors[name] = `${formattedName.charAt(0).toUpperCase() + formattedName.slice(1)} is required`;
             }
         });
         return errors;
@@ -107,11 +109,11 @@ export default function ChangePassword() {
             delete: "Email Template deleted successfully"
         };
 
-       
+
 
         try {
             setLoading(true);
-            const responseData = Object.keys(errors).length === 0 && await createPasswordChange();
+            const responseData = Object.keys(errors).length === 0 && await changePassword(changePasswordUrl, formData);
             console.log(responseData)
 
             // Check the response and update the form data with success or error message
@@ -119,10 +121,10 @@ export default function ChangePassword() {
                 setFormData({
                     currentPassword: "",
                     newPassword: "",
-                    userId: "",
                     success: responseData.message ? responseData.message : successMessages["invite"],
                     error: "",
                 });
+                toast.success('🎉 Password changed successfully!', { className: 'toast-success' });
             } else {
                 setFormData((prevData) => ({
                     ...prevData,
@@ -177,17 +179,16 @@ export default function ChangePassword() {
                             value={formData.newPassword}
                             onChange={handleInputChange}
                             fullWidth
-                            autoFocus
                             error={Boolean(fieldErrors.newPassword)} // Set error prop based on field error
                             helperText={fieldErrors.newPassword} // Provide the error message
                         />
                         <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
                             <CustomButton
-                                isLoading={loading}
+                                isLoading={isLoading}
                                 type="submit"
                                 icon={<RiLockPasswordFill />}
                                 label={"Change Password"}
-                                disabled={loading}
+                                disabled={isLoading}
                             />
                         </div>
                     </Box>

@@ -69,7 +69,11 @@ const useCrud = () => {
         return loggedIn && fetchApi(`${endpoint}/${id}`, 'DELETE');
     }, [fetchApi]);
 
-    return { data, loading, error, getAll, getById, create, update, remove };
+    const changePassword = useCallback((endpoint, payload) => {
+        return loggedIn && fetchApi(`${endpoint}`, 'PUT', payload);
+    }, [fetchApi]);
+
+    return { data, loading, error, getAll, getById, create, update, remove, changePassword };
 };
 
 export default useCrud;

@@ -20,7 +20,7 @@ import GlobalContext from '../GlobalContext'; // Assuming you have a global cont
 const LeftMenu = () => {
     const location = useLocation();
     const [openInbox, setOpenInbox] = useState(false);
-    const { roles: userRoles } = useContext(GlobalContext); // Get user data from context
+    const {user} = useContext(GlobalContext); // Get user data from context
 
     useEffect(() => {
         if (location.pathname.endsWith('/topics')) {
@@ -32,11 +32,10 @@ const LeftMenu = () => {
         setOpenInbox(!openInbox);
     };
 
-
-
     // Function to check if a role is allowed for the current user
     const isRoleAllowed = (role) => {
-        const roles = userRoles.map(userRole => userRole.role);
+        //console.log(user);
+        const roles = user.roles.map(userRole => userRole.role);
         return roles.includes(role);
     };
 

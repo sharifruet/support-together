@@ -5,14 +5,14 @@ import GlobalContext from '../GlobalContext';
 const ProtectedRoute = ({ roles }) => {
 
     // Logged in user roles
-    const { roles: userRoles } = useContext(GlobalContext);
+    const { user } = useContext(GlobalContext);
 
-    if (!userRoles) {
-        return <Navigate to="/login" />;
+    if (!user?.roles) {
+        return <Navigate to="/home" />;
     }
 
     const userHasRequiredRole = roles.some(role =>
-        userRoles.some(userRole => userRole.role === role)
+        user.roles.some(userRole => userRole.role === role)
     );
 
     return userHasRequiredRole ? <Outlet /> : <Navigate to="/not-authorized" />;

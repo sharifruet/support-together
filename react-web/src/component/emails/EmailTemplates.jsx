@@ -109,7 +109,7 @@ const EmailTemplates = () => {
                     <thead>
                         <tr>
                             <th onClick={() => handleSortChange('name')}>Name</th>
-                            <th onClick={() => handleSortChange('address')}>Address</th>
+                            <th onClick={() => handleSortChange('subject')}>Subject</th>
                             <th onClick={() => handleSortChange('createdAt')}>Created At</th>
                             <th>Actions</th>
                         </tr>
@@ -118,7 +118,7 @@ const EmailTemplates = () => {
                         {paginatedEmailTemplates.map((emailTemplate) => (
                             <tr key={emailTemplate.id}>
                                 <td>{emailTemplate.name}</td>
-                                <td>{emailTemplate.address}</td>
+                                <td>{emailTemplate.subject}</td>
                                 <td>{format(new Date(emailTemplate.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
                                     <Tooltip title={`Edit this ${emailTemplate.name} Email Template`} arrow placement="top">
