@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import axios from './api/axios';
 
 const GlobalContext = React.createContext()
 
 const GlobalProvider = ({ children }) => {
   const [user, setUser] = useState(null)
-  const [roles, setRoles] = useState([])
   const [loggedIn, setLoggedIn] = useState(false);
   const [projects, setProjects] = useState([]);
   const [organizations, setOrganizations] = useState([]);
@@ -16,18 +16,6 @@ const GlobalProvider = ({ children }) => {
 
   const navigate = useNavigate();
   const location = useLocation();
-
-  // useEffect(() => {
-  //   const pathname = location.pathname;
-  //   if (!loggedIn && !pathname.endsWith('/about') || !loggedIn && !pathname.endsWith('/login') || !loggedIn && !pathname.endsWith('/signup' || !loggedIn && !pathname.endsWith('/forgotPass'))) {
-  //     localStorage.clear();
-  //     Cookies.remove('accessToken');
-  //     setLoggedIn(false);
-  //     setAccesstoken(null);
-  //     setProjects([]);
-  //     navigate("/home");
-  //   }
-  // }, [loggedIn, navigate, location.pathname]);
 
   useEffect(() => {
     const publicPaths = ['/about', '/login', '/signup', '/forgotPass'];
@@ -44,25 +32,27 @@ const GlobalProvider = ({ children }) => {
   }, [loggedIn, navigate, location.pathname]);
 
   useEffect(() => {
-    axios.get("/organizations", headerConfig()).then((response) => {
-      setOrganizations(response.data);
-    }).catch(error => {
-      console.log(error.response.data.error)
-    });
+    if(accesstoken != null){
+      axios.get("/organizations", headerConfig()).then((response) => {
+        setOrganizations(response.data);
+      }).catch(error => {
+        console.log(error.response.data.error)
+      });
+    }
   }, [accesstoken]);
 
   useEffect(() => {
-    if (roles.length > 0) {
-      roles.forEach(r => { loadProject(r.id) });
+    if (user !=null && user?.roles?.length > 0) {
+      console.log(user);
+      user.roles.forEach(r => { loadProject(r.projectId) });
     }
-  }, [roles]);
+  }, [user]);
 
   const loginSuccess = (response) => {
     if (response?.token) {
       setAccesstoken(response.token);
-      if (response?.userRoles) {
-        setRoles(response.userRoles);
-      }
+      setUser(jwtDecode(response.token));
+      
       toast.success('🎉 You have successfully logged in!', { className: 'toast-success' });
       setLoggedIn(true);
     }
@@ -97,7 +87,7 @@ const GlobalProvider = ({ children }) => {
 
   return (
     <GlobalContext.Provider
-      value={{ user, setUser, loginSuccess, onLogout, roles, setRoles, loggedIn, projects, organizations, headerConfig, accesstoken }}
+      value={{ user, setUser, loginSuccess, onLogout, loggedIn, projects, organizations, headerConfig, accesstoken }}
     >
       {children}
     </GlobalContext.Provider>
