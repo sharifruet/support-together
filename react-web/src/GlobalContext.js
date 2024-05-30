@@ -32,7 +32,7 @@ const GlobalProvider = ({ children }) => {
   }, [loggedIn, navigate, location.pathname]);
 
   useEffect(() => {
-    if(accesstoken != null){
+    if (accesstoken != null) {
       axios.get("/organizations", headerConfig()).then((response) => {
         setOrganizations(response.data);
       }).catch(error => {
@@ -42,7 +42,7 @@ const GlobalProvider = ({ children }) => {
   }, [accesstoken]);
 
   useEffect(() => {
-    if (user !=null && user?.roles?.length > 0) {
+    if (user != null && user?.roles?.length > 0) {
       console.log(user);
       user.roles.forEach(r => { loadProject(r.projectId) });
     }
@@ -52,7 +52,7 @@ const GlobalProvider = ({ children }) => {
     if (response?.token) {
       setAccesstoken(response.token);
       setUser(jwtDecode(response.token));
-      
+
       toast.success('🎉 You have successfully logged in!', { className: 'toast-success' });
       setLoggedIn(true);
     }

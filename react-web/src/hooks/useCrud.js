@@ -2,7 +2,7 @@ import { useState, useCallback, useContext, useEffect } from 'react';
 import GlobalContext from '../GlobalContext';
 import axios from 'axios';
 
-const BASE_URL = 'http://support.i2gether.com/api';
+const BASE_URL = 'https://support.i2gether.com/api';
 
 const useCrud = () => {
     const getToken = () => localStorage.getItem('accessToken');
@@ -69,7 +69,11 @@ const useCrud = () => {
         return loggedIn && fetchApi(`${endpoint}/${id}`, 'DELETE');
     }, [fetchApi]);
 
-    return { data, loading, error, getAll, getById, create, update, remove };
+    const changePassword = useCallback((endpoint, payload) => {
+        return loggedIn && fetchApi(`${endpoint}`, 'PUT', payload);
+    }, [fetchApi]);
+
+    return { data, loading, error, getAll, getById, create, update, remove, changePassword };
 };
 
 export default useCrud;

@@ -10,7 +10,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import TopicIcon from '@mui/icons-material/Topic';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { RiLockPasswordFill } from "react-icons/ri";
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
@@ -51,6 +51,16 @@ const LeftMenu = () => {
                     <DashboardIcon style={{ color: location.pathname.endsWith('/dashboard') ? '#14DB8D' : '#fff' }} />
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" style={{ color: location.pathname.endsWith('/dashboard') ? '#14DB8D' : '#fff' }} />
+            </ListItemButton>
+            <ListItemButton
+                selected={location.pathname === '/dashboard/changePassword'}
+                component={Link}
+                to="/dashboard/changePassword"
+            >
+                <ListItemIcon>
+                    <RiLockPasswordFill style={{ color: location.pathname.endsWith('/changePassword') ? '#14DB8D' : '#fff', fontSize: '24px' }} />
+                </ListItemIcon>
+                <ListItemText primary="Change Password" style={{ color: location.pathname.endsWith('/changePassword') ? '#14DB8D' : '#fff' }} />
             </ListItemButton>
 
             {isRoleAllowed('Admin') && (
