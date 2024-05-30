@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React from 'react';
+import {useState} from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -8,16 +9,42 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axios from "../api/axios";
+const Forgotpass = "/forgot-password";
 const defaultTheme = createTheme();
 
 export default function ForgotPass() {
+  const [email, setEmail] = useState('');
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    try {
+        const response = axios.post(
+          Forgotpass,
+            JSON.stringify({email}),
+            { headers: { "Content-Type": "application/json" } }
+        );
+        console.log(response.data);
+        alert("Please check your email");
+      } catch (err) {
+          if (!err.response) {
+            alert("No Server Response. Please check your network connection.");
+          } else {
+              switch (err.response.status) {
+                  case 400:
+                    alert("Missing Email");
+                      break;
+                  case 401:
+                    alert("Unauthorized. Incorrect Email");
+                      break;
+                  case 500:
+                    alert("Internal Server Error. Please try again later.");
+                      break;
+                  default:
+                    alert("Please try again.");
+                      break;
+              }
+          }
+      } 
   };
 
   return (
@@ -33,7 +60,7 @@ export default function ForgotPass() {
             }}
             >
             <Typography component="h1" variant="h5">
-                Sign in
+                Input your email address
             </Typography>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <TextField
@@ -45,6 +72,7 @@ export default function ForgotPass() {
                     name="email"
                     autoComplete="email"
                     autoFocus
+                    onChange={e => setEmail(e.target.value)}
                     />
                     <Button
                     type="submit"
@@ -56,8 +84,8 @@ export default function ForgotPass() {
                     </Button>
                     <Grid container>
                       <Grid item>
-                          <Link href="/signup" variant="body2">
-                          {"Don't have an account?Please Sign Up"}
+                          <Link href="/login" variant="body2">
+                          {"Sign In"}
                           </Link>
                       </Grid>
                     </Grid>
