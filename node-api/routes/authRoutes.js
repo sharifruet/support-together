@@ -30,6 +30,7 @@ router.post('/login', async (req, res) => {
     }
     // Check if the user has the provided password
     const passwordMatch = await bcrypt.compare(password, user.password);
+   
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Invalid password' });
     }
@@ -44,10 +45,10 @@ router.post('/login', async (req, res) => {
   }
 });
 // Change password
-router.put('/change-password', async (req, res) => {
+router.put('/change-password',authenticate, async (req, res) => {
   try {
-    const { userId, currentPassword, newPassword } = req.body;
-    const user = await User.findByPk(userId);
+    const { currentPassword, newPassword } = req.body;
+    const user = req.user;
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
