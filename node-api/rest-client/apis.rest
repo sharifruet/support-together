@@ -82,3 +82,16 @@ Content-Type: image/png
 
 < ../react-web/public/24_7.png
 ---011000010111000001101001--
+
+
+### Update User Info
+PUT http://localhost:3000/auth/update-user
+Content-Type: application/json
+Authorization: Bearer {{{{TOKEN}}}}
+
+{
+  "name": "John Doe Updated",
+  "email": "john.doe.updated@example.com",
+  "phoneNumber": "0987654321",
+  "password": "abc@123"
+}
