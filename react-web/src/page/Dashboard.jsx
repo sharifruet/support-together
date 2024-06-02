@@ -11,7 +11,7 @@ import { FaArrowsToDot } from "react-icons/fa6";
 import moment from "moment";
 import { summary, tasks } from "../assets/data";
 // import UserInfo from "../components/UserInfo";
-import { Chart } from "../components/Chart";
+// import { Chart } from "../components/Chart";
 import { Table, OverlayTrigger, Popover, Card as BootstrapCard } from "react-bootstrap";
 import { BGS, PRIOTITYSTYELS, TASK_TYPE, getInitials } from "../utils";
 import Avatar from "../components/common/Avatar";
@@ -262,11 +262,6 @@ const Dashboard = () => {
                         <ProjectCard project={project} />
                     </div>
                 ))}
-            </div>
-
-            <div className="w-100 bg-white my-4 p-4 rounded shadow-sm">
-                <h4 className="text-xl text-muted font-semibold">Chart by Priority</h4>
-                <Chart />
             </div>
 
             <div className="w-100 d-flex flex-column flex-md-row gap-4 py-4">

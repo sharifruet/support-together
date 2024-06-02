@@ -16,6 +16,7 @@ const Avatar = ({
     name = '',
     className = '',
 }) => {
+
     const sizeClasses = {
         tiny: 'avatar-tiny',
         small: 'avatar-small',
@@ -51,9 +52,11 @@ const Avatar = ({
     };
 
     const avatarInitials = (fullName) => {
-        const names = fullName.split(" ");
-        const initials = names.slice(0, 2).map((name) => name[0].toUpperCase());
-        return initials.join("");
+        if(fullName) {
+            const names = fullName.split(" ");
+            const initials = names.slice(0, 2).map((name) => name[0].toUpperCase());
+            return initials.join("");
+        }
     };
 
     return (
@@ -93,7 +96,7 @@ const Avatar = ({
                             className={`img-fluid ${shapeClasses[shape]} w-100 h-100`}
                         />
                     ) : (
-                        <span className="d-flex align-items-center justify-content-center w-100 h-100">
+                        <span className="d-flex align-items-center justify-content-center w-100 h-100 fs-6">
                             {avatarInitials(initials)}
                         </span>
                     )}
