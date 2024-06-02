@@ -1,4 +1,4 @@
-import { useState, useCallback, useContext, useEffect } from 'react';
+import { useState, useCallback, useContext } from 'react';
 import GlobalContext from '../GlobalContext';
 import axios from 'axios';
 
@@ -20,11 +20,11 @@ const useCrud = () => {
         },
     });
 
-    const fetchApi = useCallback(async (endpoint, method, payload = null) => {
+    const fetchApi = useCallback(async (endpoint, method, payload = null, isFileUpload = false) => {
         setLoading(true);
         setError(null);
         try {
-            const token = getToken() || accesstoken;
+            const token = accesstoken || getToken();
             if (!token) throw new Error('Token not found');
 
             const requestConfig = {
@@ -32,6 +32,7 @@ const useCrud = () => {
                 method,
                 headers: {
                     'Authorization': `Bearer ${token}`,
+                    ...(isFileUpload && { 'Content-Type': 'multipart/form-data' }),
                 },
             };
 
@@ -39,19 +40,26 @@ const useCrud = () => {
                 requestConfig.data = payload;
             }
 
+            if (isFileUpload) {
+                requestConfig.headers = {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data',
+                }
+            }
+
             const response = await axiosInstance(requestConfig);
             return response.data;
         } catch (err) {
-            console.log(err.response.data.error)
+            console.log(err.response?.data?.error)
             const errorMessage = "Invalid token.";
-            const ServerErrorMessage = err.response.data.error;
+            const ServerErrorMessage = err.response?.data?.error;
             ServerErrorMessage === errorMessage && setLoggedIn(false);
-            setError(err.response.data.error);
-            throw err.response.data.error;
+            setError(err.response?.data?.error || err.message);
+            throw err.response?.data?.error || err.message;
         } finally {
             setLoading(false);
         }
-    }, [axiosInstance]);
+    }, [axiosInstance, accesstoken, getToken, setLoggedIn]);
 
     const getAll = useCallback((endpoint) => {
         return loggedIn && fetchApi(endpoint, 'GET');
@@ -77,7 +85,22 @@ const useCrud = () => {
         return loggedIn && fetchApi(`${endpoint}`, 'PUT', payload);
     }, [fetchApi]);
 
-    return { data, loading, error, getAll, getById, create, update, remove, changePassword };
+    const updateProfile = useCallback((endpoint, payload) => {
+        return loggedIn && fetchApi(`${endpoint}`, 'PUT', payload);
+    }, [fetchApi]);
+
+    const uploadFile = useCallback(async (endpoint, file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+            const response = await fetchApi(endpoint, 'POST', formData, true);
+            return response;  // Assuming response contains the file path URL
+        } catch (err) {
+            throw err;
+        }
+    }, [fetchApi]);
+
+    return { data, loading, error, getAll, getById, create, update, remove, changePassword, updateProfile,  uploadFile };
 };
 
 export default useCrud;

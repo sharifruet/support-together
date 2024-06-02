@@ -42,9 +42,9 @@ const GlobalProvider = ({ children }) => {
   }, [accesstoken]);
 
   useEffect(() => {
-    if (user != null && user?.roles?.length > 0) {
+    if (!user?.user?.name) {
       console.log(user);
-      user.roles.forEach(r => { loadProject(r.projectId) });
+      navigate('/profileUpdate');
     }
   }, [user]);
 

@@ -4,7 +4,7 @@ import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 import AvatarIcon from '../../assets/imgIcons/avatar.png';
 import Avatar from '../common/Avatar';
 
-const EmailField = ({ setSelectedCcEmails }) => {
+const EmailField = ({ setSelectedCcEmails, clear }) => {
     const [searchInput, setSearchInput] = useState('');
     const [ccList, setCcList] = useState([]);
     const [showSelectedOnly, setShowSelectedOnly] = useState(false);
@@ -14,8 +14,10 @@ const EmailField = ({ setSelectedCcEmails }) => {
     };
 
     useEffect(() => {
-        if (ccList.length > 0) {
+        if (ccList.length > 0 && !clear) {
             setSelectedCcEmails(ccList);
+        } else {
+            setSelectedCcEmails([]); 
         }
     }, [ccList]);
 
