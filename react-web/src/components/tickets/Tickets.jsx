@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Container, Row, Col, Form, Button, Pagination } from 'react-bootstrap';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Table, Container, Row, Col, Form, Button, Modal, Pagination } from 'react-bootstrap';
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
+import { FaCirclePlus } from "react-icons/fa6";
 import { Tooltip } from "@mui/material";
 import { format } from 'date-fns';
-import useTopicService from '../../hooks/useTopicService';
-import './TopicsStyles.css';
-import TopicModal from './TopicModal';
+import useCrud from '../../hooks/useCrud';
+import './TicketsStyles.css';
+import TicketModal from "./TicketModal";
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
 import OpenModalButton from '../common/OpenModalButton';
 
+const Tickets = () => {
+    const { getAll } = useCrud();
+    const ticketUrl = "/tickets";
 
-const Topics = () => {
-    const { getAllTopics } = useTopicService();
-    const [topics, setTopics] = useState([]);
-    const [selectedTopic, setSelectedTopic] = useState(null);
-    const [openModal, setOpenModal] = useState(false);
+    const [tickets, setTickets] = useState([]);
+    const [selectedTicket, setSelectedTicket] = useState(null);
     const [modalType, setModalType] = useState(null);
 
     const [page, setPage] = useState(1);
@@ -32,16 +33,14 @@ const Topics = () => {
         setPage(1);
     };
 
-    const handleOpenModal = (topic, modalType) => {
-        setSelectedTopic(topic);
+    const handleOpenModal = (ticket, modalType) => {
+        setSelectedTicket(ticket);
         setModalType(modalType);
-        setOpenModal(true);
     };
 
     const handleCloseModal = () => {
-        setOpenModal(false);
         setModalType(null);
-        setSelectedTopic(null);
+        setSelectedTicket(null);
     };
 
     const handleSearchChange = (event) => {
@@ -54,27 +53,26 @@ const Topics = () => {
         setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     };
 
-    const fetchTopics = async () => {
+    const fetchTickets = async () => {
         try {
-            const data = await getAllTopics();
-            setTopics(data);
+            const data = await getAll(ticketUrl);
+            setTickets(data);
         } catch (error) {
-            // Handle error here
-            console.error('Error fetching Topic:', error);
+            console.error(error);
         }
     };
 
     useEffect(() => {
-        fetchTopics();
+        fetchTickets();
     }, []);
 
-    const filteredTopics = topics.filter((org) =>
-        org.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredTickets = tickets.filter((ticket) =>
+        ticket.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    let sortedTopics = [...filteredTopics];
+    let sortedTickets = [...filteredTickets];
     if (sortField) {
-        sortedTopics = sortedTopics.sort((a, b) => {
+        sortedTickets = sortedTickets.sort((a, b) => {
             const x = a[sortField];
             const y = b[sortField];
             return sortOrder === 'asc' ? x.localeCompare(y) : y.localeCompare(x);
@@ -82,16 +80,18 @@ const Topics = () => {
     }
 
     const startIndex = (page - 1) * rowsPerPage;
-    const paginatedTopics = sortedTopics.slice(startIndex, startIndex + rowsPerPage);
+    const paginatedTickets = sortedTickets.slice(startIndex, startIndex + rowsPerPage);
 
     return (
         <>
             <Container>
                 <Row className="mb-3">
                     <Col>
-                        <div className="col-span-1 flex items-center" onClick={() => handleOpenModal(null, "add")}>
-                            {/* It's open the add EmailTemplate modal */}
-                            <OpenModalButton label={"Add Topic"} icon={<AddIcon />} />
+                        <div className="col-span-1 flex items-center">
+                            {/* It's open the add ticket modal */}
+                            <div onClick={() => handleOpenModal(null, "add")}>
+                                <OpenModalButton label={"Create Ticket"} icon={<AddIcon />} />
+                            </div>
                         </div>
                     </Col>
                     <Col>
@@ -103,36 +103,37 @@ const Topics = () => {
                         />
                     </Col>
                 </Row>
-                <Table striped bordered hover>
+                <Table hover striped bordered>
                     <thead>
                         <tr>
-                            <th onClick={() => handleSortChange('name')}>Name</th>
+                            <th onClick={() => handleSortChange('title')}>Title</th>
+                            <th onClick={() => handleSortChange('description')}>Description</th>
                             <th onClick={() => handleSortChange('createdAt')}>Created At</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {paginatedTopics.map((topic) => (
-                            <tr key={topic.id}>
-                                <td>{topic.name}</td>
-                                <td>{format(new Date(topic.createdAt), 'MM/dd/yyyy')}</td>
+                        {paginatedTickets.map((ticket) => (
+                            <tr key={ticket.id}>
+                                <td>{ticket.title}</td>
+                                <td>{ticket.description}</td>
+                                <td>{format(new Date(ticket.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
-                                    <Tooltip title={`Edit this ${topic.name} Topic`} arrow placement="top">
-                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0' onClick={() => handleOpenModal(topic, "edit")}>
-                                            <FaEdit />
+                                    <Tooltip title={`Edit this ${ticket.name} Ticket`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0'>
+                                            <FaEdit onClick={() => handleOpenModal(ticket, "edit")} />
                                         </Button>
                                     </Tooltip>
-                                    <Tooltip title={`View this ${topic.name} Topic`} arrow placement="top">
-                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0' onClick={() => handleOpenModal(topic, "view")}>
+                                    <Tooltip title={`View this ${ticket.name} Ticket`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0' onClick={() => handleOpenModal(ticket, "view")}>
                                             <FaEye />
                                         </Button>
                                     </Tooltip>
-                                    <Tooltip title={`Delete this ${topic.name} Topic`} arrow placement="top">
-                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-danger border-0' onClick={() => handleOpenModal(topic, "delete")}>
+                                    <Tooltip title={`Delete this ${ticket.name} Ticket`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-danger border-0' onClick={() => handleOpenModal(ticket, "delete")}>
                                             <FaTrashAlt />
                                         </Button>
                                     </Tooltip>
-
                                 </td>
                             </tr>
                         ))}
@@ -141,25 +142,25 @@ const Topics = () => {
                 <Pagination>
                     <Pagination.First onClick={() => handlePageChange(1)} />
                     <Pagination.Prev onClick={() => handlePageChange(page - 1)} />
-                    {[...Array(Math.ceil(filteredTopics.length / rowsPerPage)).keys()].map(number => (
+                    {[...Array(Math.ceil(filteredTickets.length / rowsPerPage)).keys()].map(number => (
                         <Pagination.Item key={number + 1} active={number + 1 === page} onClick={() => handlePageChange(number + 1)}>
                             {number + 1}
                         </Pagination.Item>
                     ))}
                     <Pagination.Next onClick={() => handlePageChange(page + 1)} />
-                    <Pagination.Last onClick={() => handlePageChange(Math.ceil(filteredTopics.length / rowsPerPage))} />
+                    <Pagination.Last onClick={() => handlePageChange(Math.ceil(filteredTickets.length / rowsPerPage))} />
                 </Pagination>
             </Container>
 
-            <TopicModal
+            <TicketModal
                 modalType={modalType}
-                topic={selectedTopic}
+                ticket={selectedTicket}
                 closeModal={handleCloseModal}
-                fetchTopics={fetchTopics}
-                project={null}
+                fetchTickets={fetchTickets}
+                topic={null}
             />
         </>
     );
 };
 
-export default Topics;
+export default Tickets;

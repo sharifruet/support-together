@@ -6,8 +6,8 @@ import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import SupportForm from '../component/supportform';
-import TicketList from '../component/ticketlist';
+import SupportForm from '../components/supportform';
+import TicketList from '../components/ticketlist';
 import GlobalContext from '../GlobalContext';
 
 export default function ProjectList() {

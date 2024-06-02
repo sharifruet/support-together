@@ -1,18 +1,20 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Container, Row, Col, Form, Button, Pagination } from 'react-bootstrap';
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
-import { format } from 'date-fns';
 import { Tooltip } from "@mui/material";
-import useEmailTemplateService from '../../hooks/useEmailTemplateService';
-import './EmailTemplatesStyles.css';
-import EmailTemplateModal from './EmailTemplateModal';
+import { format } from 'date-fns';
+import useTopicService from '../../hooks/useTopicService';
+import './TopicsStyles.css';
+import TopicModal from './TopicModal';
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
 import OpenModalButton from '../common/OpenModalButton';
 
-const EmailTemplates = () => {
-    const { getAllEmailTemplates } = useEmailTemplateService();
-    const [EmailTemplates, setEmailTemplates] = useState([]);
-    const [selectedEmailTemplate, setSelectedEmailTemplate] = useState(null);
+
+const Topics = () => {
+    const { getAllTopics } = useTopicService();
+    const [topics, setTopics] = useState([]);
+    const [selectedTopic, setSelectedTopic] = useState(null);
+    const [openModal, setOpenModal] = useState(false);
     const [modalType, setModalType] = useState(null);
 
     const [page, setPage] = useState(1);
@@ -20,7 +22,6 @@ const EmailTemplates = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
-    const [isLoaded, setLoaded] = useState(false)
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
@@ -31,14 +32,16 @@ const EmailTemplates = () => {
         setPage(1);
     };
 
-    const handleOpenModal = (emailTemplate, modalType) => {
-        setSelectedEmailTemplate(emailTemplate);
+    const handleOpenModal = (topic, modalType) => {
+        setSelectedTopic(topic);
         setModalType(modalType);
+        setOpenModal(true);
     };
 
     const handleCloseModal = () => {
+        setOpenModal(false);
         setModalType(null);
-        setSelectedEmailTemplate(null);
+        setSelectedTopic(null);
     };
 
     const handleSearchChange = (event) => {
@@ -51,32 +54,27 @@ const EmailTemplates = () => {
         setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     };
 
-    const fetchEmailTemplates = useCallback(async () => {
+    const fetchTopics = async () => {
         try {
-            const data = await getAllEmailTemplates();
-            setEmailTemplates(data);
-            // toast.success('Fetched Successfully')
+            const data = await getAllTopics();
+            setTopics(data);
         } catch (error) {
-            // toast.error(error)
-            console.log(error);
+            // Handle error here
+            console.error('Error fetching Topic:', error);
         }
-    }, [getAllEmailTemplates]);
+    };
 
     useEffect(() => {
-        // if (!isLoaded) {
-        fetchEmailTemplates();
-
-        //     setLoaded(true)
-        // }     
+        fetchTopics();
     }, []);
 
-    const filteredEmailTemplates = EmailTemplates.filter((org) =>
-        org.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredTopics = topics.filter((topic) =>
+        topic.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    let sortedEmailTemplates = [...filteredEmailTemplates];
+    let sortedTopics = [...filteredTopics];
     if (sortField) {
-        sortedEmailTemplates = sortedEmailTemplates.sort((a, b) => {
+        sortedTopics = sortedTopics.sort((a, b) => {
             const x = a[sortField];
             const y = b[sortField];
             return sortOrder === 'asc' ? x.localeCompare(y) : y.localeCompare(x);
@@ -84,16 +82,18 @@ const EmailTemplates = () => {
     }
 
     const startIndex = (page - 1) * rowsPerPage;
-    const paginatedEmailTemplates = sortedEmailTemplates.slice(startIndex, startIndex + rowsPerPage);
+    const paginatedTopics = sortedTopics.slice(startIndex, startIndex + rowsPerPage);
 
     return (
         <>
             <Container>
                 <Row className="mb-3">
                     <Col>
-                        <div className="col-span-1 flex items-center" onClick={() => handleOpenModal(null, "add")}>
+                        <div className="col-span-1 flex items-center">
                             {/* It's open the add EmailTemplate modal */}
-                            <OpenModalButton label={"Add Email Template"} icon={<AddIcon />} />
+                            <div onClick={() => handleOpenModal(null, "add")}>
+                                <OpenModalButton label={"Add Topic"} icon={<AddIcon />} />
+                            </div>
                         </div>
                     </Col>
                     <Col>
@@ -109,33 +109,32 @@ const EmailTemplates = () => {
                     <thead>
                         <tr>
                             <th onClick={() => handleSortChange('name')}>Name</th>
-                            <th onClick={() => handleSortChange('subject')}>Subject</th>
                             <th onClick={() => handleSortChange('createdAt')}>Created At</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {paginatedEmailTemplates.map((emailTemplate) => (
-                            <tr key={emailTemplate.id}>
-                                <td>{emailTemplate.name}</td>
-                                <td>{emailTemplate.subject}</td>
-                                <td>{format(new Date(emailTemplate.createdAt), 'MM/dd/yyyy')}</td>
+                        {paginatedTopics.map((topic) => (
+                            <tr key={topic.id}>
+                                <td>{topic.name}</td>
+                                <td>{format(new Date(topic.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
-                                    <Tooltip title={`Edit this ${emailTemplate.name} Email Template`} arrow placement="top">
-                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0' onClick={() => handleOpenModal(emailTemplate, "edit")}>
+                                    <Tooltip title={`Edit this ${topic.name} Topic`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0' onClick={() => handleOpenModal(topic, "edit")}>
                                             <FaEdit />
                                         </Button>
                                     </Tooltip>
-                                    <Tooltip title={`View this ${emailTemplate.name} Email Template`} arrow placement="top">
-                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0' onClick={() => handleOpenModal(emailTemplate, "view")}>
+                                    <Tooltip title={`View this ${topic.name} Topic`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0' onClick={() => handleOpenModal(topic, "view")}>
                                             <FaEye />
                                         </Button>
                                     </Tooltip>
-                                    <Tooltip title={`Delete this ${emailTemplate.name} Email Template`} arrow placement="top">
-                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-danger border-0' onClick={() => handleOpenModal(emailTemplate, "delete")}>
+                                    <Tooltip title={`Delete this ${topic.name} Topic`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-danger border-0' onClick={() => handleOpenModal(topic, "delete")}>
                                             <FaTrashAlt />
                                         </Button>
                                     </Tooltip>
+
                                 </td>
                             </tr>
                         ))}
@@ -144,24 +143,25 @@ const EmailTemplates = () => {
                 <Pagination>
                     <Pagination.First onClick={() => handlePageChange(1)} />
                     <Pagination.Prev onClick={() => handlePageChange(page - 1)} />
-                    {[...Array(Math.ceil(filteredEmailTemplates.length / rowsPerPage)).keys()].map(number => (
+                    {[...Array(Math.ceil(filteredTopics.length / rowsPerPage)).keys()].map(number => (
                         <Pagination.Item key={number + 1} active={number + 1 === page} onClick={() => handlePageChange(number + 1)}>
                             {number + 1}
                         </Pagination.Item>
                     ))}
                     <Pagination.Next onClick={() => handlePageChange(page + 1)} />
-                    <Pagination.Last onClick={() => handlePageChange(Math.ceil(filteredEmailTemplates.length / rowsPerPage))} />
+                    <Pagination.Last onClick={() => handlePageChange(Math.ceil(filteredTopics.length / rowsPerPage))} />
                 </Pagination>
             </Container>
 
-            <EmailTemplateModal
+            <TopicModal
                 modalType={modalType}
-                emailTemplate={selectedEmailTemplate}
+                topic={selectedTopic}
                 closeModal={handleCloseModal}
-                fetchEmailTemplates={fetchEmailTemplates}
+                fetchTopics={fetchTopics}
+                project={null}
             />
         </>
     );
 };
 
-export default EmailTemplates;
+export default Topics;

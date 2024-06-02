@@ -87,7 +87,7 @@ const GlobalProvider = ({ children }) => {
 
   return (
     <GlobalContext.Provider
-      value={{ user, setUser, loginSuccess, onLogout, loggedIn, projects, organizations, headerConfig, accesstoken }}
+      value={{ user, setUser, loginSuccess, onLogout, loggedIn, setLoggedIn, projects, organizations, headerConfig, accesstoken }}
     >
       {children}
     </GlobalContext.Provider>

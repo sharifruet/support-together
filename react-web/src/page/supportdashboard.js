@@ -8,10 +8,10 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import SupportList from '../component/supportleftmenu';
+import SupportList from '../components/supportleftmenu';
 import Grid from '@mui/material/Grid';
 import { Card } from 'react-bootstrap';
-import ProjectList from '../component/projectlist';
+import ProjectList from '../components/projectlist';
 
 const drawerWidth = 0;
 const Logout = () =>{
