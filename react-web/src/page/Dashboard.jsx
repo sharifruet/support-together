@@ -5,17 +5,10 @@ import {
     MdKeyboardArrowUp,
     MdKeyboardDoubleArrowUp,
 } from "react-icons/md";
-import { LuClipboardEdit } from "react-icons/lu";
-import { FaNewspaper, FaUsers } from "react-icons/fa";
-import { FaArrowsToDot } from "react-icons/fa6";
 import moment from "moment";
 import { summary, tasks } from "../assets/data";
-// import UserInfo from "../components/UserInfo";
-// import { Chart } from "../components/Chart";
 import { Table, OverlayTrigger, Popover, Card as BootstrapCard } from "react-bootstrap";
 import { BGS, PRIOTITYSTYELS, TASK_TYPE, getInitials } from "../utils";
-import Avatar from "../components/common/Avatar";
-import AvatarIcon from '../assets/imgIcons/avatar.png';
 import useCrud from "../hooks/useCrud";
 import ProjectCard from "../components/ProjectCard";
 import GlobalContext from "../GlobalContext";
@@ -165,23 +158,33 @@ const UserTable = ({ users }) => {
 
 const Dashboard = () => {
 
-    const { getAll } = useCrud();
-    // Logged in user roles
+    const { getAll, getById } = useCrud();
     const { user } = useContext(GlobalContext);
     const [projects, setProjects] = useState([]);
+    const [organizations, setOrganizations] = useState([]);
     const projectUrl = "/projects"
+    const organizationUrl = "/organizations"
     const fetchProjects = async () => {
         try {
             const data = await getAll(projectUrl);
             setProjects(data);
         } catch (error) {
-            // Handle error here
+            console.error('Error fetching project:', error);
+        }
+    };
+
+    const fetchOrg = async () => {
+        try {
+            const data = await getAll(organizationUrl);
+            setOrganizations(data);
+        } catch (error) {
             console.error('Error fetching project:', error);
         }
     };
 
     useEffect(() => {
         fetchProjects();
+        fetchOrg();
     }, []);
 
     const filteredProjects = () => {
@@ -190,37 +193,42 @@ const Dashboard = () => {
         });
     };
 
+    const filteredOrganizations = () => {
+        const organizationIds =  projects?.filter(project => project.organizationId);
+        return organizations?.filter(organization => {
+            return organizationIds.some(orgId => orgId === organization.id);
+        });
+    };
+
     const userProjects = filteredProjects() ?? [];
+
+    const projectsOrg = filteredOrganizations() ?? [];
 
     const totals = summary.tasks;
 
     const stats = [
         {
             _id: "1",
-            label: "TOTAL TASK",
+            label: "TOTAL TICKETS",
             total: summary?.totalTasks || 0,
-            icon: <FaNewspaper />,
             bg: "bg-primary",
         },
         {
             _id: "2",
-            label: "COMPLETED TASK",
+            label: "COMPLETED TICKETS",
             total: totals["completed"] || 0,
-            icon: <MdAdminPanelSettings />,
             bg: "bg-success",
         },
         {
             _id: "3",
-            label: "TASK IN PROGRESS",
+            label: "PROGRESS TICKETS",
             total: totals["in progress"] || 0,
-            icon: <LuClipboardEdit />,
             bg: "bg-warning",
         },
         {
             _id: "4",
-            label: "TODOS",
+            label: "PENDING TICKETS",
             total: totals["todo"],
-            icon: <FaArrowsToDot />,
             bg: "bg-danger",
         },
     ];
@@ -236,9 +244,7 @@ const Dashboard = () => {
                 <div className="h-100 d-flex flex-column justify-between flex-1">
                     <p className="text-base text-muted">{label}</p>
                     <span className="text-2xl font-semibold">{count}</span>
-                    <span className="text-sm text-gray-400">{"110 last month"}</span>
                 </div>
-
                 <div className={`w-10 h-10 rounded-circle d-flex align-items-center justify-center text-white ${bg}`}>
                     {icon}
                 </div>
@@ -263,7 +269,6 @@ const Dashboard = () => {
                     </div>
                 ))}
             </div>
-
             <div className="w-100 d-flex flex-column flex-md-row gap-4 py-4">
                 <TaskTable tasks={summary.last10Task} />
                 <UserTable users={summary.users} />

@@ -12,7 +12,10 @@ import { FaList } from "react-icons/fa";
 import UserInfo from "./UserInfo";
 import { IoMdAdd } from "react-icons/io";
 import GlobalContext from "../GlobalContext";
+import SupportForm from "../components/supportform";
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import TicketList from '../components/ticketlist';
+
 
 const ICONS = {
     high: <MdKeyboardDoubleArrowUp />,
@@ -21,17 +24,22 @@ const ICONS = {
 };
 
 const ProjectCard = ({ project }) => {
-    const { user } = useContext(GlobalContext); // Get user data from context
+    const { user } = useContext(GlobalContext); 
+    const {organizations} = useContext(GlobalContext);
+    const {topics} = useContext(GlobalContext);
     const [open, setOpen] = useState(false);
-
+    const [isVisible, setIsVisible] = useState(false);
     const isRoleAllowed = (role) => {
         const roles = user?.roles?.map(userRole => userRole?.role);
         return roles?.includes(role);
     };
-
+    const toggleComponent = () => {
+        setIsVisible(!isVisible);
+    };
     return (
         <>
             <div style={{ width: "100%" }} className="bg-white shadow p-4 rounded">
+                {isVisible && <SupportForm project={project}/>}
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <div
                         style={{
@@ -47,15 +55,14 @@ const ProjectCard = ({ project }) => {
                            <BusinessCenterIcon />
                         </span>
                         <span style={{ fontSize: "1.25rem", textTransform: "uppercase", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "#000" }}>
-                            {project?.name}
-                        </span>
+                        {/* [{organizations.find(o=>o.id===project.OrganizationId).name}]  */}
+                        <br/></span>
                     </div>
-
                     {isRoleAllowed("Admin") && <ProjectDialog project={project} />}
                 </div>
 
                 <>
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
                         <div
                             style={{
                                 width: "1rem",
@@ -65,25 +72,14 @@ const ProjectCard = ({ project }) => {
                         />
                         <h4 style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "#000" }}>{project?.name}</h4>
                     </div>
-                    <span style={{ fontSize: "0.875rem", color: "#6b7280" }}>
-                        {formatDate(new Date(project?.createdAt))}
-                    </span>
                 </>
 
-                <div style={{ width: "100%", borderTop: "1px solid #e5e7eb", marginTop: "0.5rem" }} />
+                <div style={{ width: "100%", marginTop: "0.5rem" }} />
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.5rem" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
                         <div style={{ display: "flex", gap: "0.25rem", alignItems: "center", fontSize: "0.875rem", color: "#6b7280" }}>
-                            <BiMessageAltDetail />
-                            <span>{project?.activities?.length}</span>
-                        </div>
-                        <div style={{ display: "flex", gap: "0.25rem", alignItems: "center", fontSize: "0.875rem", color: "#6b7280" }}>
-                            <MdAttachFile />
-                            <span>{project?.assets?.length}</span>
-                        </div>
-                        <div style={{ display: "flex", gap: "0.25rem", alignItems: "center", fontSize: "0.875rem", color: "#6b7280" }}>
-                            <FaList />
-                            <span>0/{project?.subTasks?.length}</span>
+                           <a href="/dashboard/tickets"><FaList /></a> 
+                            <span>{project?.subTasks?.length}</span>
                         </div>
                     </div>
 
@@ -127,7 +123,7 @@ const ProjectCard = ({ project }) => {
                     </div>
                 ) : (
                     <div style={{ padding: "0.75rem 0", borderTop: "1px solid #e5e7eb" }}>
-                        <span style={{ color: "#9ca3af" }}>No Sub Task</span>
+                        <TicketList project={project}/>
                     </div>
                 )}
 
@@ -138,7 +134,7 @@ const ProjectCard = ({ project }) => {
                         style={{ width: "100%", display: "flex", gap: "0.5rem", alignItems: "center", justifyContent: "center", fontSize: "0.875rem", color: "#9ca3af", fontWeight: "500", cursor: isRoleAllowed("Admin") ? "pointer" : "not-allowed" }}
                     >
                         <IoMdAdd style={{ fontSize: "1.25rem" }} />
-                        <span>ADD SUBTASK</span>
+                        <button variant="outlined" onClick={toggleComponent}>Create Tickets</button>
                     </button>
                 </div>
             </div>
