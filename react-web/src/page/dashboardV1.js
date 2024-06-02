@@ -2,10 +2,10 @@ import  React, { useContext, useEffect } from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
-import SupportList from '../component/supportleftmenu';
+import SupportList from '../components/supportleftmenu';
 import Grid from '@mui/material/Grid';
 import { Card } from 'react-bootstrap';
-import ProjectList from '../component/projectlist';
+import ProjectList from '../components/projectlist';
 import GlobalContext from '../GlobalContext';
 
 const defaultTheme = createTheme();

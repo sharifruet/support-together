@@ -2,12 +2,12 @@ import { useState, useCallback, useContext, useEffect } from 'react';
 import GlobalContext from '../GlobalContext';
 import axios from 'axios';
 
-const BASE_URL = 'http://support.i2gether.com/api';
+const BASE_URL = 'https://support.i2gether.com/api';
 
 const useCrud = () => {
     const getToken = () => localStorage.getItem('accessToken');
 
-    const { onLogout, accesstoken, loggedIn } = useContext(GlobalContext);
+    const { onLogout, accesstoken, loggedIn, setLoggedIn } = useContext(GlobalContext);
 
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -42,6 +42,10 @@ const useCrud = () => {
             const response = await axiosInstance(requestConfig);
             return response.data;
         } catch (err) {
+            console.log(err.response.data.error)
+            const errorMessage = "Invalid token.";
+            const ServerErrorMessage = err.response.data.error;
+            ServerErrorMessage === errorMessage && setLoggedIn(false);
             setError(err.response.data.error);
             throw err.response.data.error;
         } finally {
@@ -69,7 +73,11 @@ const useCrud = () => {
         return loggedIn && fetchApi(`${endpoint}/${id}`, 'DELETE');
     }, [fetchApi]);
 
-    return { data, loading, error, getAll, getById, create, update, remove };
+    const changePassword = useCallback((endpoint, payload) => {
+        return loggedIn && fetchApi(`${endpoint}`, 'PUT', payload);
+    }, [fetchApi]);
+
+    return { data, loading, error, getAll, getById, create, update, remove, changePassword };
 };
 
 export default useCrud;

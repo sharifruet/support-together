@@ -44,13 +44,16 @@ const sendEmailWithTemplate = async (templateId, recipient, placeholders) => {
             emailBody = emailBody.replace(regex, value);
         }
 
+       
         // Send the email
         const info = await transporter.sendMail({
             from: 'supporttogether@i2gether.com',
             to: recipient,
             subject: emailTemplate.subject,
-            text: emailBody
+            html: emailBody
         });
+
+        //console.log(info);
 
         console.log('Email sent:', info.messageId);
     } catch (error) {

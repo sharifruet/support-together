@@ -237,9 +237,9 @@ const InviteUsersModal = ({ modalType, project, closeModal, fetchProjects }) => 
                                             sx={{ color: fieldErrors.role ? 'red' : 'inherit' }}
                                         />
                                         <FormControlLabel 
-                                            value="User" 
+                                            value="Customer" 
                                             control={<Radio sx={{ color: fieldErrors.role ? 'red' : 'inherit' }} />} 
-                                            label="User" 
+                                            label="Customer" 
                                             sx={{ color: fieldErrors.role ? 'red' : 'inherit' }}
                                         />
                                     </RadioGroup>

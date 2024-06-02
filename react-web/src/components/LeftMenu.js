@@ -4,23 +4,19 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import EmailIcon from '@mui/icons-material/Email';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import LocalActivityOutlinedIcon from '@mui/icons-material/LocalActivityOutlined';
+import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
 import TopicIcon from '@mui/icons-material/Topic';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import StarBorder from '@mui/icons-material/StarBorder';
-import GlobalContext from '../GlobalContext'; // Assuming you have a global context for user data
+import GlobalContext from '../GlobalContext';
 
 const LeftMenu = () => {
     const location = useLocation();
     const [openInbox, setOpenInbox] = useState(false);
-    const {user} = useContext(GlobalContext); // Get user data from context
+    const { user } = useContext(GlobalContext); // Get user data from context
 
     useEffect(() => {
         if (location.pathname.endsWith('/topics')) {
@@ -28,15 +24,11 @@ const LeftMenu = () => {
         }
     }, [location.pathname]);
 
-    const handleInboxClick = () => {
-        setOpenInbox(!openInbox);
-    };
-
     // Function to check if a role is allowed for the current user
     const isRoleAllowed = (role) => {
         //console.log(user);
-        const roles = user.roles.map(userRole => userRole.role);
-        return roles.includes(role);
+        const roles = user?.roles?.map(userRole => userRole?.role);
+        return roles?.includes(role);
     };
 
     return (
@@ -53,6 +45,17 @@ const LeftMenu = () => {
                 <ListItemText primary="Dashboard" style={{ color: location.pathname.endsWith('/dashboard') ? '#14DB8D' : '#fff' }} />
             </ListItemButton>
 
+            <ListItemButton
+                selected={location.pathname === '/dashboard/tickets'}
+                component={Link}
+                to="/dashboard/tickets"
+            >
+                <ListItemIcon>
+                    <LocalActivityOutlinedIcon style={{ color: location.pathname.endsWith('/tickets') ? '#14DB8D' : '#fff', fontSize: '24px' }} />
+                </ListItemIcon>
+                <ListItemText primary="Tickets" style={{ color: location.pathname.endsWith('/tickets') ? '#14DB8D' : '#fff' }} />
+            </ListItemButton>
+
             {isRoleAllowed('Admin') && (
                 <ListItemButton
                     selected={location.pathname === '/dashboard/emailTemplates'}
@@ -62,7 +65,7 @@ const LeftMenu = () => {
                     <ListItemIcon>
                         <EmailIcon style={{ color: location.pathname.endsWith('/emailTemplates') ? '#14DB8D' : '#fff' }} />
                     </ListItemIcon>
-                    <ListItemText primary="Email Template" style={{ color: location.pathname.endsWith('/emailTemplates') ? '#14DB8D' : '#fff' }} />
+                    <ListItemText primary="Email Templates" style={{ color: location.pathname.endsWith('/emailTemplates') ? '#14DB8D' : '#fff' }} />
                 </ListItemButton>
             )}
 
@@ -75,7 +78,7 @@ const LeftMenu = () => {
                     <ListItemIcon>
                         <CorporateFareIcon style={{ color: location.pathname.endsWith('/organizations') ? '#14DB8D' : '#fff' }} />
                     </ListItemIcon>
-                    <ListItemText primary="Organization" style={{ color: location.pathname.endsWith('/organizations') ? '#14DB8D' : '#fff' }} />
+                    <ListItemText primary="Organizations" style={{ color: location.pathname.endsWith('/organizations') ? '#14DB8D' : '#fff' }} />
                 </ListItemButton>
             )}
 
@@ -88,7 +91,7 @@ const LeftMenu = () => {
                     <ListItemIcon>
                         <BusinessCenterIcon style={{ color: location.pathname.endsWith('/projects') ? '#14DB8D' : '#fff' }} />
                     </ListItemIcon>
-                    <ListItemText primary="Project" style={{ color: location.pathname.endsWith('/projects') ? '#14DB8D' : '#fff' }} />
+                    <ListItemText primary="Projects" style={{ color: location.pathname.endsWith('/projects') ? '#14DB8D' : '#fff' }} />
                 </ListItemButton>
             )}
 
@@ -101,9 +104,19 @@ const LeftMenu = () => {
                     <ListItemIcon>
                         <TopicIcon style={{ color: location.pathname.endsWith('/topics') ? '#14DB8D' : '#fff' }} />
                     </ListItemIcon>
-                    <ListItemText primary="Topic" style={{ color: location.pathname.endsWith('/topics') ? '#14DB8D' : '#fff' }} />
+                    <ListItemText primary="Topics" style={{ color: location.pathname.endsWith('/topics') ? '#14DB8D' : '#fff' }} />
                 </ListItemButton>
             )}
+            <ListItemButton
+                selected={location.pathname === '/dashboard/changePassword'}
+                component={Link}
+                to="/dashboard/changePassword"
+            >
+                <ListItemIcon>
+                    <LockResetOutlinedIcon style={{ color: location.pathname.endsWith('/changePassword') ? '#14DB8D' : '#fff', fontSize: '24px' }} />
+                </ListItemIcon>
+                <ListItemText primary="Change Password" style={{ color: location.pathname.endsWith('/changePassword') ? '#14DB8D' : '#fff' }} />
+            </ListItemButton>
         </List>
     );
 };

@@ -1,24 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
 import { TextField, CircularProgress, Autocomplete } from "@mui/material";
-import useTopicService from '../../hooks/useTopicService';
-import useProjectService from '../../hooks/useProjectService';
+import useCrud from '../../hooks/useCrud';
 import CustomButton from "../common/CustomButton";
 import DeleteText from "../common/DeleteText";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
 import ModalOverlay from "../common/ModalOverlay";
+import EmailField from "./EmailField";
 
-const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
+const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => {
     // Destructuring service or api calls functions
-    const { createTopic, updateTopic, deleteTopic } = useTopicService();
-    const { getAllProjects } = useProjectService();
+    const { getAll, create, update, remove, loading } = useCrud();
+
+    // State to manage fyiTo
+    const [selectedCcEmails, setSelectedCcEmails] = useState([]);
 
     // State to manage form data
     const [formData, setFormData] = useState({
-        code: "",
-        projectId: project !== null ? project.id : "",
-        name: "",
+        topicId: "",
+        title: "",
         description: "",
+        priority: "",
+        requestedBy: "",
+        attachments: [],
+        fyiTo: selectedCcEmails,
         success: "",
         error: "",
         id: ""
@@ -26,27 +31,42 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
     // State to manage individual field errors
     const [fieldErrors, setFieldErrors] = useState({
-        code: "",
-        name: "",
+        topicId: "",
+        title: "",
         description: "",
-        projectId: "",
+        priority: "",
+        requestedBy: "",
+        attachments: "",
+        fyiTo: "",
     });
 
-    // State to manage loading status
-    const [loading, setLoading] = useState(false);
+    // Priority AutoComplete's options
+    const priorityOptions = [
+        { id: 1, name: "Urgent", value: "P1" },
+        { id: 2, name: "High", value: "P2" },
+        { id: 3, name: "Medium", value: "P3" },
+        { id: 4, name: "Low", value: "P4" },
+        { id: 5, name: "Normal", value: "P5" },
+    ];
+
+
+    // State to manage selected priority option
+    const [selectedPriority, setSelectedPriority] = useState(null);
     // State to manage Material Ui AutoComplete UI loading status
     const [autocompleteLoading, setAutocompleteLoading] = useState(false);
     // State to manage Material Ui AutoComplete UI options
     const [options, setOptions] = useState([]);
     // State to manage Material Ui AutoComplete UI selected option
-    const [selectedProject, setSelectedProject] = useState(null);
+    const [selectedTopic, setSelectedTopic] = useState(null);
     // Reference for the autocomplete field
     const autocompleteRef = useRef(null);
+    // url for fetch all topic for material ui AutoComplete component
+    const topicUrl = "/topics";
 
     // Object to show button labels based on the modal type
     const buttonLabels = {
-        add: "Create Topic", // Label for the "add" modal type
-        edit: "Update Topic", // Label for the "edit" modal type
+        add: "Create Ticket", // Label for the "add" modal type
+        edit: "Update Ticket", // Label for the "edit" modal type
         delete: "Confirm" // Label for the "delete" modal type
     };
 
@@ -59,9 +79,9 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
     // Object to show Modal Header Name based on the modal type
     const modalName = {
-        add: "Add Topic", // Label for the "add" modal type
-        edit: "Edit Topic", // Label for the "edit" modal type
-        delete: "Delete Topic" // Label for the "delete" modal type
+        add: "Create Ticket", // Label for the "add" modal type
+        edit: "Edit Ticket", // Label for the "edit" modal type
+        delete: "Delete Ticket" // Label for the "delete" modal type
     };
 
     // loader for Material UI Autocomplete
@@ -75,15 +95,15 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                     autocompleteRef.current.focus();  // AutoFocus on the autocomplete field
                 }
             }, 1000);
-        } else setSelectedProject(null);
+        } else setSelectedTopic(null);
     }, [modalType]);
 
-    // Fetch all projects for the Autocomplete options
+    // Fetch all topics for the Autocomplete options
     useEffect(() => {
-        const fetchProjects = async () => {
+        const fetchTopics = async () => {
             try {
-                const data = await getAllProjects();
-                const formattedOptions = data.map(project => ({ id: project.id, name: project.name, value: project.id }));
+                const data = await getAll(topicUrl);
+                const formattedOptions = data?.map(topic => ({ id: topic.id, name: topic.name, value: topic.id }));
                 setOptions(formattedOptions);
             } catch (error) {
                 // Handle error here
@@ -94,60 +114,82 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
             }
         };
 
-        fetchProjects();
+        fetchTopics();
     }, []);
 
-    // Effect to initialize form data based on modal type and topic(passed props)
+    // Effect to initialize form data based on modal type and ticket(passed props)
     useEffect(() => {
-        if (modalType === 'edit' && topic && options.length > 0) {
-            const { name, code, description, id, ProjectId } = topic;
-            const matchedProject = options.find(option => option.id === ProjectId);
+        if (modalType === 'edit' && ticket && options.length > 0) {
+            const { topicId, title, description, priority, requestedBy, attachments, fyiTo, id } = ticket;
+            const matchedTopic = options?.find(option => option.id === topicId);
+            const matchedPriority = priorityOptions?.find(option => option.value === priority);
 
-            // To prefilled the material ui AutoComplete component
-            setSelectedProject(matchedProject);
+            // To prefill the material ui AutoComplete component
+            matchedTopic && setSelectedTopic(matchedTopic);
+            // To prefill Priority material ui AutoComplete component
+            matchedPriority && setSelectedPriority(matchedPriority);
+
             setFormData({
                 ...formData,
-                projectId: ProjectId || "",
-                code: code,
-                name: name || "",
-                description: description || "",
                 id: id || "",
+                topicId: topicId || "",
+                title: title,
+                description: description || "",
+                priority: priority || "",
+                requestedBy: requestedBy || "",
+                attachments: attachments || [],
+                fyiTo: fyiTo || "",
                 success: false,
                 error: false,
             });
-        } else if (modalType === 'add' && project !== null) {
-            const matchedProject = options.find(option => option.id === project.id);
+        } else if (modalType === 'add' && topic !== null) {
+            const matchedTopic = options.find(option => option.id === topic.id);
 
-            setSelectedProject(matchedProject);
+            setSelectedTopic(matchedTopic);
             setFormData(prevData => ({
                 ...prevData,
-                projectId: project.id,
+                topicId: topic.id,
             }));
         } else {
             // Clear form data if modalType is not 'edit'
             setFormData({
                 ...formData,
-                projectId: project !== null ? project.id : "",
-                code: "",
-                name: "",
+                topicId: "",
+                title: "",
                 description: "",
-                success: "",
-                error: "",
+                priority: "",
+                requestedBy: "",
+                attachments: "",
+                fyiTo: "",
                 id: "",
             });
 
             // Clear empty field error on close modal
             setFieldErrors({
-                code: "",
-                name: "",
+                topicId: "",
+                title: "",
                 description: "",
-                projectId: "",
+                priority: "",
+                requestedBy: "",
+                attachments: "",
+                fyiTo: [],
             });
 
-            // Reset selectedOrganization state
-            setSelectedProject(null);
+            // Reset selectedTopic state
+            setSelectedTopic(null);
+            // setSelectedCcEmails([])
         }
-    }, [modalType, topic, options, project]);
+    }, [modalType, ticket, options, topic, priorityOptions]); //formData
+
+    // Effect to set Fyi to
+    useEffect(() => {
+        if (selectedCcEmails.length > 0) {
+            setFormData(prevData => ({
+                ...prevData,
+                fyiTo: selectedCcEmails,
+            }));
+        }
+    }, [selectedCcEmails])
 
     // Effect to reset error and success messages after 2 seconds
     useEffect(() => {
@@ -165,23 +207,47 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
     // Function to handle form Material UI Autocomplete component changes
     const handleAutocompleteChange = (event, newValue) => {
-        setSelectedProject(newValue);
+        setSelectedTopic(newValue);
         setFormData((prevData) => ({
             ...prevData,
-            projectId: newValue ? newValue.id : "",
+            topicId: newValue ? newValue.id : "",
         }));
 
         // Clear error message for the field when it receives a value
         if (newValue) {
             setFieldErrors((prevErrors) => ({
                 ...prevErrors,
-                projectId: "", // Clear error message if field has a value
+                topicId: "", // Clear error message if field has a value
             }));
         } else {
             // If field value becomes empty, show error message
             setFieldErrors((prevErrors) => ({
                 ...prevErrors,
-                projectId: "Organization is required",
+                topicId: "Organization is required",
+            }));
+        }
+    };
+
+    // Function to handle form Material UI Autocomplete component changes
+    const handlePriorityChange = (event, newValue) => {
+        setSelectedPriority(newValue);
+        console.log(newValue);
+        setFormData((prevData) => ({
+            ...prevData,
+            priority: newValue ? newValue.value : "",
+        }));
+
+        // Clear error message for the field when it receives a value
+        if (newValue) {
+            setFieldErrors((prevErrors) => ({
+                ...prevErrors,
+                priority: "", // Clear error message if field has a value
+            }));
+        } else {
+            // If field value becomes empty, show error message
+            setFieldErrors((prevErrors) => ({
+                ...prevErrors,
+                priority: "Priority is required",
             }));
         }
     };
@@ -228,10 +294,13 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
         // Define fields to validate
         const fieldsToValidate = [
-            { name: "code", value: formData.code },
-            { name: "name", value: formData.name },
+            { name: "topicId", value: formData.topicId },
+            { name: "title", value: formData.title },
             { name: "description", value: formData.description },
-            { name: "projectId", value: formData.projectId }
+            { name: "priority", value: formData.priority },
+            { name: "requestedBy", value: formData.requestedBy },
+            { name: "attachments", value: formData.attachments },
+            { name: "fyiTo", value: formData.fyiTo }
         ];
 
         // Validate all fields before submission
@@ -242,35 +311,38 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
         // Define success messages for different modal types
         const successMessages = {
-            add: "Topic added successfully",
-            edit: "Topic updated successfully",
-            delete: "Topic deleted successfully"
+            add: "Ticket created successfully",
+            edit: "Ticket updated successfully",
+            delete: "Ticket deleted successfully"
         };
 
         // Define actions for different modal types
         const actions = {
-            add: () => createTopic(formData),
-            edit: () => updateTopic(formData.id, formData),
-            delete: () => deleteTopic(topic.id)
+            add: () => create(formData),
+            edit: () => update(formData.id, formData),
+            delete: () => remove(Number(ticket.id))
         };
 
         try {
-            setLoading(true);
+            console.log(formData);
+            return;
             const responseData = Object.keys(errors).length === 0 && await actions[modalType]();
             console.log(responseData)
 
             // Check the response and update the form data with success or error message
             if (responseData.message === successMessages[modalType] || typeof responseData === 'object') {
-                fetchTopics && fetchTopics();
+                fetchTickets && fetchTickets();
                 setFormData({
-                    name: "",
-                    code: "",
+                    topicId: "",
+                    title: "",
                     description: "",
-                    projectId: "",
+                    priority: "",
+                    requestedBy: "",
+                    attachments: "",
+                    fyiTo: "",
                     success: responseData.message ? responseData.message : successMessages[modalType],
                     error: "",
                 });
-                setSelectedProject(null);
             } else {
                 setFormData((prevData) => ({
                     ...prevData,
@@ -283,12 +355,8 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                 ...prevData,
                 error: error,
             }));
-        } finally {
-            setLoading(false);
         }
     };
-
-
     return (
         <>
             <ModalOverlay
@@ -300,22 +368,22 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                 {/* Content of the modal */}
                 <form className="w-full" onSubmit={handleSubmit}>
                     {modalType === 'delete' ? (
-                        <DeleteText message={"Topic"} />
+                        <DeleteText message={"Ticket"} />
                     ) : (
                         <div>
-                            <div className="flex flex-col space-y-1 w-full">
+                            <div className="flex flex-col space-y-1 w-full py-4">
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
                                     loading={autocompleteLoading}
-                                    value={selectedProject}
+                                    value={selectedTopic}
                                     onChange={handleAutocompleteChange}
                                     options={options}
                                     getOptionLabel={(option) => option.name}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label="Select Project"
+                                            label="Select Topic"
                                             inputRef={autocompleteRef}
                                             InputProps={{
                                                 ...params.InputProps,
@@ -326,49 +394,64 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                                                     </>
                                                 ),
                                             }}
-                                            error={Boolean(fieldErrors.projectId)} // Set error prop based on field error
-                                            helperText={fieldErrors.projectId} // Provide the error message
+                                            error={Boolean(fieldErrors.topicId)} // Set error prop based on field error
+                                            helperText={fieldErrors.topicId} // Provide the error message
                                         />
                                     )}
                                     getOptionKey={(option) => option.id}
                                     autoFocus
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full py-4">
-                                <TextField
-                                    id="code"
-                                    variant="outlined"
-                                    name="code"
-                                    autoComplete="code"
-                                    label="Code"
-                                    value={formData.code}
-                                    onChange={handleInputChange}
-                                    fullWidth
-                                    error={Boolean(fieldErrors.code)} // Set error prop based on field error
-                                    helperText={fieldErrors.code} // Provide the error message
+                            <div className="flex flex-col space-y-1 w-full mb-4">
+                                <Autocomplete
+                                    disablePortal
+                                    id="combo-box-demo1"
+                                    loading={autocompleteLoading}
+                                    value={selectedPriority}
+                                    onChange={handlePriorityChange}
+                                    options={priorityOptions}
+                                    getOptionLabel={(priorityOption) => priorityOption.name}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Select Priority"
+                                            InputProps={{
+                                                ...params.InputProps,
+                                                endAdornment: (
+                                                    <>
+                                                        {autocompleteLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                                                        {params.InputProps.endAdornment}
+                                                    </>
+                                                ),
+                                            }}
+                                            error={Boolean(fieldErrors.priority)} // Set error prop based on field error
+                                            helperText={fieldErrors.priority} // Provide the error message
+                                        />
+                                    )}
+                                    getOptionKey={(priorityOptions) => priorityOptions.id}
                                 />
                             </div>
                             <div className="flex flex-col space-y-1 w-full mb-4">
                                 <TextField
-                                    id="name"
+                                    id="title"
                                     variant="outlined"
-                                    name="name"
-                                    autoComplete="name"
-                                    label="Name"
-                                    value={formData.name}
+                                    name="title"
+                                    autoComplete="title"
+                                    label="Title"
+                                    value={formData.title}
                                     onChange={handleInputChange}
                                     fullWidth
-                                    error={Boolean(fieldErrors.code)} // Set error prop based on field error
-                                    helperText={fieldErrors.code} // Provide the error message
+                                    error={Boolean(fieldErrors.title)} // Set error prop based on field error
+                                    helperText={fieldErrors.title} // Provide the error message
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full">
+                            <div className="flex flex-col space-y-1 w-full mb-4">
                                 <TextField
                                     id="description"
                                     variant="outlined"
                                     name="description"
-                                    autoComplete="description"
                                     label="Description"
+                                    autoComplete="description"
                                     value={formData.description}
                                     onChange={handleInputChange}
                                     fullWidth
@@ -377,6 +460,25 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                                     error={Boolean(fieldErrors.description)} // Set error prop based on field error
                                     helperText={fieldErrors.description} // Provide the error message
                                 />
+                            </div>
+                            <div className="flex flex-col space-y-1 w-full mb-4">
+                                <TextField
+                                    name="requestedBy"
+                                    value={formData.requestedBy}
+                                    onChange={handleInputChange}
+                                    variant="outlined"
+                                    className="w-full"
+                                    id="requestedBy"
+                                    label="Requested By"
+                                    fullWidth
+                                    autoComplete="requestedBy"
+                                    error={Boolean(fieldErrors.requestedBy)} // Set error prop based on field error
+                                    helperText={fieldErrors.requestedBy} // Provide the error message
+                                />
+                            </div>
+
+                            <div className="flex flex-col space-y-1 w-full mb-4">
+                                <EmailField setSelectedCcEmails={setSelectedCcEmails} />
                             </div>
                         </div>
                     )}
@@ -395,5 +497,5 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
     );
 };
 
-export default TopicModal;
+export default TicketModal;
 

@@ -93,9 +93,11 @@ const Organizations = () => {
             <Container>
                 <Row className="mb-3">
                     <Col>
-                        <div className="col-span-1 flex items-center" onClick={() => handleOpenModal(null, "add")}>
+                        <div className="col-span-1 flex items-center">
                             {/* It's open the add organization modal */}
-                            <OpenModalButton label={"Add Organization"} icon={<AddIcon />} />
+                            <div onClick={() => handleOpenModal(null, "add")}>
+                                <OpenModalButton label={"Add Organization"} icon={<AddIcon />} />
+                            </div>
                         </div>
                     </Col>
                     <Col>

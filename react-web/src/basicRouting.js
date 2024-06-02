@@ -5,17 +5,19 @@ import Login from "./page/Login";
 import Signup from "./page/signup";
 import Slider from "./layout/slider";
 import ForgotPass from "./page/forgotPass";
-import Dashboard from "./page/dashboard";
+import Dashboard from "./page/Dashboard";
 import AdminDashboard from "./page/admindashboard";
 import Supportdashboard from "./page/supportdashboard";
-import SupportForm from "./component/supportform";
-import ProjectListOrgwise from "./component/projectlistorgwise";
-import SideBar from "./component/SideBar";
-import Organizations from "./component/organizations/Organizations";
-import Projects from "./component/projects/Projects";
-import Topics from "./component/topics/Topics";
-import EmailTemplates from "./component/emails/EmailTemplates";
-import ProtectedRoute from "./component/ProtectedRoute";
+import SupportForm from "./components/supportform";
+import ProjectListOrgwise from "./components/projectlistorgwise";
+import SideBar from "./components/SideBar";
+import Organizations from "./components/organizations/Organizations";
+import Projects from "./components/projects/Projects";
+import Topics from "./components/topics/Topics";
+import EmailTemplates from "./components/emails/EmailTemplates";
+import ProtectedRoute from "./components/ProtectedRoute";
+import ChangePassword from "./page/ChangePassword";
+import Tickets from "./components/tickets/Tickets";
 
 const RouteComponent = () => {
     return (
@@ -30,9 +32,9 @@ const RouteComponent = () => {
 
             {/* Routes that should be wrapped by the SideBar component */}
             <Route path='dashboard' element={<SideBar />}>
-
-                <Route index element={<Dashboard />} /> 
-
+                <Route index element={<Dashboard />} />
+                <Route path='changePassword' element={<ChangePassword />} />
+                <Route path='tickets' element={<Tickets />} />
                 <Route element={<ProtectedRoute roles={['Admin']} />}>
                     <Route path='adminDashboard' element={<AdminDashboard />} />
                     <Route path='emailTemplates' element={<EmailTemplates />} />
