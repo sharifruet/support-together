@@ -128,14 +128,7 @@ const ProjectCard = ({ project }) => {
                 )}
 
                 <div style={{ width: "100%", paddingBottom: "0.5rem" }}>
-                    <button
-                        onClick={() => setOpen(true)}
-                        disabled={!isRoleAllowed("Admin")}
-                        style={{ width: "100%", display: "flex", gap: "0.5rem", alignItems: "center", justifyContent: "center", fontSize: "0.875rem", color: "#9ca3af", fontWeight: "500", cursor: isRoleAllowed("Admin") ? "pointer" : "not-allowed" }}
-                    >
-                        <IoMdAdd style={{ fontSize: "1.25rem" }} />
-                        <button variant="outlined" onClick={toggleComponent}>Create Tickets</button>
-                    </button>
+                    <button className="btn btn-primary" onClick={toggleComponent}>Create Ticket</button>
                 </div>
             </div>
         </>

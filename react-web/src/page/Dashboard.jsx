@@ -158,12 +158,10 @@ const UserTable = ({ users }) => {
 
 const Dashboard = () => {
 
-    const { getAll, getById } = useCrud();
+    const { getAll } = useCrud();
     const { user } = useContext(GlobalContext);
     const [projects, setProjects] = useState([]);
-    const [organizations, setOrganizations] = useState([]);
     const projectUrl = "/projects"
-    const organizationUrl = "/organizations"
     const fetchProjects = async () => {
         try {
             const data = await getAll(projectUrl);
@@ -173,18 +171,8 @@ const Dashboard = () => {
         }
     };
 
-    const fetchOrg = async () => {
-        try {
-            const data = await getAll(organizationUrl);
-            setOrganizations(data);
-        } catch (error) {
-            console.error('Error fetching project:', error);
-        }
-    };
-
     useEffect(() => {
         fetchProjects();
-        fetchOrg();
     }, []);
 
     const filteredProjects = () => {
@@ -193,16 +181,9 @@ const Dashboard = () => {
         });
     };
 
-    const filteredOrganizations = () => {
-        const organizationIds =  projects?.filter(project => project.organizationId);
-        return organizations?.filter(organization => {
-            return organizationIds.some(orgId => orgId === organization.id);
-        });
-    };
 
     const userProjects = filteredProjects() ?? [];
 
-    const projectsOrg = filteredOrganizations() ?? [];
 
     const totals = summary.tasks;
 
@@ -269,10 +250,7 @@ const Dashboard = () => {
                     </div>
                 ))}
             </div>
-            <div className="w-100 d-flex flex-column flex-md-row gap-4 py-4">
-                <TaskTable tasks={summary.last10Task} />
-                <UserTable users={summary.users} />
-            </div>
+           
         </div>
     );
 };
