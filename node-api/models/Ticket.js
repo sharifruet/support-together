@@ -8,6 +8,10 @@ const Ticket = db.define('Ticket', {
     primaryKey: true,
     autoIncrement: true
   },
+  code: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   title: {
     type: DataTypes.STRING,
     allowNull: false
@@ -61,6 +65,7 @@ const Ticket = db.define('Ticket', {
     type: DataTypes.INTEGER,
     allowNull: false
   }
+  
 });
 
 module.exports = Ticket;
