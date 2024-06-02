@@ -14,7 +14,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
-import { TextareaAutosize } from '@mui/material';
+import { TextareaAutosize, colors } from '@mui/material';
 import TableHead from '@mui/material/TableHead';
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Upload from './upload';
@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState , useEffect, useContext} from 'react';
 import axios from "../api/axios";
 const TICKET_URL = "/tickets";
+const ProjWiseTICKET_URL = "/tickets/project";
 const TOPIC_URL = "/topics";
 
 //const rows = [];
@@ -40,7 +41,11 @@ const imgstyle = {
   minHeight: '90px',  
   width: '80px',
   border: '1px solid #888',  
-}
+};
+const theader = {
+  backgroundColor: '#ddd',
+  borderRadius: '5px',
+};
 const inputArr = [
   {
     type: "text",
@@ -49,7 +54,7 @@ const inputArr = [
   }
 ];
 
-export default function TicketList() {
+  const TicketList = ({ project }) => {
   const [tickets, setTickets] = useState([]);
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
@@ -108,7 +113,7 @@ useEffect(() => {
 }, [databyid]);
 
   useEffect(() => {
-    axios.get(TICKET_URL, gContext.headerConfig()).then((response) => {
+    axios.get( `${ProjWiseTICKET_URL}/${project.id}`, gContext.headerConfig()).then((response) => {
       setTickets(response.data);
     });
 
@@ -263,16 +268,6 @@ useEffect(() => {
             <Grid sm={2}><br/><br/><button className="form-control add"  onClick={addInput} type="button">+</button></Grid>
             <Grid item xs={12}>
                 <label>Attached your document : &nbsp;</label>
-                {/* <input type="file" multiple onChange={handleFileChange} />
-                <ol>
-                  {Array.from(files).map((file, index) => (
-                    <li key={index}>
-                      {file.name}
-                      &nbsp; <HighlightOffIcon onClick={() => handleRemoveFile(index)}/>
-                    </li>
-                  ))}
-                </ol> */}
-                <label>Attached your document : &nbsp;</label>
                 <br/>
                 <Upload cb={cb}/>
                   {filepth && <Card style={imgstyle}>
@@ -295,8 +290,10 @@ useEffect(() => {
           <TableContainer>
             <Table>
               <TableHead>
-                <TableRow>
+                <TableRow style={theader}>
                   <TableCell>Title</TableCell>
+                  <TableCell>Requested By</TableCell>
+                  <TableCell>Status</TableCell>
                   <TableCell align="right">Action</TableCell>
                 </TableRow>
               </TableHead>
@@ -305,6 +302,8 @@ useEffect(() => {
                   return (
                     <TableRow>
                       <TableCell align="left">{row.title}</TableCell>
+                      <TableCell align="left">{row.requestedBy}</TableCell>
+                      <TableCell align="left">{row.status}</TableCell>
                       <TableCell align="right"><i role="button" onClick={() => handleShow(setTid(row.id))} className="bi bi-pencil-square"></i></TableCell>
                     </TableRow>
                   );
@@ -315,4 +314,5 @@ useEffect(() => {
       </Box>
     </>
   );
-}
+};
+export default TicketList;

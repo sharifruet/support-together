@@ -47,7 +47,7 @@ const formtitle = {
   border: "1px solid #ddd",
   padding: "10px"
 }
-export default function SupportForm() {
+export default function SupportForm({ project }) {
 
   let [ title, setTitle ] = useState();
   let [ topicId, setTopic ] = useState();
@@ -61,12 +61,6 @@ export default function SupportForm() {
   const [arr, setArr] = useState([inputArr]);
   const gContext = useContext(GlobalContext);
   const navigate = useNavigate();
-
-  // const handleRemoveFile = (index) => {
-  //   const newFiles = [...files];
-  //   newFiles.splice(index, 1);
-  //   setFiles(newFiles);
-  // };
   const addInput = () => {
     setArr(s => {
       return [
@@ -96,7 +90,6 @@ export default function SupportForm() {
       return newArr;
     });
   };
-  //console.log(fyiTo);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -106,7 +99,7 @@ export default function SupportForm() {
         gContext.headerConfig()
       );
       alert('Data inserted successfully.');
-      navigate("/Dashboard");
+      navigate("/dashboard/tickets");
     } catch (err) {
       if (!err?.response) {
         alert("No Server Response");
@@ -130,6 +123,7 @@ export default function SupportForm() {
           <Card style={{padding:'50px'}}>
             <Grid item sm={12} style={formtitle}><h5>Create a new ticket</h5></Grid>
             <Grid container spacing={2}>
+              <Grid sm={12}><br/><b>Project Name</b>: {project?.name}</Grid>
               <Grid item sm={12}>
               <br/><br/>
                 <TextField
