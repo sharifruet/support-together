@@ -15,7 +15,6 @@ const EmailField = ({ setSelectedCcEmails }) => {
 
     useEffect(() => {
         if (ccList.length > 0) {
-            console.log('CC list updated:', ccList);
             setSelectedCcEmails(ccList);
         }
     }, [ccList]);
@@ -81,7 +80,7 @@ const EmailField = ({ setSelectedCcEmails }) => {
                 renderInput={(params) => (
                     <TextField
                         {...params}
-                        label="CC"
+                        label="Fyi To"
                         variant="outlined"
                     />
                 )}

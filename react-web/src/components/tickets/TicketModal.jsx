@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { TextField, CircularProgress, Autocomplete, Chip, Paper, IconButton } from "@mui/material";
+import { TextField, CircularProgress, Autocomplete } from "@mui/material";
 import useCrud from '../../hooks/useCrud';
 import CustomButton from "../common/CustomButton";
 import DeleteText from "../common/DeleteText";
@@ -12,6 +12,9 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
     // Destructuring service or api calls functions
     const { getAll, create, update, remove, loading } = useCrud();
 
+    // State to manage fyiTo
+    const [selectedCcEmails, setSelectedCcEmails] = useState([]);
+
     // State to manage form data
     const [formData, setFormData] = useState({
         topicId: "",
@@ -20,7 +23,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
         priority: "",
         requestedBy: "",
         attachments: [],
-        fyiTo: [],
+        fyiTo: selectedCcEmails,
         success: "",
         error: "",
         id: ""
@@ -169,14 +172,24 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
                 priority: "",
                 requestedBy: "",
                 attachments: "",
-                fyiTo: "",
+                fyiTo: [],
             });
 
             // Reset selectedTopic state
             setSelectedTopic(null);
-            setSelectedCcEmails([])
+            // setSelectedCcEmails([])
         }
-    }, [modalType, ticket, options, topic]);
+    }, [modalType, ticket, options, topic, priorityOptions]); //formData
+
+    // Effect to set Fyi to
+    useEffect(() => {
+        if (selectedCcEmails.length > 0) {
+            setFormData(prevData => ({
+                ...prevData,
+                fyiTo: selectedCcEmails,
+            }));
+        }
+    }, [selectedCcEmails])
 
     // Effect to reset error and success messages after 2 seconds
     useEffect(() => {
@@ -264,18 +277,6 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
         }
     };
 
-    const [selectedCcEmails, setSelectedCcEmails] = useState([]);
-
-    useEffect(() => {
-        { console.log(selectedCcEmails) }
-    },[selectedCcEmails])
-
-    // Callback function to receive selected values
-    // const handleCcEmailsChange = (emails) => {
-    //     setSelectedCcEmails(emails);
-    //     console.log(selectedCcEmails)
-    // };
-
     // Function to handle empty input or select field
     const validateForm = (fields) => {
         const errors = {};
@@ -323,6 +324,8 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
         };
 
         try {
+            console.log(formData);
+            return;
             const responseData = Object.keys(errors).length === 0 && await actions[modalType]();
             console.log(responseData)
 
@@ -330,9 +333,13 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
             if (responseData.message === successMessages[modalType] || typeof responseData === 'object') {
                 fetchTickets && fetchTickets();
                 setFormData({
-                    name: "",
-                    code: "",
-                    address: "",
+                    topicId: "",
+                    title: "",
+                    description: "",
+                    priority: "",
+                    requestedBy: "",
+                    attachments: "",
+                    fyiTo: "",
                     success: responseData.message ? responseData.message : successMessages[modalType],
                     error: "",
                 });
@@ -471,7 +478,6 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
                             </div>
 
                             <div className="flex flex-col space-y-1 w-full mb-4">
-                                {/* <EmailField label="To" emails={toEmails} setEmails={setToEmails} /> */}
                                 <EmailField setSelectedCcEmails={setSelectedCcEmails} />
                             </div>
                         </div>
