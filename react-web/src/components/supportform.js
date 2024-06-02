@@ -47,6 +47,7 @@ const formtitle = {
   border: "1px solid #ddd",
   padding: "10px"
 }
+
 export default function SupportForm({ project }) {
 
   let [ title, setTitle ] = useState();
@@ -148,21 +149,21 @@ export default function SupportForm({ project }) {
                   onChange={e => setRequestedBy(e.target.value)}
                   value={requestedBy}
                 /><br/><br/>
-                <FormControl variant="standard" sx={{ minWidth: 330 }}>
+                <FormControl variant="standard" sx={{ minWidth: '100%' }}>
                   <InputLabel id="demo-simple-select-standard-label">Select Topic *</InputLabel>
                   <Select label="Topic" name="topicId" id="topicId"
                     onChange={e => setTopic(e.target.value)}>
                     {topiclist.map((tlist) => <MenuItem value={tlist.id}>{tlist.name}</MenuItem>)}
                   </Select>
                 </FormControl>
-                
-                <FormControl variant="standard" sx={{ minWidth: 330 }}>
+                <br/>
+                <FormControl variant="standard" sx={{ minWidth: '30%', float: 'left' }}>
                   <InputLabel id="demo-simple-select-standard-label">Select Priority *</InputLabel>
                   <Select label="Priority" name="priority" id="priority"
                   onChange={e => setPriority(e.target.value)}>
                       <MenuItem value={'P1'}>P1</MenuItem>
                       <MenuItem value={'P2'}>P2</MenuItem>
-                      <MenuItem value={'P3'}>P3</MenuItem>
+                      <MenuItem value={'P3'} Selected>P3</MenuItem>
                       <MenuItem value={'P4'}>P4</MenuItem>
                       <MenuItem value={'P5'}>P5</MenuItem>
                   </Select>
