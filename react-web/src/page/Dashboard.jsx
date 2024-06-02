@@ -16,7 +16,6 @@ import { Table, OverlayTrigger, Popover, Card as BootstrapCard } from "react-boo
 import { BGS, PRIOTITYSTYELS, TASK_TYPE, getInitials } from "../utils";
 import Avatar from "../components/common/Avatar";
 import AvatarIcon from '../assets/imgIcons/avatar.png';
-import RecentOrdersTable from "../components/Table";
 import useCrud from "../hooks/useCrud";
 import ProjectCard from "../components/ProjectCard";
 import GlobalContext from "../GlobalContext";
@@ -274,8 +273,6 @@ const Dashboard = () => {
                 <TaskTable tasks={summary.last10Task} />
                 <UserTable users={summary.users} />
             </div>
-
-            <RecentOrdersTable />
         </div>
     );
 };
