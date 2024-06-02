@@ -26,7 +26,7 @@ const Projects = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
-    
+
     const handlePageChange = (newPage) => {
         setPage(newPage);
     };
@@ -82,8 +82,8 @@ const Projects = () => {
         fetchProjects();
     }, []);
 
-    const filteredProjects = projects.filter((org) =>
-        org.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredProjects = projects.filter((project) =>
+        project.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     let sortedProjects = [...filteredProjects];
@@ -103,9 +103,11 @@ const Projects = () => {
             <Container>
                 <Row className="mb-3">
                     <Col>
-                        <div className="col-span-1 flex items-center" onClick={() => handleOpenModal(null, "add")}>
-                        {/* It's open the add EmailTemplate modal */}
-                            <OpenModalButton label={"Add Project"} icon={<AddIcon />} />
+                        <div className="col-span-1 flex items-center">
+                            {/* It's open the add EmailTemplate modal */}
+                            <div onClick={() => handleOpenModal(null, "add")}>
+                                <OpenModalButton label={"Add Project"} icon={<AddIcon />} />
+                            </div>
                         </div>
                     </Col>
                     <Col>
@@ -131,7 +133,7 @@ const Projects = () => {
                                 <td>{project.name}</td>
                                 <td>{format(new Date(project.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
-                                    
+
                                     <Tooltip title={`Assign user to this ${project.name} Project`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-secondary border-0'>
                                             <LuUserPlus2 className='fs-5' onClick={() => handleOpenInviteModal(project, "invite")} />
@@ -191,7 +193,7 @@ const Projects = () => {
                 project={selectedProject}
             />
 
-            <InviteUsers 
+            <InviteUsers
                 modalType={modalTypeForInviteUsers}
                 project={selectedProject}
                 closeModal={handleCloseModal}

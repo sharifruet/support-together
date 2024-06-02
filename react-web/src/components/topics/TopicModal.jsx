@@ -15,7 +15,6 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
     // State to manage form data
     const [formData, setFormData] = useState({
-        code: "",
         projectId: project !== null ? project.id : "",
         name: "",
         description: "",
@@ -26,7 +25,6 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
     // State to manage individual field errors
     const [fieldErrors, setFieldErrors] = useState({
-        code: "",
         name: "",
         description: "",
         projectId: "",
@@ -100,7 +98,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
     // Effect to initialize form data based on modal type and topic(passed props)
     useEffect(() => {
         if (modalType === 'edit' && topic && options.length > 0) {
-            const { name, code, description, id, ProjectId } = topic;
+            const { name, description, id, ProjectId } = topic;
             const matchedProject = options.find(option => option.id === ProjectId);
 
             // To prefilled the material ui AutoComplete component
@@ -108,7 +106,6 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
             setFormData({
                 ...formData,
                 projectId: ProjectId || "",
-                code: code,
                 name: name || "",
                 description: description || "",
                 id: id || "",
@@ -128,7 +125,6 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
             setFormData({
                 ...formData,
                 projectId: project !== null ? project.id : "",
-                code: "",
                 name: "",
                 description: "",
                 success: "",
@@ -138,13 +134,12 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
             // Clear empty field error on close modal
             setFieldErrors({
-                code: "",
                 name: "",
                 description: "",
                 projectId: "",
             });
 
-            // Reset selectedOrganization state
+            // Reset selectedProject state
             setSelectedProject(null);
         }
     }, [modalType, topic, options, project]);
@@ -228,7 +223,6 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
         // Define fields to validate
         const fieldsToValidate = [
-            { name: "code", value: formData.code },
             { name: "name", value: formData.name },
             { name: "description", value: formData.description },
             { name: "projectId", value: formData.projectId }
@@ -264,7 +258,6 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                 fetchTopics && fetchTopics();
                 setFormData({
                     name: "",
-                    code: "",
                     description: "",
                     projectId: "",
                     success: responseData.message ? responseData.message : successMessages[modalType],
@@ -303,7 +296,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                         <DeleteText message={"Topic"} />
                     ) : (
                         <div>
-                            <div className="flex flex-col space-y-1 w-full">
+                            <div className="flex flex-col space-y-1 w-full mb-4">
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
@@ -334,20 +327,6 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                                     autoFocus
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full py-4">
-                                <TextField
-                                    id="code"
-                                    variant="outlined"
-                                    name="code"
-                                    autoComplete="code"
-                                    label="Code"
-                                    value={formData.code}
-                                    onChange={handleInputChange}
-                                    fullWidth
-                                    error={Boolean(fieldErrors.code)} // Set error prop based on field error
-                                    helperText={fieldErrors.code} // Provide the error message
-                                />
-                            </div>
                             <div className="flex flex-col space-y-1 w-full mb-4">
                                 <TextField
                                     id="name"
@@ -358,8 +337,8 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                                     value={formData.name}
                                     onChange={handleInputChange}
                                     fullWidth
-                                    error={Boolean(fieldErrors.code)} // Set error prop based on field error
-                                    helperText={fieldErrors.code} // Provide the error message
+                                    error={Boolean(fieldErrors.name)} // Set error prop based on field error
+                                    helperText={fieldErrors.name} // Provide the error message
                                 />
                             </div>
                             <div className="flex flex-col space-y-1 w-full">

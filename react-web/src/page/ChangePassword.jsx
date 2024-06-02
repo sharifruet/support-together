@@ -8,7 +8,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { RiLockPasswordFill } from "react-icons/ri";
 import { toast } from 'react-toastify';
 import useCrud from '../hooks/useCrud';
-import CustomButton from "../component/common/CustomButton";
+import CustomButton from "../components/common/CustomButton";
 import GlobalContext from '../GlobalContext';
 
 const defaultTheme = createTheme();

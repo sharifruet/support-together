@@ -6,8 +6,8 @@ import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import SupportForm from '../component/supportform';
-import TicketList from '../component/ticketlist';
+import SupportForm from '../components/supportform';
+import TicketList from '../components/ticketlist';
 import GlobalContext from '../GlobalContext';
 
 //import axios from "../api/axios";
@@ -46,9 +46,9 @@ export default function ProjectList() {
   
       }, [project]);
  */
-    const getOrg = (orgId)=>{
-        return gContext.organizations.find(o=>o.id===orgId)
-    }
+    // const getOrg = (orgId)=>{
+    //     return gContext?.organizations?.find(o=>o.id===orgId)
+    // }
    
 
     console.log(gContext.projects);
@@ -65,7 +65,7 @@ export default function ProjectList() {
                         <Card>
                             <br/>
                             <Typography sx={{ fontSize: 14 }}  gutterBottom>
-                                Project-code: {project.code} [{getOrg(project.id).name}] <br/>
+                                {/* Project-code: {project.code} //[{getOrg(project.id).name}] <br/> */}
                                 Name: {project.name} 
                             </Typography>
                             <hr/>
