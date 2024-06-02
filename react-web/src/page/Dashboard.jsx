@@ -269,6 +269,10 @@ const Dashboard = () => {
                     </div>
                 ))}
             </div>
+            <div className="w-100 d-flex flex-column flex-md-row gap-4 py-4">
+                <TaskTable tasks={summary.last10Task} />
+                <UserTable users={summary.users} />
+            </div>
         </div>
     );
 };

@@ -122,4 +122,32 @@ router.get('/me', authenticate, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch user info' });
   }
 });
+
+// Update user info
+router.put('/update-user', authenticate, async (req, res) => {
+  try {
+    const { name, email, phoneNumber, password } = req.body;
+    const user = req.user;
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Check if the email is being updated and if it is unique
+    if (email && email !== user.email) {
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        return res.status(400).json({ error: 'Email is already taken' });
+      }
+    }
+
+    await user.update({ name, email, phoneNumber, password:  hashedPassword});
+    res.json({ message: 'User updated successfully', user });
+  } catch (error) {
+    console.error('Error updating user info:', error);
+    res.status(500).json({ error: 'Failed to update user info' });
+  }
+});
+
 module.exports = router;

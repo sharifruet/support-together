@@ -1,21 +1,18 @@
-// routes/ticketRoutes.js
 const express = require('express');
 const router = express.Router();
 const Ticket = require('../models/Ticket');
 const Attachment = require('../models/Attachment');
 const FYITo = require('../models/FYITo');
-const { sendEmail } = require('../services/emailService');
+const Topic = require('../models/Topic');
+const Project = require('../models/Project');
+const { sendEmailWithTemplate } = require('../services/emailService');
 const authenticate = require('../middleware/authMiddleware');
 
 // Function to send ticket created email
 const sendTicketCreatedEmail = async (ticket) => {
-  try {
-    const ticketCreatorEmail = "sharifruet@gmail.com";
-
-    await sendEmail(ticketCreatorEmail, 'Ticket Created Successfully', `Dear ${ticketCreatorEmail},\n\nYour ticket has been successfully created.\n\nTicket Details:\nTitle: ${ticket.title}\nDescription: ${ticket.description}\nPriority: ${ticket.priority}\n\nThank you.`);
-  } catch (error) {
-    console.error('Error sending ticket created email:', error);
-  }
+  const placeholders = { title: ticket.title, code: ticket.code };
+  const templateId = 1; // Assuming 1 is the template ID for the ticket created email
+  await sendEmailWithTemplate(templateId, ticket.requestedBy, placeholders);
 };
 
 // Create or update attachments for a ticket
@@ -127,6 +124,30 @@ router.delete('/tickets/:id', authenticate, async (req, res) => {
   } catch (error) {
     console.error('Error deleting ticket:', error);
     res.status(500).json({ error: 'Failed to delete ticket' });
+  }
+});
+
+// Fetch tickets by project ID
+router.get('/tickets/project/:projectId', authenticate, async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const topics = await Topic.findAll({projectId: projectId});
+
+    if (!topics || topics.length < 1) {
+      return res.status(404).json({ error: 'Project / topic not found' });
+    }
+
+    const topicIds = topics.map(topic => topic.id);
+    
+    const tickets = await Ticket.findAll({
+      where: {
+        id: topicIds
+      }
+    });
+    res.json(tickets);
+  } catch (error) {
+    console.error('Error fetching tickets by project:', error);
+    res.status(500).json({ error: 'Failed to fetch tickets by project' });
   }
 });
 
