@@ -10,25 +10,25 @@ const { sendEmailWithTemplate } = require('../services/emailService');
 const authenticate = require('../middleware/authMiddleware');
 
 // Function to send ticket created email
-const sendTicketCreatedEmail = async (ticket) => {
+const sendTicketCreatedEmail = async (ticket, to) => {
   const placeholders = { title: ticket.title, code: ticket.code };
   const templateId = 1; // Assuming 1 is the template ID for the ticket created email
-  await sendEmailWithTemplate(templateId, ticket.requestedBy, placeholders);
+  await sendEmailWithTemplate(templateId, to, placeholders);
 };
 
 // Create or update attachments for a ticket
 const createOrUpdateAttachments = async (ticketId, attachments) => {
   if (attachments && attachments.length > 0) {
-    await Attachment.destroy({ where: { TicketId: ticketId } });
-    await Attachment.bulkCreate(attachments.map(fileName => ({ fileName, TicketId: ticketId })));
+    await Attachment.destroy({ where: { ticketId: ticketId } });
+    await Attachment.bulkCreate(attachments.map(fileName => ({ fileName, ticketId: ticketId })));
   }
 };
 
 // Create or update FYI To recipients for a ticket
 const createOrUpdateFYIToRecipients = async (ticketId, fyiTo) => {
   if (fyiTo && fyiTo.length > 0) {
-    await FYITo.destroy({ where: { TicketId: ticketId } });
-    await FYITo.bulkCreate(fyiTo.map(name => ({ name, TicketId: ticketId })));
+    await FYITo.destroy({ where: { ticketId: ticketId } });
+    await FYITo.bulkCreate(fyiTo.map(name => ({ name, ticketId: ticketId })));
   }
 };
 
@@ -40,6 +40,19 @@ router.get('/tickets', authenticate, async (req, res) => {
     const topics = await Topic.findAll({where:{projectId:projectIds}});
     const topicIds = topics.map(topic=>topic.id);
     const tickets = await Ticket.findAll({where:{topicId:topicIds}});
+
+    res.json(tickets);
+  } catch (error) {
+    console.error('Error fetching tickets:', error);
+    res.status(500).json({ error: 'Failed to fetch tickets' });
+  }
+});
+
+// Get all tickets
+router.get('/tickets/code/:code', authenticate, async (req, res) => {
+  try {
+    const { code } = req.params;
+    const tickets = await Ticket.find({where:{code:code}});
 
     res.json(tickets);
   } catch (error) {
@@ -69,18 +82,15 @@ router.post('/tickets', authenticate, async (req, res) => {
 
     const { topicId, title, description, priority, attachments, fyiTo } = req.body;
     const createdBy = req.user.id; // Get user ID from req.user
+    const email = req.user.email;
 
     const ticket = await Ticket.create({ topicId, title, description, priority, createdBy });
-
     // Create attachments
     await createOrUpdateAttachments(ticket.id, attachments);
-
     // Create FYI To recipients
     await createOrUpdateFYIToRecipients(ticket.id, fyiTo);
-
     // Send ticket created email
-    await sendTicketCreatedEmail(ticket);
-
+    await sendTicketCreatedEmail(ticket, email);
     res.status(201).json(ticket);
   } catch (error) {
     console.error('Error creating ticket:', error);

@@ -47,7 +47,7 @@ const sendEmailWithTemplate = async (templateId, recipient, placeholders) => {
        
         // Send the email
         const info = await transporter.sendMail({
-            from: 'supporttogether@i2gether.com',
+            from: 'Support-Together<supporttogether@i2gether.com>',
             to: recipient,
             subject: emailTemplate.subject,
             html: emailBody

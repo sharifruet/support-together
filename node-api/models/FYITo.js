@@ -12,7 +12,7 @@ const FYITo = db.define('FYITo', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  TicketId: {
+  ticketId: {
     type: DataTypes.INTEGER,
     allowNull: false
   }
