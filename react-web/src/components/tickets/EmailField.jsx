@@ -13,10 +13,13 @@ const EmailField = ({ setSelectedCcEmails, clear, error, helperText }) => {
     };
 
     useEffect(() => {
-        if (ccList.length > 0 && !clear) {
+        console.log(clear);
+        if (ccList.length > 0 && clear === false) {
             setSelectedCcEmails(ccList);
-        } else {
+        } else if (clear === true) {
             setSelectedCcEmails([]);
+            setCcList([]);
+            setSearchInput("");
         }
     }, [ccList, clear]);
 
@@ -85,8 +88,6 @@ const EmailField = ({ setSelectedCcEmails, clear, error, helperText }) => {
                         {...params}
                         label="Fyi To"
                         variant="outlined"
-                        error={ccList.length == 0 && error ? error : ''} // Set error prop based on field error
-                        helperText={ccList.length == 0 && helperText}
                     />
                 )}
                 renderOption={(props, option, { selected }) => {

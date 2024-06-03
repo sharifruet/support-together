@@ -20,10 +20,12 @@ const CustomFileAttachment = ({ setSelectedAttachments, clear }) => {
     };
 
     useEffect(() => {
-        if (uploadedFiles.length > 0 && !clear) {
+        if (uploadedFiles.length > 0 && clear === false) {
             setSelectedAttachments(uploadedFiles);
-        } else {
+        } else if (clear === true){
             setSelectedAttachments([]);
+            setSelectedFiles([]);
+            setUploadStatus("select");
         }
     }, [uploadedFiles, clear]);
 
@@ -103,12 +105,12 @@ const CustomFileAttachment = ({ setSelectedAttachments, clear }) => {
                 style={{ display: "none" }}
             />
 
-            <button className="file-btn mb-3" onClick={onChooseFile} style={{ display: uploadStatus === "uploading" ? "none" : "block" }}>
+            <div role="button" className="file-btn mb-3" onClick={onChooseFile} style={{ display: uploadStatus === "uploading" ? "none" : "block" }}>
                 <div className="material-symbols-outlined"><CloudUploadSharpIcon /></div>
                 <div>
                     {uploadStatus === "done" ? "Upload More Files" : "Upload Files"}
                 </div>
-            </button>
+            </div>
 
             {selectedFiles.length > 0 && (
                 <>
@@ -150,7 +152,7 @@ const CustomFileAttachment = ({ setSelectedAttachments, clear }) => {
                         ))}
                     </div>
                     {uploadStatus !== "uploading" && (
-                        <button className="upload-btn" onClick={handleUpload}>
+                        <button type="button" className="upload-btn" onClick={handleUpload}>
                             {uploadStatus === "select" || uploadStatus === 'uploading' ? "Upload" : "Done"}
                         </button>
                     )}

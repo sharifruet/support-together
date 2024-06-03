@@ -5,11 +5,13 @@ import './TicketsStyles.css';
 import TicketModal from "./TicketModal";
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
 import OpenModalButton from '../common/OpenModalButton';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Tickets = () => {
     const { getAll } = useCrud();
     const ticketUrl = "/tickets";
+
+    const navigate = useNavigate();
 
     const [tickets, setTickets] = useState([]);
     const [selectedTicket, setSelectedTicket] = useState(null);
@@ -87,7 +89,7 @@ const Tickets = () => {
                     <Col>
                         <div className="col-span-1 flex items-center">
                             {/* It's open the add ticket modal */}
-                            <div onClick={() => handleOpenModal(null, "add")}>
+                            <div onClick={() => navigate("/dashboard/createTicket")}>
                                 <OpenModalButton label={"Create Ticket"} icon={<AddIcon />} />
                             </div>
                         </div>

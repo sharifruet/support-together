@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { TextField, CircularProgress, Autocomplete } from "@mui/material";
 import useCrud from '../../hooks/useCrud';
 import CustomButton from "../common/CustomButton";
-import DeleteText from "../common/DeleteText";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
-import ModalOverlay from "../common/ModalOverlay";
 import EmailField from "./EmailField";
 import CustomFileAttachment from "../common/CustomFileAttachment";
+import { toast } from 'react-toastify';
+import GlobalContext from "../../GlobalContext";
 
-const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => {
+
+const TicketModal = () => {
     // Destructuring service or api calls functions
     const { getAll, create, update, remove } = useCrud();
 
@@ -19,12 +20,14 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
     const [selectedPriority, setSelectedPriority] = useState(null);
     // State to manage Material Ui AutoComplete UI loading status
     const [autocompleteLoading, setAutocompleteLoading] = useState(false);
+    // State to manage Topic loading status
+    const [topicLoading, setTopicLoading] = useState(false);
     // State to manage Material Ui AutoComplete UI options
-    const [options, setOptions] = useState([]);
+    const [topicOptions, setTopicOptions] = useState([]);
     // State to manage Material Ui AutoComplete UI selected option
     const [selectedTopic, setSelectedTopic] = useState(null);
     // Reference for the autocomplete field
-    const autocompleteRef = useRef(null);
+    const projectRef = useRef(null);
     // State to manage fyiTo
     const [selectedCcEmails, setSelectedCcEmails] = useState([]);
     // State to manage attachments
@@ -35,9 +38,21 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
     const topicUrl = "/topics";
     // url for ticket crud
     const ticketUrl = "/tickets";
+    const projectUrl = "/projects";
+    const getTicketByProjectUrl = "/tickets/project";
+    const { user } = useContext(GlobalContext);
+    const [projects, setProjects] = useState([]);
+    const [fyiToError, setFyiToError] = useState([]);
+
+    // State to manage Material Ui AutoComplete UI options
+    const [projectOptions, setProjectOptions] = useState([]);
+
+    // State to manage Material Ui AutoComplete UI selected option
+    const [selectedProject, setSelectedProject] = useState(null);
 
     // State to manage form data
     const [formData, setFormData] = useState({
+        project: "",
         topicId: "",
         title: "",
         description: "",
@@ -52,13 +67,14 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
 
     // State to manage individual field errors
     const [fieldErrors, setFieldErrors] = useState({
+        project: "",
         topicId: "",
         title: "",
         description: "",
         priority: "",
         requestedBy: "",
-        attachments: [],
-        fyiTo: [],
+        // attachments: "",
+        // fyiTo: "",
     });
 
     // Priority AutoComplete's options
@@ -93,102 +109,58 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
 
     // loader for Material UI Autocomplete
     useEffect(() => {
-        if (modalType === 'add' || modalType === 'edit') {
-            // Set autocompleteLoading to true when modal is opened
-            setAutocompleteLoading(true);
-            setTimeout(() => {
-                setAutocompleteLoading(false);
-                if (autocompleteRef.current) {
-                    autocompleteRef.current.focus();  // AutoFocus on the autocomplete field
-                }
-            }, 1000);
-        } else setSelectedTopic(null);
-    }, [modalType]);
+        setAutocompleteLoading(true);
+        setTimeout(() => {
+            setAutocompleteLoading(false);
+            if (projectRef.current) {
+                projectRef.current.focus();  // AutoFocus on the autocomplete field
+            }
+        }, 1000);
+    }, []);
+
+
+
 
     // Fetch all topics for the Autocomplete options
     useEffect(() => {
-        const fetchTopics = async () => {
+        const fetchProjects = async () => {
             try {
-                const data = await getAll(topicUrl);
-                const formattedOptions = data?.map(topic => ({ id: topic.id, name: topic.name, value: topic.id }));
-                setOptions(formattedOptions);
+                const data = await getAll(projectUrl);
+                const filteredProjects = data?.filter(project => {
+                    return user?.roles?.some(role => role.projectId === project.id);
+                });
+                setProjects(filteredProjects);
+                const formattedProjectOptions = filteredProjects?.map(project => ({ id: project.id, name: project.name, value: project.id }));
+                setProjectOptions(formattedProjectOptions);
             } catch (error) {
-                // Handle error here
-                console.log(error);
-            } finally {
-                // Set autocompleteLoading to false when data is fetched
-                setAutocompleteLoading(false);
+                console.error(error);
             }
         };
 
-        fetchTopics();
-    }, []);
+        if (user) fetchProjects();
+    }, [user]);
 
-    // Effect to initialize form data based on modal type and ticket(passed props)
-    useEffect(() => {
-        if (modalType === 'edit' && ticket && options.length > 0) {
-            const { topicId, title, description, priority, requestedBy, attachments, fyiTo, id } = ticket;
-            const matchedTopic = options?.find(option => option.id === topicId);
-            const matchedPriority = priorityOptions?.find(option => option.value === priority);
 
-            // To prefill the material ui AutoComplete component
-            matchedTopic && setSelectedTopic(matchedTopic);
-            // To prefill Priority material ui AutoComplete component
-            matchedPriority && setSelectedPriority(matchedPriority);
-
-            setFormData({
-                ...formData,
-                id: id || "",
-                topicId: topicId || "",
-                title: title,
-                description: description || "",
-                priority: priority || "",
-                requestedBy: requestedBy || "",
-                attachments: attachments || [],
-                fyiTo: fyiTo || "",
-                success: false,
-                error: false,
+    // Function to show topic dropdown options
+    const fetchTopicsByProjectId = async (projectId) => {
+        try {
+            setTopicLoading(true);
+            const data = await getAll(topicUrl);
+            const filteredTopics = data?.filter(topic => {
+                return topic.ProjectId === projectId;
             });
-        } else if (modalType === 'add' && topic !== null) {
-            const matchedTopic = options.find(option => option.id === topic.id);
-
-            setSelectedTopic(matchedTopic);
-            setFormData(prevData => ({
-                ...prevData,
-                topicId: topic.id,
-            }));
-        } else {
-            // Clear form data if modalType is not 'edit'
-            setFormData({
-                ...formData,
-                topicId: "",
-                title: "",
-                description: "",
-                priority: "",
-                requestedBy: "",
-                attachments: "",
-                fyiTo: "",
-                id: "",
-            });
-
-            // Clear empty field error on close modal
-            setFieldErrors({
-                topicId: "",
-                title: "",
-                description: "",
-                priority: "",
-                requestedBy: "",
-                attachments: [],
-                fyiTo: [],
-            });
-
-            // Reset selectedTopic state
-            setSelectedTopic(null);
-            setSelectedPriority(null);
-            setSelectedCcEmails(null);
-            setSelectedAttachments(null);
+            const formattedTopicOptions = filteredTopics?.map(topic => ({ id: topic.id, name: topic.name, value: topic.id }));
+            setTopicOptions(formattedTopicOptions);
+        } catch (error) {
+            // Handle error here
+            console.log(error);
+        } finally {
+            // Set autocompleteLoading to false when data is fetched
+            setTimeout(() => {
+                setTopicLoading(false);
+            }, 1000);
         }
-    }, [modalType, ticket, options, topic]);
+    };
 
     // Effect to set Fyi to
     useEffect(() => {
@@ -225,6 +197,33 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
     }, [formData.error, formData.success]);
 
     // Function to handle form Material UI Autocomplete component changes
+    const handleProjectChange = (event, newValue) => {
+        setSelectedProject(newValue);
+        newValue && fetchTopicsByProjectId(newValue.id)
+        console.log(newValue)
+        setFormData((prevData) => ({
+            ...prevData,
+            project: newValue ? newValue.id : "",
+        }));
+
+
+        // Clear error message for the field when it receives a value
+        if (newValue) {
+            console.log(formData)
+            setFieldErrors((prevErrors) => ({
+                ...prevErrors,
+                project: "", // Clear error message if field has a value
+            }));
+        } else {
+            // If field value becomes empty, show error message
+            setFieldErrors((prevErrors) => ({
+                ...prevErrors,
+                project: "Project is required",
+            }));
+        }
+    };
+
+    // Function to handle form Material UI Autocomplete component changes
     const handleAutocompleteChange = (event, newValue) => {
         setSelectedTopic(newValue);
         setFormData((prevData) => ({
@@ -242,7 +241,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
             // If field value becomes empty, show error message
             setFieldErrors((prevErrors) => ({
                 ...prevErrors,
-                topicId: "Organization is required",
+                topicId: "Topic is required",
             }));
         }
     };
@@ -313,15 +312,17 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
 
         // Define fields to validate
         const fieldsToValidate = [
+            { name: "project", value: formData.project },
             { name: "topicId", value: formData.topicId },
             { name: "title", value: formData.title },
             { name: "description", value: formData.description },
             { name: "priority", value: formData.priority },
             { name: "requestedBy", value: formData.requestedBy },
-            { name: "attachments", value: formData.attachments },
-            { name: "fyiTo", value: formData.fyiTo }
+            // { name: "attachments", value: formData.attachments },
+            // { name: "fyiTo", value: formData.fyiTo }
         ];
 
+        if (fieldErrors.fyiTo !== "") setFyiToError(true);
         // Validate all fields before submission
         const errors = validateForm(fieldsToValidate);
 
@@ -339,18 +340,21 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
         const actions = {
             add: () => create(ticketUrl, formData),
             edit: () => update(ticketUrl, formData.id, formData),
-            delete: () => remove(Number(ticketUrl, ticket.id))
+            // delete: () => remove(Number(ticketUrl, ticket.id))
         };
 
         try {
+            console.log(formData)
             setLoading(true);
-            const responseData = Object.keys(errors).length === 0 && await actions[modalType]();
+            // const responseData = Object.keys(errors).length === 0 && await actions[modalType]();
+            const responseData = Object.keys(errors).length === 0 && await create(ticketUrl, formData);
             console.log(responseData)
 
             // Check the response and update the form data with success or error message
-            if (responseData.message === successMessages[modalType] || typeof responseData === 'object') {
-                fetchTickets && fetchTickets();
+            if (responseData.message === successMessages.add || typeof responseData === 'object') {
+                // fetchTickets && fetchTickets();
                 setFormData({
+                    project: "",
                     topicId: "",
                     title: "",
                     description: "",
@@ -358,10 +362,13 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
                     requestedBy: "",
                     attachments: [],
                     fyiTo: "",
-                    success: responseData.message ? responseData.message : successMessages[modalType],
+                    success: responseData.message ? responseData.message : successMessages.add,
                     error: "",
                 });
+                toast.success('🎉 Ticket created successfully!', { className: 'toast-success' });
+                setFyiToError(false);
                 setClear(true);
+                setSelectedProject(null);
                 setSelectedTopic(null);
                 setSelectedPriority(null);
                 setSelectedCcEmails(null);
@@ -384,6 +391,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
     };
     return (
         <>
+            <div className="text-left font-semibold text-2xl tracking-wider">Create Ticket</div>
             <form className="w-full" onSubmit={handleSubmit}>
                 <div>
                     <div className="d-flex py-4">
@@ -392,15 +400,15 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
                                 disablePortal
                                 id="combo-box-demo"
                                 loading={autocompleteLoading}
-                                value={selectedTopic}
-                                onChange={handleAutocompleteChange}
-                                options={options}
+                                value={selectedProject}
+                                onChange={handleProjectChange}
+                                options={projectOptions}
                                 getOptionLabel={(option) => option.name}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
-                                        label="Select Topic"
-                                        inputRef={autocompleteRef}
+                                        label="Select Project"
+                                        inputRef={projectRef}
                                         InputProps={{
                                             ...params.InputProps,
                                             endAdornment: (
@@ -410,12 +418,41 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
                                                 </>
                                             ),
                                         }}
+                                        error={Boolean(fieldErrors.project)} // Set error prop based on field error
+                                        helperText={fieldErrors.project} // Provide the error message
+                                    />
+                                )}
+                                getOptionKey={(option) => option.id}
+                                autoFocus
+                            />
+                        </div>
+                        <div className="flex flex-col space-y-1 w-full me-3">
+                            <Autocomplete
+                                disablePortal
+                                id="combo-box-demo"
+                                loading={topicLoading}
+                                value={selectedTopic}
+                                onChange={handleAutocompleteChange}
+                                options={topicOptions}
+                                getOptionLabel={(option) => option.name}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Select Topic"
+                                        InputProps={{
+                                            ...params.InputProps,
+                                            endAdornment: (
+                                                <>
+                                                    {topicLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                                                    {params.InputProps.endAdornment}
+                                                </>
+                                            ),
+                                        }}
                                         error={Boolean(fieldErrors.topicId)} // Set error prop based on field error
                                         helperText={fieldErrors.topicId} // Provide the error message
                                     />
                                 )}
                                 getOptionKey={(option) => option.id}
-                                autoFocus
                             />
                         </div>
                         <div className="flex flex-col space-y-1 w-full">
@@ -463,7 +500,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
                                 helperText={fieldErrors.title} // Provide the error message
                             />
                         </div>
-                        <div className="flex flex-col space-y-1 w-full">
+                        <div className="flex flex-col space-y-1 w-full me-3">
                             <TextField
                                 name="requestedBy"
                                 value={formData.requestedBy}
@@ -477,6 +514,9 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
                                 error={Boolean(fieldErrors.requestedBy)} // Set error prop based on field error
                                 helperText={fieldErrors.requestedBy} // Provide the error message
                             />
+                        </div>
+                        <div className="flex flex-col space-y-1 w-full">
+                            <EmailField setSelectedCcEmails={setSelectedCcEmails} clear={clear} error={fyiToError} helperText={fieldErrors.fyiTo} />
                         </div>
                     </div>
                     <div className="flex flex-col space-y-1 w-full mb-4">
@@ -496,20 +536,20 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
                         />
                     </div>
                     <div className="flex flex-col space-y-1 w-full mb-4">
-                        <EmailField setSelectedCcEmails={setSelectedCcEmails} clear={clear} error={Boolean(fieldErrors.fyiTo ? fieldErrors.fyiTo : "")} helperText={fieldErrors.fyiTo} />
-                    </div>
-                    <div className="flex flex-col space-y-1 w-full mb-4">
                         <CustomFileAttachment setSelectedAttachments={setSelectedAttachments} clear={clear} error={fieldErrors.attachments} helperText={fieldErrors.attachments} />
                     </div>
                 </div>
-                <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
-                    <CustomButton
-                        isLoading={loading}
-                        type="submit"
-                        icon={buttonIcons[modalType]}
-                        label={buttonLabels[modalType]}
-                        disabled={loading}
-                    />
+                <div className="flex flex-col space-y-1 justify-center pb-4 md:pb-6 mt-4">
+                    {/* <div className=""> */}
+                        <CustomButton
+                            isLoading={loading}
+                            type="submit"
+                            icon={buttonIcons.add}
+                            label={buttonLabels.add}
+                            disabled={loading}
+                            style={{maxWidth: "40px"}}
+                        />
+                    {/* </div> */}
                 </div>
             </form>
         </>

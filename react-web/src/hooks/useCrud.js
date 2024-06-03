@@ -100,7 +100,11 @@ const useCrud = () => {
         }
     }, [fetchApi]);
 
-    return { data, loading, error, getAll, getById, create, update, remove, changePassword, updateProfile,  uploadFile };
+    const getTicketsByProjectId = useCallback((endpoint, id) => {
+        return loggedIn && fetchApi(`${endpoint}/${id}`, 'GET');
+    }, [fetchApi]);
+
+    return { data, loading, error, getAll, getById, create, update, remove, changePassword, updateProfile,  uploadFile, getTicketsByProjectId };
 };
 
 export default useCrud;
