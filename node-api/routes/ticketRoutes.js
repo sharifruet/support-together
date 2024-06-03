@@ -35,10 +35,16 @@ const createOrUpdateFYIToRecipients = async (ticketId, fyiTo) => {
 // Get all tickets
 router.get('/tickets', authenticate, async (req, res) => {
   try {
-    const userRoles = await UserRole.findAll({where:{userId:req.user.id}});
-    const projectIds = userRoles.map(ur=>ur.projectId);
+    const userId = req.user.id;
+
+    const userRoles = await UserRole.findAll({where:{userId:userId}});
+
+    const projectIds = userRoles.map(ur=>ur.ProjectId);
+
     const topics = await Topic.findAll({where:{projectId:projectIds}});
+
     const topicIds = topics.map(topic=>topic.id);
+   
     const tickets = await Ticket.findAll({where:{topicId:topicIds}});
 
     res.json(tickets);
@@ -52,7 +58,7 @@ router.get('/tickets', authenticate, async (req, res) => {
 router.get('/tickets/code/:code', authenticate, async (req, res) => {
   try {
     const { code } = req.params;
-    const tickets = await Ticket.find({where:{code:code}});
+    const tickets = await Ticket.findOne({where:{code:code}});
 
     res.json(tickets);
   } catch (error) {

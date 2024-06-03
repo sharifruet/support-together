@@ -33,12 +33,14 @@ console.log(projects);
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={handleChange} aria-label="lab API tabs example">
                 {projects.map((project) =>
-                    <Tab label={project.name} value={project.id} />
+                    <Tab key={project.id} label={project.name} value={project.id} />
                 )}
             </TabList>
         </Box>
         {projects.map((project) =>
-            <TabPanel value={project.id}><DashboardBody project={project}/></TabPanel>
+            <TabPanel key={project.id} value={project.id}>
+              <DashboardBody project={project}/>
+            </TabPanel>
         )}
       </TabContext>
     </Box>
