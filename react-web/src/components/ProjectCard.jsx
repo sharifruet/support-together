@@ -1,16 +1,12 @@
 import React, { useState, useContext } from "react";
 import {
-    MdAttachFile,
     MdKeyboardArrowDown,
     MdKeyboardArrowUp,
     MdKeyboardDoubleArrowUp,
 } from "react-icons/md";
 import { formatDate } from "../utils";
-import ProjectDialog from "./ProjectDialog";
-import { BiMessageAltDetail } from "react-icons/bi";
 import { FaList } from "react-icons/fa";
 import UserInfo from "./UserInfo";
-import { IoMdAdd } from "react-icons/io";
 import GlobalContext from "../GlobalContext";
 import SupportForm from "../components/supportform";
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
@@ -25,14 +21,7 @@ const ICONS = {
 
 const ProjectCard = ({ project }) => {
     const { user } = useContext(GlobalContext); 
-    const {organizations} = useContext(GlobalContext);
-    const {topics} = useContext(GlobalContext);
-    const [open, setOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
-    const isRoleAllowed = (role) => {
-        const roles = user?.roles?.map(userRole => userRole?.role);
-        return roles?.includes(role);
-    };
     const toggleComponent = () => {
         setIsVisible(!isVisible);
     };
@@ -58,9 +47,7 @@ const ProjectCard = ({ project }) => {
                         {/* [{organizations.find(o=>o.id===project.OrganizationId).name}]  */}
                         <br/></span>
                     </div>
-                    {isRoleAllowed("Admin") && <ProjectDialog project={project} />}
                 </div>
-
                 <>
                     <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
                         <div

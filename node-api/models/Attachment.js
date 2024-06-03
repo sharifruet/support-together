@@ -12,8 +12,8 @@ const Attachment = db.define('Attachment', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  filePath: {
-    type: DataTypes.STRING,
+  ticketId: {
+    type: DataTypes.INTEGER,
     allowNull: false
   }
 });
