@@ -4,6 +4,7 @@ const Ticket = require('../models/Ticket');
 const Attachment = require('../models/Attachment');
 const FYITo = require('../models/FYITo');
 const Topic = require('../models/Topic');
+const UserRole = require('../models/UserRole');
 const Project = require('../models/Project');
 const { sendEmailWithTemplate } = require('../services/emailService');
 const authenticate = require('../middleware/authMiddleware');
@@ -34,7 +35,12 @@ const createOrUpdateFYIToRecipients = async (ticketId, fyiTo) => {
 // Get all tickets
 router.get('/tickets', authenticate, async (req, res) => {
   try {
-    const tickets = await Ticket.findAll();
+    const userRoles = await UserRole.findAll({where:{userId:req.user.id}});
+    const projectIds = userRoles.map(ur=>ur.projectId);
+    const topics = await Topic.findAll({where:{projectId:projectIds}});
+    const topicIds = topics.map(topic=>topic.id);
+    const tickets = await Ticket.findAll({where:{topicId:topicIds}});
+
     res.json(tickets);
   } catch (error) {
     console.error('Error fetching tickets:', error);
@@ -60,6 +66,7 @@ router.get('/tickets/:id', authenticate, async (req, res) => {
 // Create ticket
 router.post('/tickets', authenticate, async (req, res) => {
   try {
+
     const { topicId, title, description, priority, attachments, fyiTo } = req.body;
     const createdBy = req.user.id; // Get user ID from req.user
 
@@ -141,7 +148,7 @@ router.get('/tickets/project/:projectId', authenticate, async (req, res) => {
     
     const tickets = await Ticket.findAll({
       where: {
-        id: topicIds
+        topicId: topicIds
       }
     });
     res.json(tickets);

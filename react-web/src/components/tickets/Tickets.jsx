@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Container, Row, Col, Form, Button, Modal, Pagination } from 'react-bootstrap';
+import { Table, Container, Row, Col, Form, Button, Modal, Pagination, ListGroup, Badge } from 'react-bootstrap';
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
 import { FaCirclePlus } from "react-icons/fa6";
 import { Tooltip } from "@mui/material";
@@ -9,6 +9,8 @@ import './TicketsStyles.css';
 import TicketModal from "./TicketModal";
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
 import OpenModalButton from '../common/OpenModalButton';
+import TicketItem from './TicketItem';
+import { Link } from 'react-router-dom';
 
 const Tickets = () => {
     const { getAll } = useCrud();
@@ -104,42 +106,18 @@ const Tickets = () => {
                         />
                     </Col>
                 </Row>
-                <Table hover striped bordered>
-                    <thead>
-                        <tr>
-                            <th onClick={() => handleSortChange('title')}>Title</th>
-                            <th onClick={() => handleSortChange('description')}>Description</th>
-                            <th onClick={() => handleSortChange('createdAt')}>Created At</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {paginatedTickets.map((ticket) => (
-                            <tr key={ticket.id}>
-                                <td>{ticket.title}</td>
-                                <td>{ticket.description}</td>
-                                <td>{format(new Date(ticket.createdAt), 'MM/dd/yyyy')}</td>
-                                <td>
-                                    <Tooltip title={`Edit this ${ticket.name} Ticket`} arrow placement="top">
-                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0'>
-                                            <FaEdit onClick={() => handleOpenModal(ticket, "edit")} />
-                                        </Button>
-                                    </Tooltip>
-                                    <Tooltip title={`View this ${ticket.name} Ticket`} arrow placement="top">
-                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0' onClick={() => handleOpenModal(ticket, "view")}>
-                                            <FaEye />
-                                        </Button>
-                                    </Tooltip>
-                                    <Tooltip title={`Delete this ${ticket.name} Ticket`} arrow placement="top">
-                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-danger border-0' onClick={() => handleOpenModal(ticket, "delete")}>
-                                            <FaTrashAlt />
-                                        </Button>
-                                    </Tooltip>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                <ListGroup as="ol">
+                    {paginatedTickets.map((ticket) => (
+                        <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">    
+                            <div className="ms-2 me-auto">  
+                                <div class="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={'ticket/'+ticket.code}> {ticket.code} </Link>] {ticket.title} </div>
+                                <div className="fs-6">Createt At {new Date(ticket.createdAt).toLocaleDateString()} </div>
+                            </div>
+                            <Badge bg="primary"> {ticket.status} </Badge>
+                        </ListGroup.Item>
+                    ))}
+                </ListGroup>
+               
                 <Pagination>
                     <Pagination.First onClick={() => handlePageChange(1)} />
                     <Pagination.Prev onClick={() => handlePageChange(page - 1)} />
