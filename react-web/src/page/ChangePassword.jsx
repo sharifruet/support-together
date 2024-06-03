@@ -15,7 +15,7 @@ const defaultTheme = createTheme();
 
 export default function ChangePassword() {
     const { user } = useContext(GlobalContext);
-    const { changePassword, loading: isLoading } = useCrud();
+    const { changePassword } = useCrud();
     const changePasswordUrl = "/change-password";
 
     // State to manage form data
@@ -184,11 +184,11 @@ export default function ChangePassword() {
                         />
                         <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
                             <CustomButton
-                                isLoading={isLoading}
+                                isLoading={loading}
                                 type="submit"
                                 icon={<RiLockPasswordFill />}
                                 label={"Change Password"}
-                                disabled={isLoading}
+                                disabled={loading}
                             />
                         </div>
                     </Box>
