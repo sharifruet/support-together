@@ -42,8 +42,8 @@ const GlobalProvider = ({ children }) => {
   }, [accesstoken]);
 
   useEffect(() => {
+    console.log(user);
     if (!user?.user?.name) {
-      console.log(user);
       navigate('/profileUpdate');
     }
   }, [user]);

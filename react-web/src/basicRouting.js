@@ -19,6 +19,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ChangePassword from "./page/ChangePassword";
 import Tickets from "./components/tickets/Tickets";
 import ProfileUpdate from "./page/ProfileUpdate";
+import CreateTicket from "./components/tickets/CreateTicket";
 
 const RouteComponent = () => {
     return (
@@ -39,6 +40,7 @@ const RouteComponent = () => {
                 <Route index element={<Dashboard />} />
                 <Route path='changePassword' element={<ChangePassword />} />
                 <Route path='tickets' element={<Tickets />} />
+                <Route path='createTicket' element={<CreateTicket />} />
 
                 <Route element={<ProtectedRoute roles={['Admin']} />}>
                     <Route path='adminDashboard' element={<AdminDashboard />} />
