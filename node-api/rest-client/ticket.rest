@@ -54,7 +54,7 @@ GET {{BASE_URL}}/tickets/1
 Authorization: Bearer {{TOKEN}}
 
 ### Get a ticket by ID
-GET {{BASE_URL}}/tickets/code/123
+GET {{BASE_URL}}/tickets/code/EBPM-1
 Authorization: Bearer {{TOKEN}}
 
 ### Get tickets by project

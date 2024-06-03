@@ -18,6 +18,7 @@ import EmailTemplates from "./components/emails/EmailTemplates";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ChangePassword from "./page/ChangePassword";
 import Tickets from "./components/tickets/Tickets";
+import Ticket from "./page/Ticket";
 import ProfileUpdate from "./page/ProfileUpdate";
 
 const RouteComponent = () => {
@@ -30,6 +31,8 @@ const RouteComponent = () => {
             <Route path='/signup' element={<Signup />} />
             <Route path='/slider' element={<Slider />} />
             <Route path='forgotPass' element={<ForgotPass />} />
+            <Route path='/ticket/:code' element={<Ticket/>} />
+           
 
             {/* Routes that should be wrapped by the SideBar component */}
             <Route element={<ProtectedRoute roles={['Customer', 'Admin', 'Support']} />}>
@@ -53,6 +56,7 @@ const RouteComponent = () => {
                 </Route>
                 <Route element={<ProtectedRoute roles={['Customer', 'Admin', 'Support']} />}>
                     <Route path='projectlistorgwise/:id' element={<ProjectListOrgwise />} />
+                    
                 </Route>
             </Route>
         </Routes>
