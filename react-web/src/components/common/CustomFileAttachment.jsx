@@ -25,7 +25,7 @@ const CustomFileAttachment = ({ setSelectedAttachments, clear }) => {
         } else {
             setSelectedAttachments([]);
         }
-    }, [uploadedFiles]);
+    }, [uploadedFiles, clear]);
 
     const onChooseFile = () => {
         inputRef.current.click();

@@ -56,6 +56,7 @@ const Tickets = () => {
     const fetchTickets = async () => {
         try {
             const data = await getAll(ticketUrl);
+            console.log(data)
             setTickets(data);
         } catch (error) {
             console.error(error);

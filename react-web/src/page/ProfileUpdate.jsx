@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 const ProfileUpdate = () => {
     const defaultTheme = createTheme();
     const { user } = useContext(GlobalContext);
-    const { updateProfile, loading: isLoading } = useCrud();
+    const { updateProfile } = useCrud();
     const profileUpdateUrl = "/update-user";
     const navigate = useNavigate();
 
@@ -221,11 +221,11 @@ const ProfileUpdate = () => {
                         />
                         <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
                             <CustomButton
-                                isLoading={isLoading}
+                                isLoading={loading}
                                 type="submit"
                                 icon={<ManageAccountsSharpIcon />}
                                 label={"Update Profile"}
-                                disabled={isLoading}
+                                disabled={loading}
                             />
                         </div>
                     </Box>

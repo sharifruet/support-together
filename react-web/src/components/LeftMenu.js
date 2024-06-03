@@ -26,7 +26,6 @@ const LeftMenu = () => {
 
     // Function to check if a role is allowed for the current user
     const isRoleAllowed = (role) => {
-        //console.log(user);
         const roles = user?.roles?.map(userRole => userRole?.role);
         return roles?.includes(role);
     };
