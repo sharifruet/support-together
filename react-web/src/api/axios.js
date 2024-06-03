@@ -1,6 +1,6 @@
 import axios from "axios";
 export default axios.create({
-  baseURL: "https://support.i2gether.com/api",
+  baseURL: "http://localhost:5000/api",
   
 });
 

@@ -6,7 +6,7 @@ const authenticate = require('./middleware/authMiddleware');
 const app = express();
 app.use(cors({ origin: '*', credentials: true }));
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const db = require('./db');
 
 // Middleware function to log incoming requests
