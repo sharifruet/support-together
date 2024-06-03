@@ -1,15 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Container, Row, Col, Form, Button, Modal, Pagination, ListGroup, Badge } from 'react-bootstrap';
-import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
-import { FaCirclePlus } from "react-icons/fa6";
-import { Tooltip } from "@mui/material";
-import { format } from 'date-fns';
 import useCrud from '../../hooks/useCrud';
 import './TicketsStyles.css';
 import TicketModal from "./TicketModal";
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
 import OpenModalButton from '../common/OpenModalButton';
-import TicketItem from './TicketItem';
 import { Link } from 'react-router-dom';
 
 const Tickets = () => {
