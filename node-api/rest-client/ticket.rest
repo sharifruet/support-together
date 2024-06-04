@@ -41,6 +41,11 @@ Content-Type: application/json
   "description": "Updated description"
 }
 
+
+### Update status of a ticket
+PUT {{BASE_URL}}/tickets/5/status/Done
+Authorization: Bearer {{TOKEN}}
+
 ### Delete a ticket by ID
 DELETE {{BASE_URL}}/tickets/1
 Authorization: Bearer {{TOKEN}}
