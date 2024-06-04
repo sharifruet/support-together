@@ -22,7 +22,7 @@ router.post('/invite', async (req, res) => {
       user = await User.create({ email, password: hashedPassword });
 
       // Send welcome email with the password using the template
-      const placeholders = { password };
+      const placeholders = { password, email };
       const templateId = 4; // Assuming 1 is the template ID for the invite email
       await sendEmailWithTemplate(templateId, email, placeholders);
     }
