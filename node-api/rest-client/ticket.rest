@@ -67,12 +67,12 @@ Content-Type: application/json
 Authorization: Bearer {{TOKEN}}
 
 {
-  "ticketId": 1,
-  "content": "This is a comment on the ticket."
+  "ticketId": 5,
+  "content": "This is a comment on the ticket. dfsdf"
 }
 
 ### Get comments for a ticket
-GET {{BASE_URL}}/tickets/1/comments
+GET {{BASE_URL}}/tickets/5/comments
 Authorization: Bearer {{TOKEN}}
 
 ### Edit a comment
