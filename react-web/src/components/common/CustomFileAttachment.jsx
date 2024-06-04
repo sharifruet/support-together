@@ -22,7 +22,7 @@ const CustomFileAttachment = ({ setSelectedAttachments, clear }) => {
     useEffect(() => {
         if (uploadedFiles.length > 0 && clear === false) {
             setSelectedAttachments(uploadedFiles);
-        } else if (clear === true){
+        } else if (clear === true) {
             setSelectedAttachments([]);
             setSelectedFiles([]);
             setUploadStatus("select");
@@ -40,6 +40,49 @@ const CustomFileAttachment = ({ setSelectedAttachments, clear }) => {
         setUploadStatus("select");
     };
 
+    // const handleUpload = async () => {
+    //     if (uploadStatus === "done") {
+    //         clearFileInput();
+    //         return;
+    //     }
+
+    //     setUploadStatus("uploading");
+
+    //     try {
+    //         const uploadedFiles = await Promise.all(selectedFiles.map(async (file) => {
+    //             const response = await uploadFile("/uploads", file, (progressEvent) => {
+    //                 const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+    //                 setUploadProgress((prevProgress) => ({
+    //                     ...prevProgress,
+    //                     [file.name]: percentCompleted,
+    //                 }));
+    //             });
+    //             return response.filePath; // Assuming response contains the file path URL
+    //         }));
+
+    //         // Set the attachments with the file paths
+    //         setUploadedFiles(prevAttachments => [...prevAttachments, ...uploadedFiles]);
+
+    //         // Update upload progress for each file
+    //         selectedFiles.forEach(file => {
+    //             setUploadProgress((prevProgress) => ({
+    //                 ...prevProgress,
+    //                 [file.name]: 100,
+    //             }));
+    //         });
+
+    //         setUploadStatus("done");
+    //     } catch (error) {
+    //         // setUploadProgress((prevProgress) => ({
+    //         //     ...prevProgress,
+    //         //     [file.name]: 0,
+    //         // }));
+    //         console.error("Upload failed", error);
+    //         setUploadStatus("select");
+    //     }
+    // };
+
+
     const handleUpload = async () => {
         if (uploadStatus === "done") {
             clearFileInput();
@@ -48,31 +91,34 @@ const CustomFileAttachment = ({ setSelectedAttachments, clear }) => {
 
         setUploadStatus("uploading");
 
-        try {
-            const uploadedFiles = await Promise.all(selectedFiles.map(async (file) => {
-                const response = await uploadFile("/uploads", file); // Use uploadFile function
-                return response.filePath; // Assuming response contains the file path URL
-            }));
+        const uploadedFilePaths = [];
 
-            // Set the attachments with the file paths
-            setUploadedFiles(prevAttachments => [...prevAttachments, ...uploadedFiles]);
+        await Promise.all(selectedFiles.map(async (file) => {
+            try {
+                const response = await uploadFile("/uploads", file, (progressEvent) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    setUploadProgress((prevProgress) => ({
+                        ...prevProgress,
+                        [file.name]: percentCompleted,
+                    }));
+                });
 
-            // Update upload progress for each file
-            selectedFiles.forEach(file => {
+                uploadedFilePaths.push(response.filePath);  // Assuming response contains filePath
                 setUploadProgress((prevProgress) => ({
                     ...prevProgress,
                     [file.name]: 100,
                 }));
-            });
+            } catch (error) {
+                setUploadProgress((prevProgress) => ({
+                    ...prevProgress,
+                    [file.name]: 0,
+                }));
+            }
+        }));
 
-            setUploadStatus("done");
-        } catch (error) {
-            console.error("Upload failed", error);
-            setUploadStatus("select");
-        }
+        setUploadedFiles(uploadedFilePaths);
+        setUploadStatus("done");
     };
-
-
 
     const getFileIcon = (file) => {
         const extension = file.name.split('.').pop().toLowerCase();
@@ -96,7 +142,7 @@ const CustomFileAttachment = ({ setSelectedAttachments, clear }) => {
     };
 
     return (
-        <div>
+        <>
             <input
                 ref={inputRef}
                 type="file"
@@ -105,60 +151,60 @@ const CustomFileAttachment = ({ setSelectedAttachments, clear }) => {
                 style={{ display: "none" }}
             />
 
-            <div role="button" className="file-btn mb-3" onClick={onChooseFile} style={{ display: uploadStatus === "uploading" ? "none" : "block" }}>
+            <button type="button" className="file-btn mb-3" onClick={onChooseFile} style={{ display: uploadStatus === "uploading" ? "none" : "block" }}>
                 <div className="material-symbols-outlined"><CloudUploadSharpIcon /></div>
                 <div>
                     {uploadStatus === "done" ? "Upload More Files" : "Upload Files"}
                 </div>
-            </div>
+            </button>
 
             {selectedFiles.length > 0 && (
                 <>
-                    <div className="file-list">
-                        {selectedFiles.map((file) => (
-                            <div key={file.name} className="file-card mb-3">
-                                {getFileIcon(file)}
+                    {/* <div> */}
+                    {selectedFiles.map((file) => (
+                        <div key={file.name} className="file-card mb-3">
+                            <span className="material-symbols-outlined icon">{getFileIcon(file)}</span>
 
-                                <div className="file-info">
-                                    <div style={{ flex: 1 }}>
-                                        <h6>{file.name}</h6>
+                            <div className="file-info">
+                                <div style={{ flex: 1 }}>
+                                    <h6>{file.name}</h6>
 
-                                        <div className="progress-bg">
-                                            <div className="progress" style={{ width: `${uploadProgress[file.name] || 0}%` }} />
-                                        </div>
+                                    <div className="progress-bgC">
+                                        <div className="progressC" style={{ width: `${uploadProgress[file.name] || 0}%` }} />
                                     </div>
-
-                                    {uploadStatus === "select" ? (
-                                        <button onClick={() => {
-                                            setSelectedFiles((prevFiles) => prevFiles.filter(f => f.name !== file.name));
-                                            setUploadProgress((prevProgress) => {
-                                                const { [file.name]: _, ...rest } = prevProgress;
-                                                return rest;
-                                            });
-                                        }}>
-                                            <Close className="close-icon" />
-                                        </button>
-                                    ) : (
-                                        <div className="check-circle">
-                                            {uploadStatus === "uploading" ? (
-                                                `${uploadProgress[file.name] || 0}%`
-                                            ) : uploadStatus === "done" && uploadProgress[file.name] === 100 ? (
-                                                <CheckCircle style={{ fontSize: "20px" }} />
-                                            ) : null}
-                                        </div>
-                                    )}
                                 </div>
+
+                                {uploadStatus === "select" ? (
+                                    <button type="button" onClick={() => {
+                                        setSelectedFiles((prevFiles) => prevFiles.filter(f => f.name !== file.name));
+                                        setUploadProgress((prevProgress) => {
+                                            const { [file.name]: _, ...rest } = prevProgress;
+                                            return rest;
+                                        });
+                                    }}>
+                                        <Close className="close-icon" />
+                                    </button>
+                                ) : (
+                                    <div className="check-circle">
+                                        {uploadStatus === "uploading" ? (
+                                            `${uploadProgress[file.name] || 0}%`
+                                        ) : uploadStatus === "done" && uploadProgress[file.name] === 100 ? (
+                                            <CheckCircle style={{ fontSize: "20px" }} />
+                                        ) : null}
+                                    </div>
+                                )}
                             </div>
-                        ))}
-                    </div>
-                    {uploadStatus !== "uploading" && (
-                        <button type="button" className="upload-btn" onClick={handleUpload}>
-                            {uploadStatus === "select" || uploadStatus === 'uploading' ? "Upload" : "Done"}
-                        </button>
-                    )}
+                        </div>
+                    ))}
+                    {/* </div> */}
+                    {/* {uploadStatus !== "uploading" && ( */}
+                    <button type="button" className="upload-btn" onClick={handleUpload}>
+                        {uploadStatus === "select" || uploadStatus === 'uploading' ? "Upload" : "Done"}
+                    </button>
+                    {/* )} */}
                 </>
             )}
-        </div>
+        </>
     );
 };
 

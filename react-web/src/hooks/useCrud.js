@@ -20,7 +20,7 @@ const useCrud = () => {
         },
     });
 
-    const fetchApi = useCallback(async (endpoint, method, payload = null, isFileUpload = false) => {
+    const fetchApi = useCallback(async (endpoint, method, payload = null, isFileUpload = false, onUploadProgress = null) => {
         setLoading(true);
         setError(null);
         try {
@@ -33,6 +33,7 @@ const useCrud = () => {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     ...(isFileUpload && { 'Content-Type': 'multipart/form-data' }),
+                    ...(onUploadProgress && { onUploadProgress })
                 },
             };
 
@@ -40,12 +41,12 @@ const useCrud = () => {
                 requestConfig.data = payload;
             }
 
-            if (isFileUpload) {
-                requestConfig.headers = {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data',
-                }
-            }
+            // if (isFileUpload) {
+            //     requestConfig.headers = {
+            //         'Authorization': `Bearer ${token}`,
+            //         'Content-Type': 'multipart/form-data',
+            //     }
+            // }
 
             const response = await axiosInstance(requestConfig);
             return response.data;
