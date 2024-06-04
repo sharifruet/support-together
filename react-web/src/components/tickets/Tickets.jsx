@@ -107,7 +107,7 @@ const Tickets = () => {
                     {paginatedTickets.map((ticket) => (
                         <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">    
                             <div className="ms-2 me-auto">  
-                                <div class="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={'ticket/'+ticket.code}> {ticket.code} </Link>] {ticket.title} </div>
+                                <div class="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={'../../ticket/'+ticket.code}> {ticket.code} </Link>] {ticket.title} </div>
                                 <div className="fs-6">Createt At {new Date(ticket.createdAt).toLocaleDateString()} </div>
                             </div>
                             <Badge bg="primary"> {ticket.status} </Badge>

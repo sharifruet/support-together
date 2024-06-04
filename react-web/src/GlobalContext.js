@@ -38,6 +38,9 @@ const GlobalProvider = ({ children }) => {
       }).catch(error => {
         console.log(error.response.data.error)
       });
+      user.roles.forEach(role => {
+        loadProject(role.projectId);
+      });
     }
   }, [accesstoken]);
 
