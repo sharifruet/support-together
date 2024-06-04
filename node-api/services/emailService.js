@@ -39,11 +39,12 @@ const sendEmailWithTemplate = async (templateId, recipient, placeholders) => {
 
         // Replace placeholders in the template body
         let emailBody = emailTemplate.body;
+        let emailSubject = emailTemplate.subject;
         for (const [key, value] of Object.entries(placeholders)) {
             const regex = new RegExp(`{${key}}`, 'g');
             emailBody = emailBody.replace(regex, value);
+            emailSubject = emailSubject.replace(regex, value);
         }
-
        
         // Send the email
         const info = await transporter.sendMail({
