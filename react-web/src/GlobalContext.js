@@ -38,12 +38,15 @@ const GlobalProvider = ({ children }) => {
       }).catch(error => {
         console.log(error.response.data.error)
       });
+      user.roles.forEach(role => {
+        loadProject(role.projectId);
+      });
     }
   }, [accesstoken]);
 
   useEffect(() => {
+    console.log(user);
     if (!user?.user?.name) {
-      console.log(user);
       navigate('/profileUpdate');
     }
   }, [user]);

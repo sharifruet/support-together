@@ -10,10 +10,10 @@ const { sendEmailWithTemplate } = require('../services/emailService');
 const authenticate = require('../middleware/authMiddleware');
 
 // Function to send ticket created email
-const sendTicketCreatedEmail = async (ticket, to) => {
-  const placeholders = { title: ticket.title, code: ticket.code };
+const sendTicketCreatedEmail = async (ticket, user) => {
+  const placeholders = { title: ticket.title, code: ticket.code, createdAt: ticket.createdAt, email: user.email, name: user.name };
   const templateId = 1; // Assuming 1 is the template ID for the ticket created email
-  await sendEmailWithTemplate(templateId, to, placeholders);
+  await sendEmailWithTemplate(templateId, user.email, placeholders);
 };
 
 // Create or update attachments for a ticket
@@ -35,10 +35,16 @@ const createOrUpdateFYIToRecipients = async (ticketId, fyiTo) => {
 // Get all tickets
 router.get('/tickets', authenticate, async (req, res) => {
   try {
-    const userRoles = await UserRole.findAll({where:{userId:req.user.id}});
-    const projectIds = userRoles.map(ur=>ur.projectId);
+    const userId = req.user.id;
+
+    const userRoles = await UserRole.findAll({where:{userId:userId}});
+
+    const projectIds = userRoles.map(ur=>ur.ProjectId);
+
     const topics = await Topic.findAll({where:{projectId:projectIds}});
+
     const topicIds = topics.map(topic=>topic.id);
+   
     const tickets = await Ticket.findAll({where:{topicId:topicIds}});
 
     res.json(tickets);
@@ -52,7 +58,7 @@ router.get('/tickets', authenticate, async (req, res) => {
 router.get('/tickets/code/:code', authenticate, async (req, res) => {
   try {
     const { code } = req.params;
-    const tickets = await Ticket.find({where:{code:code}});
+    const tickets = await Ticket.findOne({where:{code:code}});
 
     res.json(tickets);
   } catch (error) {
@@ -82,15 +88,17 @@ router.post('/tickets', authenticate, async (req, res) => {
 
     const { topicId, title, description, priority, attachments, fyiTo } = req.body;
     const createdBy = req.user.id; // Get user ID from req.user
-    const email = req.user.email;
-
-    const ticket = await Ticket.create({ topicId, title, description, priority, createdBy });
+    const user = req.user;
+   
+    let ticket = await Ticket.create({ topicId, title, description, priority, createdBy });
     // Create attachments
     await createOrUpdateAttachments(ticket.id, attachments);
     // Create FYI To recipients
     await createOrUpdateFYIToRecipients(ticket.id, fyiTo);
     // Send ticket created email
-    await sendTicketCreatedEmail(ticket, email);
+    ticket =  await Ticket.findByPk(ticket.id);
+    await sendTicketCreatedEmail(ticket, user);
+
     res.status(201).json(ticket);
   } catch (error) {
     console.error('Error creating ticket:', error);

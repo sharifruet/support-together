@@ -5,11 +5,13 @@ import './TicketsStyles.css';
 import TicketModal from "./TicketModal";
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
 import OpenModalButton from '../common/OpenModalButton';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Tickets = () => {
     const { getAll } = useCrud();
     const ticketUrl = "/tickets";
+
+    const navigate = useNavigate();
 
     const [tickets, setTickets] = useState([]);
     const [selectedTicket, setSelectedTicket] = useState(null);
@@ -87,7 +89,7 @@ const Tickets = () => {
                     <Col>
                         <div className="col-span-1 flex items-center">
                             {/* It's open the add ticket modal */}
-                            <div onClick={() => handleOpenModal(null, "add")}>
+                            <div onClick={() => navigate("/dashboard/createTicket")}>
                                 <OpenModalButton label={"Create Ticket"} icon={<AddIcon />} />
                             </div>
                         </div>
@@ -105,7 +107,7 @@ const Tickets = () => {
                     {paginatedTickets.map((ticket) => (
                         <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">    
                             <div className="ms-2 me-auto">  
-                                <div class="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={'ticket/'+ticket.code}> {ticket.code} </Link>] {ticket.title} </div>
+                                <div class="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={'../../ticket/'+ticket.code}> {ticket.code} </Link>] {ticket.title} </div>
                                 <div className="fs-6">Createt At {new Date(ticket.createdAt).toLocaleDateString()} </div>
                             </div>
                             <Badge bg="primary"> {ticket.status} </Badge>
