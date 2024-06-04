@@ -285,9 +285,9 @@ const TicketList = ({ project, tickets }) => {
             <TableHead>
               <TableRow style={theader}>
                 <TableCell>Title</TableCell>
-                <TableCell>Requested By</TableCell>
+                <TableCell>Created</TableCell>
                 <TableCell>Status</TableCell>
-                <TableCell align="right">Action</TableCell>
+                {/* <TableCell align="right">Action</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -295,9 +295,9 @@ const TicketList = ({ project, tickets }) => {
                 return (
                   <TableRow>
                     <TableCell align="left"> <Link to={'../../ticket/'+row.code}>[{row.code}]</Link> {row.title}</TableCell>
-                    <TableCell align="left">{row.requestedBy}</TableCell>
+                    <TableCell align="left">{new Date(row.createdAt).toISOString()}</TableCell>
                     <TableCell align="left">{row.status}</TableCell>
-                    <TableCell align="right"><i role="button" onClick={() => handleShow(setTid(row.id))} className="bi bi-pencil-square"></i></TableCell>
+                    {/* <TableCell align="right"><i role="button" onClick={() => handleShow(setTid(row.id))} className="bi bi-pencil-square"></i></TableCell> */}
                   </TableRow>
                 );
               })}
