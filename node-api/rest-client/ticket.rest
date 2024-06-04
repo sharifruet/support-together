@@ -60,3 +60,30 @@ Authorization: Bearer {{TOKEN}}
 ### Get tickets by project
 GET {{BASE_URL}}/tickets/project/1
 Authorization: Bearer {{TOKEN}}
+
+### Create a comment
+POST {{BASE_URL}}/comments
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "ticketId": 1,
+  "content": "This is a comment on the ticket."
+}
+
+### Get comments for a ticket
+GET {{BASE_URL}}/tickets/1/comments
+Authorization: Bearer {{TOKEN}}
+
+### Edit a comment
+PUT {{BASE_URL}}/comments/1
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "content": "This is an updated comment."
+}
+
+### Delete a comment
+DELETE {{BASE_URL}}/comments/1
+Authorization: Bearer {{TOKEN}}
