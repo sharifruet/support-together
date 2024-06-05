@@ -32,8 +32,10 @@ const emailTemplateRoutes = require('./routes/emailTemplateRoutes');
 const emailRoutes = require('./routes/emailRoutes');
 const inviteRoutes = require('./routes/inviteRoutes');
 const commentRoutes = require('./routes/commentRoutes');
+const supportTeamRoutes = require('./routes/supportTeamRoutes');
+const supportScheduleRoutes = require('./routes/supportScheduleRoutes');
 
-const worker = require('./services/screduleService');
+const worker = require('./services/scheduleService');
 
 const job = schedule.scheduleJob("*/1 * * * *", worker.run);
 
@@ -64,6 +66,8 @@ app.use('/api', emailTemplateRoutes);
 app.use('/api', emailRoutes);
 app.use('/api', inviteRoutes);
 app.use('/api', commentRoutes);
+app.use('/api', supportTeamRoutes);
+app.use('/api', supportScheduleRoutes);
 
 // Sync models with database
 db.sync()
