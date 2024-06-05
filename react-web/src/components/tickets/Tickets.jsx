@@ -6,7 +6,7 @@ import TicketModal from "./TicketModal";
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
 import OpenModalButton from '../common/OpenModalButton';
 import { Link, useNavigate } from 'react-router-dom';
-import DeadlineLimit from '../common/DeadlineLimit';
+import ResponseTimeProgressBar from '../common/ResponseTimeProgressBar';
 
 const Tickets = () => {
     const { getAll } = useCrud();
@@ -110,6 +110,7 @@ const Tickets = () => {
                             <div className="ms-2 me-auto">  
                                 <div class="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={`/dashboard/ticket/${ticket.code}`}> {ticket.code} </Link>] {ticket.title} </div>
                                 <div className="fs-6">Created At {new Date(ticket.createdAt).toLocaleDateString()} </div>
+                                <ResponseTimeProgressBar />
                             </div>
                             <Badge bg="primary"> {ticket.status} </Badge>
                         </ListGroup.Item>

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import moment from 'moment';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-const DeadlineLimit = ({ createdAt, deadline }) => {
+const DeadlineLimitProgressBar = ({ createdAt, deadline }) => {
     const [timeLeft, setTimeLeft] = useState('');
     const [progress, setProgress] = useState(0);
     const [urgency, setUrgency] = useState('low'); // State for urgency
@@ -85,4 +85,4 @@ const DeadlineLimit = ({ createdAt, deadline }) => {
     );
 };
 
-export default DeadlineLimit;
+export default DeadlineLimitProgressBar;
