@@ -47,56 +47,7 @@ const CustomFileAttachment = ({ setSelectedAttachments, clear }) => {
         setSelectedFiles([]);
         setUploadProgress({});
         setUploadStatus("select");
-
-        // setSelectedFiles((prevFiles) => prevFiles.filter(f => f.name !== fileName));
-        // setUploadProgress((prevProgress) => {
-        //     const { [fileName]: _, ...rest } = prevProgress;
-        //     return rest;
-        // });
     };
-
-    // const handleUpload = async () => {
-    //     if (uploadStatus === "done") {
-    //         clearFileInput();
-    //         return;
-    //     }
-
-    //     setUploadStatus("uploading");
-
-    //     try {
-    //         const uploadedFiles = await Promise.all(selectedFiles.map(async (file) => {
-    //             const response = await uploadFile("/uploads", file, (progressEvent) => {
-    //                 const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-    //                 setUploadProgress((prevProgress) => ({
-    //                     ...prevProgress,
-    //                     [file.name]: percentCompleted,
-    //                 }));
-    //             });
-    //             return response.filePath; // Assuming response contains the file path URL
-    //         }));
-
-    //         // Set the attachments with the file paths
-    //         setUploadedFiles(prevAttachments => [...prevAttachments, ...uploadedFiles]);
-
-    //         // Update upload progress for each file
-    //         selectedFiles.forEach(file => {
-    //             setUploadProgress((prevProgress) => ({
-    //                 ...prevProgress,
-    //                 [file.name]: 100,
-    //             }));
-    //         });
-
-    //         setUploadStatus("done");
-    //     } catch (error) {
-    //         // setUploadProgress((prevProgress) => ({
-    //         //     ...prevProgress,
-    //         //     [file.name]: 0,
-    //         // }));
-    //         console.error("Upload failed", error);
-    //         setUploadStatus("select");
-    //     }
-    // };
-
 
     const handleUpload = async () => {
         if (uploadStatus === "done") {
@@ -229,7 +180,6 @@ const CustomFileAttachment = ({ setSelectedAttachments, clear }) => {
                     name=""
                     className=""
                 />
-            // <img src={URL.createObjectURL(file)} alt={file.name} style={{ width: 50, height: 50 }} />;
             default:
                 return <AttachFile />;
         }

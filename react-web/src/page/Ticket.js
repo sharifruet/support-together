@@ -61,7 +61,7 @@ export default function Ticket() {
     }
 
     const changeStatus = (e) => {
-        axios.put(`/tickets/{ticket.id}`, 
+        axios.put(`/tickets/${ticket.id}`, 
             {status: e.target.value},
             headerConfig()
         ).then(response =>{
