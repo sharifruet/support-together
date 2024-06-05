@@ -131,6 +131,25 @@ router.put('/tickets/:id', authenticate, async (req, res) => {
   }
 });
 
+// Update ticket
+router.put('/tickets/:id/status/:status', authenticate, async (req, res) => {
+  const { id, status } = req.params;
+  
+  try {
+    const ticket = await Ticket.findByPk(id);
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket not found' });
+    }
+
+    await ticket.update({ status });
+
+    res.json({ message: 'Ticket updated successfully' });
+  } catch (error) {
+    console.error('Error updating ticket:', error);
+    res.status(500).json({ error: 'Failed to update ticket' });
+  }
+});
+
 // Delete ticket
 router.delete('/tickets/:id', authenticate, async (req, res) => {
   const { id } = req.params;

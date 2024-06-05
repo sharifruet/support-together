@@ -22,6 +22,7 @@ import GlobalContext from '../GlobalContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import axios from "../api/axios";
+import {BASE_URL} from '../conf';
 const TICKET_URL = "/tickets";
 const ProjWiseTICKET_URL = "/tickets/project";
 const TOPIC_URL = "/topics";
@@ -264,7 +265,7 @@ const TicketList = ({ project, tickets }) => {
               <br />
               <Upload cb={cb} />
               {filepth && <Card style={imgstyle}>
-                <img src={'https://support.i2gether.com/api/' + filepth} />
+                <img src={`${BASE_URL}/${filepth}`} />
               </Card>}
               <br />
               <Button variant="primary" onClick={handleSubmit} className='btn-sm'>
@@ -285,9 +286,9 @@ const TicketList = ({ project, tickets }) => {
             <TableHead>
               <TableRow style={theader}>
                 <TableCell>Title</TableCell>
-                <TableCell>Requested By</TableCell>
+                <TableCell>Created</TableCell>
                 <TableCell>Status</TableCell>
-                <TableCell align="right">Action</TableCell>
+                {/* <TableCell align="right">Action</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -295,9 +296,9 @@ const TicketList = ({ project, tickets }) => {
                 return (
                   <TableRow>
                     <TableCell align="left"> <Link to={'../../ticket/'+row.code}>[{row.code}]</Link> {row.title}</TableCell>
-                    <TableCell align="left">{row.requestedBy}</TableCell>
+                    <TableCell align="left">{new Date(row.createdAt).toISOString()}</TableCell>
                     <TableCell align="left">{row.status}</TableCell>
-                    <TableCell align="right"><i role="button" onClick={() => handleShow(setTid(row.id))} className="bi bi-pencil-square"></i></TableCell>
+                    {/* <TableCell align="right"><i role="button" onClick={() => handleShow(setTid(row.id))} className="bi bi-pencil-square"></i></TableCell> */}
                   </TableRow>
                 );
               })}

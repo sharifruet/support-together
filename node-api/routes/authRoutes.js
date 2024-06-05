@@ -110,13 +110,17 @@ router.post('/logout', (req, res) => {
   // Implement logout logic here if necessary
 });
 // Fetch user info
-router.get('/me', authenticate, async (req, res) => {
+router.get('/users', authenticate, async (req, res) => {
   try {
     const user = req.user;
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    res.json(user);
+    let users = await User.findAll();
+    users.forEach(usr => {
+      usr.password = '';
+    });
+    res.json(users);
   } catch (error) {
     console.error('Error fetching user info:', error);
     res.status(500).json({ error: 'Failed to fetch user info' });

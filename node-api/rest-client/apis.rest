@@ -1,5 +1,6 @@
 
-@BASE_URL = http://support.i2gether.com/api
+//@BASE_URL = https://support.i2gether.com/api
+@BASE_URL = http://localhost:5000/api
 @TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGVzIjpbeyJwcm9qZWN0SWQiOjEsInJvbGUiOiJDdXN0b21lciJ9XSwiaWF0IjoxNzE2NDY4NTU2LCJleHAiOjE3MTY0NzIxNTZ9.2aZWZ8yeH0XSqmYzrhff_MjCK-TEms2Da7LqU-4Iw_8
 
 ### Run status check
@@ -22,8 +23,8 @@ POST {{BASE_URL}}/login
 Content-Type: application/json
 
 {
-  "email": "john1@example.com",
-  "password": "password123"
+  "email": "sharifruet@gmail.com",
+  "password": "pass@123"
 }
 ### Get Token
 @TOKEN = {{postLogin.response.body.token}}
@@ -49,7 +50,7 @@ Content-Type: application/json
 
 ### Assign Role to User for a Project
 POST {{BASE_URL}}/user-roles
-Authorization: Bearer {{@TOKEN}}
+Authorization: Bearer {{TOKEN}}
 Content-Type: application/json
 
 {
@@ -60,7 +61,7 @@ Content-Type: application/json
 
 ### Update User Role for a Project
 PUT {{BASE_URL}}/user-roles/:id
-Authorization: Bearer {{@TOKEN}}
+Authorization: Bearer {{TOKEN}}
 Content-Type: application/json
 
 {
@@ -69,11 +70,11 @@ Content-Type: application/json
 
 ### Delete User Role for a Project
 DELETE {{BASE_URL}}/user-roles/:id
-Authorization: Bearer {{@TOKEN}}
+Authorization: Bearer {{TOKEN}}
 
 ### Upload a file
 POST {{BASE_URL}}/uploads
-Authorization: Bearer {{@TOKEN}}
+Authorization: Bearer {{TOKEN}}
 Content-Type: multipart/form-data; boundary=---011000010111000001101001
 
 ---011000010111000001101001
@@ -87,7 +88,7 @@ Content-Type: image/png
 ### Update User Info
 PUT http://localhost:3000/auth/update-user
 Content-Type: application/json
-Authorization: Bearer {{{{TOKEN}}}}
+Authorization: Bearer {{TOKEN}}
 
 {
   "name": "John Doe Updated",
@@ -95,3 +96,10 @@ Authorization: Bearer {{{{TOKEN}}}}
   "phoneNumber": "0987654321",
   "password": "abc@123"
 }
+
+### Update User Info
+GET {{BASE_URL}}/users
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+###
