@@ -122,6 +122,7 @@ const Organizations = () => {
                             <tr key={organization.id}>
                                 <td>{organization.name}</td>
                                 <td>{format(new Date(organization.createdAt), 'MM/dd/yyyy')}</td>
+                                
                                 <td>
                                     <Tooltip title={`Add Project to this ${organization.name} Organization`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0'>

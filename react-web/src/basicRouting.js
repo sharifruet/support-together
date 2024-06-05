@@ -32,13 +32,14 @@ const RouteComponent = () => {
             <Route path='/signup' element={<Signup />} />
             <Route path='/slider' element={<Slider />} />
             <Route path='forgotPass' element={<ForgotPass />} />
-            <Route path='/ticket/:code' element={<Ticket/>} />
-           
+            {/* <Route path='/ticket/:code' element={<Ticket />} /> */}
 
-            {/* Routes that should be wrapped by the SideBar component */}
+
+            {/* Logged in users route */}
             <Route element={<ProtectedRoute roles={['Customer', 'Admin', 'Support']} />}>
                 <Route path='profileUpdate' element={<ProfileUpdate />} />
             </Route>
+            {/* Routes that should be wrapped by the SideBar component */}
             <Route path='dashboard' element={<SideBar />}>
                 <Route index element={<Dashboard />} />
                 <Route path='changePassword' element={<ChangePassword />} />
@@ -57,8 +58,8 @@ const RouteComponent = () => {
                     <Route path='supportform' element={<SupportForm />} />
                 </Route>
                 <Route element={<ProtectedRoute roles={['Customer', 'Admin', 'Support']} />}>
+                    <Route path='ticket/:code' element={<Ticket />} />
                     <Route path='projectlistorgwise/:id' element={<ProjectListOrgwise />} />
-                    
                 </Route>
             </Route>
         </Routes>

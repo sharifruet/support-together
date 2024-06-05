@@ -6,6 +6,7 @@ import TicketModal from "./TicketModal";
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
 import OpenModalButton from '../common/OpenModalButton';
 import { Link, useNavigate } from 'react-router-dom';
+import ResponseTimeProgressBar from '../common/ResponseTimeProgressBar';
 
 const Tickets = () => {
     const { getAll } = useCrud();
@@ -107,13 +108,16 @@ const Tickets = () => {
                     {paginatedTickets.map((ticket) => (
                         <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">    
                             <div className="ms-2 me-auto">  
-                                <div class="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={'../../ticket/'+ticket.code}> {ticket.code} </Link>] {ticket.title} </div>
-                                <div className="fs-6">Createt At {new Date(ticket.createdAt).toLocaleDateString()} </div>
+                                <div class="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={`/dashboard/ticket/${ticket.code}`}> {ticket.code} </Link>] {ticket.title} </div>
+                                <div className="fs-6">Created At {new Date(ticket.createdAt).toLocaleDateString()} </div>
+                                <ResponseTimeProgressBar />
                             </div>
                             <Badge bg="primary"> {ticket.status} </Badge>
                         </ListGroup.Item>
                     ))}
                 </ListGroup>
+
+                
                
                 <Pagination>
                     <Pagination.First onClick={() => handlePageChange(1)} />
