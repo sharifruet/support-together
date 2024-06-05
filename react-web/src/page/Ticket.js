@@ -114,13 +114,26 @@ export default function Ticket() {
                         <Card.Body>
                             <Table responsive>
                                 <Select style={{float:'right'}} labelId="demo-simple-select-label"
-                                    id="demo-simple-select"  value={ticket?.status}  label="Status"
+                                    id="demo-simple-select"  value={ticket?.status || ''}  label="Status"
                                     onChange={changeStatus}
                                 >
                                     <MenuItem value='Created'>Created</MenuItem>
                                     <MenuItem value='Assigned'>Assigned</MenuItem>
                                     <MenuItem value='Done'>Done</MenuItem>
                                 </Select>
+
+                                {/* <Select
+                                    style={{ float: 'right' }}
+                                    labelId="status-select-label"
+                                    id="status-select"
+                                    value={ticket?.status || ''}
+                                    label="Status"
+                                    onChange={changeStatus}
+                                >
+                                    <MenuItem value='Created'>Created</MenuItem>
+                                    <MenuItem value='Assigned'>Assigned</MenuItem>
+                                    <MenuItem value='Done'>Done</MenuItem>
+                                </Select> */}
 
                                 <tbody>
                                     <tr><td><b>Status</b> :</td> <td> {ticket?.status}</td></tr>

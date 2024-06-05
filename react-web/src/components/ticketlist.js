@@ -295,7 +295,7 @@ const TicketList = ({ project, tickets }) => {
               {tickets.map((row, index) => {
                 return (
                   <TableRow>
-                    <TableCell align="left"> <Link to={'../../ticket/'+row.code}>[{row.code}]</Link> {row.title}</TableCell>
+                    <TableCell align="left"> <Link to={`/dashboard/ticket/${row.code}`}>[{row.code}]</Link> {row.title}</TableCell>
                     <TableCell align="left">{new Date(row.createdAt).toISOString()}</TableCell>
                     <TableCell align="left">{row.status}</TableCell>
                     {/* <TableCell align="right"><i role="button" onClick={() => handleShow(setTid(row.id))} className="bi bi-pencil-square"></i></TableCell> */}
