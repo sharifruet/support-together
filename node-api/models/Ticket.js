@@ -68,4 +68,5 @@ const Ticket = db.define('Ticket', {
   
 });
 
+
 module.exports = Ticket;

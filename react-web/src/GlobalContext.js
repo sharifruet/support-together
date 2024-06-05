@@ -89,7 +89,7 @@ const GlobalProvider = ({ children }) => {
       setAccesstoken(null);
       setLoggedIn(false);
       setProjects([]);
-      navigate("/Home");
+      navigate("/home");
       toast.success('👋 You have successfully logged out!', { className: 'toast-success' });
     }
   };
