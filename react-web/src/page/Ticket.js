@@ -10,32 +10,39 @@ import Button from 'react-bootstrap/Button';
 import axios from "../api/axios";
 import GlobalContext from '../GlobalContext';
 import { Image } from 'react-bootstrap';
-import { MenuItem, Select } from '@mui/material';
-import {BASE_URL} from '../conf';
+import { Autocomplete, MenuItem, Select, TextField } from '@mui/material';
+import {BASE_URL, TICKET_STATUS_LIST} from '../conf';
 import Comment from '../components/tickets/Comment';
 const Comments_URL = "/comments"; 
 
   
 export default function Ticket() {
     const [ticket, setTicket] = useState(null);
+    const [status, setStatus] = useState(null);
     const [comments, setComments] = useState([]);
     const [comment, setComment] = useState();
     const {headerConfig, users} = useContext(GlobalContext);
     const location = useLocation();
 
-    const attachments=["1717498199815-44267254.PNG","1717498199820-686742128.png"];
-
     const loadTicket = ()=>{
+    
         const code = location.pathname.split("/")[3];
         axios.get(`/tickets/code/${code}`, headerConfig()
         ).then(data=>{
             setTicket(data.data);
+            
         });
     }
 
     useEffect(() => {
+
         loadTicket();
     },[]);
+
+    useEffect(() => {
+        if(ticket)
+            setStatus(ticket.status);
+    },[ticket]);
 
     const loadComments = ()=>{
         axios.get(`/tickets/${ ticket.id }/comments`, headerConfig()
@@ -61,8 +68,10 @@ export default function Ticket() {
     }
 
     const changeStatus = (e) => {
-        axios.put(`/tickets/${ticket.id}`, 
-            {status: e.target.value},
+        const newStatus = e.target.value;
+        setStatus(newStatus);
+        axios.put(`/tickets/${ticket.id}/status/${newStatus}`, 
+            {},
             headerConfig()
         ).then(response =>{
             loadTicket();
@@ -70,9 +79,6 @@ export default function Ticket() {
         }).catch(err=>{
             console.log(err);
         });
-
-        
-        
     }
 
     return (
@@ -86,24 +92,24 @@ export default function Ticket() {
                             <p><label>Description:</label><br/> {ticket?.description}</p>
 
                             <br/>
-                            {attachments.map((fileName)=>(                               
-                                <Image style={{width: "200px"}} src={`${BASE_URL}/uploads/${fileName}`}/>
+                            {ticket?.attachments.map((attachment)=>(                               
+                                <Image key={attachment.id} style={{width: "200px"}} src={`${BASE_URL}/${attachment.fileName}`}/>
                             )
                             )}
                         </Card.Body>
                     </Card>
 
                     
-                    <ListGroup>
+                    <ListGroup className='p-0'>
                             {comments.map((comment)=>(   
-                                <ListGroup.Item key={comment.id} style={{textAlign:'left'}}>
+                                <ListGroup.Item  className='p-0 mt-1' key={comment.id} style={{textAlign:'left'}}>
                                     <Comment comment={comment}/>
                                 </ListGroup.Item>
                             )
                             )}
                     </ListGroup>
                     <br/>
-                    <textarea placeholder='Comments...' className='form-control'  onChange={e => setComment(e.target.value)}></textarea>
+                    <textarea value={comment} placeholder='Comments...' className='form-control'  onChange={e => setComment(e.target.value)}/>
                     <br/>
                     <Button onClick={()=>postComment()}>Send</Button>
                        
@@ -112,18 +118,17 @@ export default function Ticket() {
                 <Col sm={4}>
                     <Card>
                         <Card.Body>
-                            <Table responsive>
-                                <Select style={{float:'right'}} labelId="demo-simple-select-label"
-                                    id="demo-simple-select"  value={ticket?.status}  label="Status"
-                                    onChange={changeStatus}
-                                >
-                                    <MenuItem value='Created'>Created</MenuItem>
-                                    <MenuItem value='Assigned'>Assigned</MenuItem>
-                                    <MenuItem value='Done'>Done</MenuItem>
-                                </Select>
-
+                            <Table>
                                 <tbody>
-                                    <tr><td><b>Status</b> :</td> <td> {ticket?.status}</td></tr>
+                                    <tr><td><b>Status</b> :</td>
+                                        <td> 
+                                            <Select labelId="ticket-status-select-label" id="ticket-status-select" onChange={changeStatus} value={status||''} >
+                                                {TICKET_STATUS_LIST.map(status=>(
+                                                    <MenuItem key={status} value={status}>{status}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </td>
+                                    </tr>
                                     <tr><td><b>Project</b> :</td> <td> {ticket?.topicId}</td></tr>
                                     <tr><td><b>Created date</b> :</td> <td> {ticket?.createdAt}</td></tr>
                                     <tr><td><b>Updated date</b> :</td> <td> {ticket?.updatedAt}</td></tr>
