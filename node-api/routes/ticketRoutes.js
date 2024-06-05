@@ -7,7 +7,6 @@ const Topic = require('../models/Topic');
 const UserRole = require('../models/UserRole');
 const Project = require('../models/Project');
 const { sendEmailWithTemplate } = require('../services/emailService');
-const authenticate = require('../middleware/authMiddleware');
 
 // Function to send ticket created email
 const sendTicketCreatedEmail = async (ticket, user) => {
@@ -33,7 +32,7 @@ const createOrUpdateFYIToRecipients = async (ticketId, fyiTo) => {
 };
 
 // Get all tickets
-router.get('/tickets', authenticate, async (req, res) => {
+router.get('/tickets', async (req, res) => {
   try {
     const userId = req.user.id;
 
@@ -55,12 +54,22 @@ router.get('/tickets', authenticate, async (req, res) => {
 });
 
 // Get all tickets
-router.get('/tickets/code/:code', authenticate, async (req, res) => {
+router.get('/tickets/code/:code', async (req, res) => {
   try {
     const { code } = req.params;
-    const tickets = await Ticket.findOne({where:{code:code}});
+    const ticket = await Ticket.findOne({where:{code:code}});
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket not found' });
+    }
+    const attachments = await Attachment.findAll({ where: { ticketId: ticket.id } });
+    const ticketWithAttachments = {
+      ...ticket.get({ plain: true }),
+      attachments
+    };
 
-    res.json(tickets);
+    //console.log(ticketWithAttachments);
+    res.json(ticketWithAttachments);
+
   } catch (error) {
     console.error('Error fetching tickets:', error);
     res.status(500).json({ error: 'Failed to fetch tickets' });
@@ -68,14 +77,19 @@ router.get('/tickets/code/:code', authenticate, async (req, res) => {
 });
 
 // Get a single ticket by ID
-router.get('/tickets/:id', authenticate, async (req, res) => {
+router.get('/tickets/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const ticket = await Ticket.findByPk(id);
     if (!ticket) {
       return res.status(404).json({ error: 'Ticket not found' });
     }
-    res.json(ticket);
+    const attachments = await Attachment.findAll({ where: { ticketId: ticket.id } });
+    const ticketWithAttachments = {
+      ...ticket.get({ plain: true }),
+      attachments
+    };
+    res.json(ticketWithAttachments);
   } catch (error) {
     console.error('Error fetching ticket:', error);
     res.status(500).json({ error: 'Failed to fetch ticket' });
@@ -83,7 +97,7 @@ router.get('/tickets/:id', authenticate, async (req, res) => {
 });
 
 // Create ticket
-router.post('/tickets', authenticate, async (req, res) => {
+router.post('/tickets', async (req, res) => {
   try {
 
     const { topicId, title, description, priority, attachments, fyiTo } = req.body;
@@ -107,7 +121,7 @@ router.post('/tickets', authenticate, async (req, res) => {
 });
 
 // Update ticket
-router.put('/tickets/:id', authenticate, async (req, res) => {
+router.put('/tickets/:id', async (req, res) => {
   const { id } = req.params;
   const { title, description, priority, attachments, fyiTo } = req.body;
   try {
@@ -132,7 +146,7 @@ router.put('/tickets/:id', authenticate, async (req, res) => {
 });
 
 // Update ticket
-router.put('/tickets/:id/status/:status', authenticate, async (req, res) => {
+router.put('/tickets/:id/status/:status', async (req, res) => {
   const { id, status } = req.params;
   
   try {
@@ -151,7 +165,7 @@ router.put('/tickets/:id/status/:status', authenticate, async (req, res) => {
 });
 
 // Delete ticket
-router.delete('/tickets/:id', authenticate, async (req, res) => {
+router.delete('/tickets/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const ticket = await Ticket.findByPk(id);
@@ -172,7 +186,7 @@ router.delete('/tickets/:id', authenticate, async (req, res) => {
 });
 
 // Fetch tickets by project ID
-router.get('/tickets/project/:projectId', authenticate, async (req, res) => {
+router.get('/tickets/project/:projectId', async (req, res) => {
   try {
     const { projectId } = req.params;
     const topics = await Topic.findAll({projectId: projectId});
@@ -188,6 +202,7 @@ router.get('/tickets/project/:projectId', authenticate, async (req, res) => {
         topicId: topicIds
       }
     });
+    
     res.json(tickets);
   } catch (error) {
     console.error('Error fetching tickets by project:', error);
