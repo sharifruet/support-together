@@ -72,7 +72,7 @@ const TicketModal = () => {
         title: "",
         description: "",
         priority: "",
-        requestedBy: "",
+        // requestedBy: "",
         // attachments: "",
         // fyiTo: "",
     });
@@ -317,7 +317,7 @@ const TicketModal = () => {
             { name: "title", value: formData.title },
             { name: "description", value: formData.description },
             { name: "priority", value: formData.priority },
-            { name: "requestedBy", value: formData.requestedBy },
+            // { name: "requestedBy", value: formData.requestedBy },
             // { name: "attachments", value: formData.attachments },
             // { name: "fyiTo", value: formData.fyiTo }
         ];
@@ -511,8 +511,8 @@ const TicketModal = () => {
                                 label="Requested By"
                                 fullWidth
                                 autoComplete="requestedBy"
-                                error={Boolean(fieldErrors.requestedBy)} // Set error prop based on field error
-                                helperText={fieldErrors.requestedBy} // Provide the error message
+                                // error={Boolean(fieldErrors.requestedBy)} // Set error prop based on field error
+                                // helperText={fieldErrors.requestedBy} // Provide the error message
                             />
                         </div>
                         <div className="flex flex-col space-y-1 w-full">

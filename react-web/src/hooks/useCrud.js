@@ -33,20 +33,13 @@ const useCrud = () => {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     ...(isFileUpload && { 'Content-Type': 'multipart/form-data' }),
-                    ...(onUploadProgress && { onUploadProgress })
                 },
+                ...(onUploadProgress && { onUploadProgress })
             };
 
             if (method === 'POST' || method === 'PUT') {
                 requestConfig.data = payload;
             }
-
-            // if (isFileUpload) {
-            //     requestConfig.headers = {
-            //         'Authorization': `Bearer ${token}`,
-            //         'Content-Type': 'multipart/form-data',
-            //     }
-            // }
 
             const response = await axiosInstance(requestConfig);
             return response.data;
@@ -90,11 +83,11 @@ const useCrud = () => {
         return loggedIn && fetchApi(`${endpoint}`, 'PUT', payload);
     }, [fetchApi]);
 
-    const uploadFile = useCallback(async (endpoint, file) => {
+    const uploadFile = useCallback(async (endpoint, file, onUploadProgress) => {
         const formData = new FormData();
         formData.append('file', file);
         try {
-            const response = await fetchApi(endpoint, 'POST', formData, true);
+            const response = await fetchApi(endpoint, 'POST', formData, true, onUploadProgress);
             return response;  // Assuming response contains the file path URL
         } catch (err) {
             throw err;

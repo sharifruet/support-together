@@ -10,6 +10,7 @@ import OrganizationModal from './OrganizationModal';
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
 import OpenModalButton from '../common/OpenModalButton';
 import ProjectModal from '../projects/ProjectModal';
+import DeadlineLimit from '../common/DeadlineLimit';
 
 const Organizations = () => {
     const { getAllOrganizations } = useOrganizationService();
@@ -23,6 +24,9 @@ const Organizations = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
+
+    const [deadline, setDeadline] = useState('2024-06-04T21:00:00');
+    const [createdAt, setCreatedAt] = useState('2024-06-04T19:10:00');
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
@@ -114,6 +118,7 @@ const Organizations = () => {
                         <tr>
                             <th onClick={() => handleSortChange('name')}>Name</th>
                             <th onClick={() => handleSortChange('createdAt')}>Created At</th>
+                            <th>Deadline</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -122,6 +127,8 @@ const Organizations = () => {
                             <tr key={organization.id}>
                                 <td>{organization.name}</td>
                                 <td>{format(new Date(organization.createdAt), 'MM/dd/yyyy')}</td>
+                                <td><DeadlineLimit createdAt={createdAt} deadline={deadline} /></td>
+                                
                                 <td>
                                     <Tooltip title={`Add Project to this ${organization.name} Organization`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0'>

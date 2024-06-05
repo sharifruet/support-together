@@ -14,7 +14,7 @@ export default function Ticket() {
     const location = useLocation();
 
     useEffect(() => {
-        const code = location.pathname.split("/")[2];
+        const code = location.pathname.split("/")[3];
         axios.get('/tickets/code/'+code, headerConfig()
         ).then(data=>{
             console.log(data.data);
@@ -25,9 +25,9 @@ export default function Ticket() {
     return (
         <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs">
-                <h3>{ticket.code}</h3>
-                <h1>{ticket.title}</h1>
-                <p>{ticket.description}</p>
+                <h3>{ticket?.code}</h3>
+                <h1>{ticket?.title}</h1>
+                <p>{ticket?.description}</p>
             </Container>
         </ThemeProvider>
     );

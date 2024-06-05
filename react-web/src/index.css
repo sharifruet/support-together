@@ -699,7 +699,7 @@ code {
   gap: 15px;
   color: #000;
   background-color: #fff;
-  border: 1.5px dashed #000;
+  border: 2px dashed #000;
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -707,6 +707,14 @@ code {
 
 .file-btn:hover {
   color: blue;
+  background-color: #fff;
+  border: 2px dashed blue;
+}
+
+.file-btn:disabled {
+  color: #131111;
+  border: 2px dashed #131111;
+
   background-color: #fff;
 }
 
@@ -729,7 +737,7 @@ code {
   gap: 15px;
   color: #000;
   background-color: #fff;
-  border: 1px solid rgba(117, 96, 255, 0.281);
+  border: 1px solid rgba(5, 5, 9, 0.281);
   border-radius: 6px;
   padding: 8px 15px;
 }
@@ -747,7 +755,7 @@ code {
   font-weight: 400;
 }
 
-.progress-bgC {
+.progress-bg-upload {
   width: 100%;
   height: 5px;
   background-color: rgba(0, 0, 0, 0.076);
@@ -755,22 +763,30 @@ code {
   margin-top: 8px;
 }
 
-.progressC {
+.progress-rate-upload {
   width: 0%;
   height: 5px;
-  background-color: #5d4dcc;
+  background-color: green;
   border-radius: 8px;
   transition: width 0.5s ease;
 }
 
 .icon {
   font-size: 30px;
-  color: #7460ff;
+  color: blue;
 }
 
 .close-icon {
-  font-size: 18px;
+  font-size: 25px;
   cursor: pointer;
+  color: gray;
+  transition: all 0.3s ease-in-out;
+}
+
+.close-icon:hover {
+  font-size: 27px;
+  cursor: pointer;
+  color: red;
 }
 
 .file-info button,
@@ -780,8 +796,9 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  color: #463a99;
+  font-size: 14px;
+  color: green;
+  font-weight: bold;
   background-color: #f1efff;
   border: none;
   border-radius: 30px;
@@ -792,12 +809,130 @@ code {
   font-size: 14px;
   font-weight: 500;
   color: #fff;
-  background-color: #7460ff;
+  background-color: rgb(48, 48, 49);
   border: none;
-  border-radius: 8px;
+  border-radius: 9999px;
   padding: 10px;
   margin-top: 15px;
   cursor: pointer;
 }
 
 /* Custom file upload start end here  */
+
+/* Custom deadline component css start here  */
+
+.deadline-limit {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.deadline-limit.low {
+  color: green;
+}
+
+.deadline-limit.medium {
+  color: orange;
+}
+
+.deadline-limit.high {
+  color: red;
+}
+
+.deadline-limit-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adjust spacing between deadline text and progress bar */
+}
+
+.deadline-limit {
+  font-weight: bold;
+}
+
+.progress-bar-container {
+  width: 100px; /* Adjust width of progress bar */
+  height: 5px; /* Adjust height of progress bar */
+  background-color: #ddd;
+  border-radius: 2px; /* Add rounded corners */
+}
+
+.progress-barC {
+  height: 100%; /* Fill entire height of container */
+  background-color: #007bff; /* Adjust progress bar color */
+  transition: width 0.5s ease-in-out; /* Add smooth transition for progress bar animation */
+}
+
+.deadline-limit-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.deadline-limit {
+  font-size: 14px;
+  margin-bottom: 10px;
+  transition: color 0.5s;
+}
+
+.low {
+  color: green;
+}
+
+.medium {
+  color: orange;
+}
+
+.high {
+  color: red;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 5px;
+  background-color: lightgrey;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  position: relative;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #76c7c0;
+  border-radius: 10px 0 0 10px;
+  transition: width 0.5s ease-in-out, background-color 0.5s;
+}
+
+.progress-bar-low-c {
+  height: 100%;
+  background-color: green;
+  border-radius: 10px 0 0 10px;
+  transition: width 0.5s ease-in-out, background-color 0.5s;
+}
+
+.progress-bar-medium-c {
+  height: 100%;
+  background-color: orange;
+  border-radius: 10px 0 0 10px;
+  transition: width 0.5s ease-in-out, background-color 0.5s;
+}
+
+.progress-bar-high-c {
+  height: 100%;
+  background-color: red;
+  border-radius: 10px 0 0 10px;
+  transition: width 0.5s ease-in-out, background-color 0.5s;
+}
+
+.progress-bar.remaining {
+  background-color: #e0e0e0;
+  border-radius: 0 10px 10px 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: width 0.5s ease-in-out, background-color 0.5s;
+}
+
+
+
+/* Custom deadline component css end here  */
