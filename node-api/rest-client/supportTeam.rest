@@ -1,0 +1,87 @@
+#@BASE_URL = http://support.i2gether.com/api
+@BASE_URL = http://localhost:5000/api
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGVzIjpbeyJwcm9qZWN0SWQiOjEsInJvbGUiOiJDdXN0b21lciJ9XSwiaWF0IjoxNzE2NDY4NTU2LCJleHAiOjE3MTY0NzIxNTZ9.2aZWZ8yeH0XSqmYzrhff_MjCK-TEms2Da7LqU-4Iw_8
+
+### User Login
+# @name postLogin
+POST {{BASE_URL}}/login
+Content-Type: application/json
+
+{
+  "email": "john1@example.com",
+  "password": "password123"
+}
+### Get Token
+@TOKEN = {{postLogin.response.body.token}}
+
+### Create a New Support Team
+POST {{BASE_URL}}/support-teams
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "name": "Support Team Beta",
+  "userIds": [1, 2, 3]
+}
+
+### Get All Support Teams
+GET {{BASE_URL}}/support-teams
+Authorization: Bearer {{TOKEN}}
+
+### Get a Single Support Team by ID
+GET {{BASE_URL}}/support-teams/1
+Authorization: Bearer {{TOKEN}}
+
+### Update a Support Team
+PUT {{BASE_URL}}/support-teams/1
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "name": "Updated Support Team Alpha",
+  "userIds": [1, 3, 4]
+}
+
+### Delete a Support Team
+DELETE {{BASE_URL}}/support-teams/1
+Authorization: Bearer {{TOKEN}}
+
+
+### Create a New Support Schedule
+POST {{BASE_URL}}/support-schedules
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "startTime": "09:00:00",
+  "endTime": "17:00:00",
+  "escalationLevel": 1,
+  "supportTeamId": 1,
+  "userId": 1
+}
+
+### Get All Support Schedules
+GET {{BASE_URL}}/support-schedules
+Authorization: Bearer {{TOKEN}}
+
+
+### Get a Single Support Schedule by ID
+GET {{BASE_URL}}/support-schedules/1
+Authorization: Bearer {{TOKEN}}
+
+### Update a Support Schedule
+PUT {{BASE_URL}}/support-schedules/1
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "startTime": "10:00:00",
+  "endTime": "18:00:00",
+  "escalationLevel": 2,
+  "supportTeamId": 1,
+  "userId": 2
+}
+
+### Delete a Support Schedule
+DELETE {{BASE_URL}}/support-schedules/1
+Authorization: Bearer {{TOKEN}}
