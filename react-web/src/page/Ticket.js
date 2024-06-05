@@ -26,7 +26,7 @@ export default function Ticket() {
     const attachments=["1717498199815-44267254.PNG","1717498199820-686742128.png"];
 
     const loadTicket = ()=>{
-        const code = location.pathname.split("/")[2];
+        const code = location.pathname.split("/")[3];
         axios.get(`/tickets/code/${code}`, headerConfig()
         ).then(data=>{
             setTicket(data.data);
