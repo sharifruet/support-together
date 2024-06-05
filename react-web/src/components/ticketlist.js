@@ -22,6 +22,7 @@ import GlobalContext from '../GlobalContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import axios from "../api/axios";
+import {BASE_URL} from '../conf';
 const TICKET_URL = "/tickets";
 const ProjWiseTICKET_URL = "/tickets/project";
 const TOPIC_URL = "/topics";
@@ -264,7 +265,7 @@ const TicketList = ({ project, tickets }) => {
               <br />
               <Upload cb={cb} />
               {filepth && <Card style={imgstyle}>
-                <img src={'https://support.i2gether.com/api/' + filepth} />
+                <img src={`${BASE_URL}/${filepth}`} />
               </Card>}
               <br />
               <Button variant="primary" onClick={handleSubmit} className='btn-sm'>

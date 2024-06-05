@@ -8,7 +8,8 @@ import axios from './api/axios';
 const GlobalContext = React.createContext()
 
 const GlobalProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
+  const [users, setUsers] = useState(null)
   const [loggedIn, setLoggedIn] = useState(false);
   const [projects, setProjects] = useState([]);
   const [organizations, setOrganizations] = useState([]);
@@ -35,6 +36,11 @@ const GlobalProvider = ({ children }) => {
     if (accesstoken != null) {
       axios.get("/organizations", headerConfig()).then((response) => {
         setOrganizations(response.data);
+      }).catch(error => {
+        console.log(error.response.data.error)
+      });
+      axios.get("/users", headerConfig()).then((response) => {
+        setUsers(response.data);
       }).catch(error => {
         console.log(error.response.data.error)
       });
@@ -90,7 +96,7 @@ const GlobalProvider = ({ children }) => {
 
   return (
     <GlobalContext.Provider
-      value={{ user, setUser, loginSuccess, onLogout, loggedIn, setLoggedIn, projects, organizations, headerConfig, accesstoken }}
+      value={{ user, setUser, users, loginSuccess, onLogout, loggedIn, setLoggedIn, projects, organizations, headerConfig, accesstoken }}
     >
       {children}
     </GlobalContext.Provider>
