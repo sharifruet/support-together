@@ -110,7 +110,12 @@ const Tickets = () => {
                             <div className="ms-2 me-auto">  
                                 <div class="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={`/dashboard/ticket/${ticket.code}`}> {ticket.code} </Link>] {ticket.title} </div>
                                 <div className="fs-6">Created At {new Date(ticket.createdAt).toLocaleDateString()} </div>
-                                <ResponseTimeProgressBar />
+                                <ResponseTimeProgressBar 
+                                    createdAt={ticket.createdAt} 
+                                    updatedAt={ticket.updatedAt}
+                                    priority={ticket.priority}
+                                    responseStatus={ticket.status}
+                                />
                             </div>
                             <Badge bg="primary"> {ticket.status} </Badge>
                         </ListGroup.Item>

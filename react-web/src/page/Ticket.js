@@ -98,7 +98,7 @@ export default function Ticket() {
                             <p><label className='fw-bold'>Description:</label><br/> {ticket?.description}</p>
 
                             <br/>
-                            {ticket?.attachments.map((attachment)=>(                               
+                            {ticket?.attachments?.map((attachment)=>(                               
                                 <Image key={attachment.id} style={{width: "200px"}} src={`${BASE_URL}/${attachment.fileName}`}/>
                             )
                             )}

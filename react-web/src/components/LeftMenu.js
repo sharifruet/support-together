@@ -15,33 +15,28 @@ import GlobalContext from '../GlobalContext';
 
 const LeftMenu = () => {
     const location = useLocation();
-    const [openInbox, setOpenInbox] = useState(false);
-    const { user } = useContext(GlobalContext); // Get user data from context
-
-    useEffect(() => {
-        if (location.pathname.endsWith('/topics')) {
-            setOpenInbox(true);
-        }
-    }, [location.pathname]);
+    const { user } = useContext(GlobalContext);
 
     // Function to check if a role is allowed for the current user
-    const isRoleAllowed = (role) => {
-        const roles = user?.roles?.map(userRole => userRole?.role);
-        return roles?.includes(role);
+    const isRoleAllowed = (roles) => {
+        const userRoles = user?.roles?.map(userRole => userRole?.role) || [];
+        const allowedRoles = roles.split(',').map(role => role.trim());
+        return allowedRoles.some(role => userRoles.includes(role));
     };
+
+    const getColor = (path) => location.pathname.endsWith(path) ? '#14DB8D' : '#fff';
 
     return (
         <List>
-
             <ListItemButton
                 selected={location.pathname === '/dashboard'}
                 component={Link}
                 to="/dashboard"
             >
-                <ListItemIcon>
-                    <DashboardIcon style={{ color: location.pathname.endsWith('/dashboard') ? '#14DB8D' : '#fff' }} />
+                <ListItemIcon style={{ minWidth: "36px" }}>
+                    <DashboardIcon style={{ color: getColor('/dashboard') }} />
                 </ListItemIcon>
-                <ListItemText primary="Dashboard" style={{ color: location.pathname.endsWith('/dashboard') ? '#14DB8D' : '#fff' }} />
+                <ListItemText primary="Dashboard" style={{ color: getColor('/dashboard') }} />
             </ListItemButton>
 
             <ListItemButton
@@ -49,10 +44,10 @@ const LeftMenu = () => {
                 component={Link}
                 to="/dashboard/tickets"
             >
-                <ListItemIcon>
-                    <LocalActivityOutlinedIcon style={{ color: location.pathname.endsWith('/tickets') ? '#14DB8D' : '#fff', fontSize: '24px' }} />
+                <ListItemIcon style={{ minWidth: "36px" }}>
+                    <LocalActivityOutlinedIcon style={{ color: getColor('/tickets'), fontSize: '24px' }} />
                 </ListItemIcon>
-                <ListItemText primary="Tickets" style={{ color: location.pathname.endsWith('/tickets') ? '#14DB8D' : '#fff' }} />
+                <ListItemText primary="Tickets" style={{ color: getColor('/tickets') }} />
             </ListItemButton>
 
             {isRoleAllowed('Admin') && (
@@ -61,10 +56,10 @@ const LeftMenu = () => {
                     component={Link}
                     to="/dashboard/emailTemplates"
                 >
-                    <ListItemIcon>
-                        <EmailIcon style={{ color: location.pathname.endsWith('/emailTemplates') ? '#14DB8D' : '#fff' }} />
+                    <ListItemIcon style={{ minWidth: "36px" }}>
+                        <EmailIcon style={{ color: getColor('/emailTemplates') }} />
                     </ListItemIcon>
-                    <ListItemText primary="Email Templates" style={{ color: location.pathname.endsWith('/emailTemplates') ? '#14DB8D' : '#fff' }} />
+                    <ListItemText primary="Email Templates" style={{ color: getColor('/emailTemplates') }} />
                 </ListItemButton>
             )}
 
@@ -74,10 +69,10 @@ const LeftMenu = () => {
                     component={Link}
                     to="/dashboard/organizations"
                 >
-                    <ListItemIcon>
-                        <CorporateFareIcon style={{ color: location.pathname.endsWith('/organizations') ? '#14DB8D' : '#fff' }} />
+                    <ListItemIcon style={{ minWidth: "36px" }}>
+                        <CorporateFareIcon style={{ color: getColor('/organizations') }} />
                     </ListItemIcon>
-                    <ListItemText primary="Organizations" style={{ color: location.pathname.endsWith('/organizations') ? '#14DB8D' : '#fff' }} />
+                    <ListItemText primary="Organizations" style={{ color: getColor('/organizations') }} />
                 </ListItemButton>
             )}
 
@@ -87,10 +82,10 @@ const LeftMenu = () => {
                     component={Link}
                     to="/dashboard/projects"
                 >
-                    <ListItemIcon>
-                        <BusinessCenterIcon style={{ color: location.pathname.endsWith('/projects') ? '#14DB8D' : '#fff' }} />
+                    <ListItemIcon style={{ minWidth: "36px" }}>
+                        <BusinessCenterIcon style={{ color: getColor('/projects') }} />
                     </ListItemIcon>
-                    <ListItemText primary="Projects" style={{ color: location.pathname.endsWith('/projects') ? '#14DB8D' : '#fff' }} />
+                    <ListItemText primary="Projects" style={{ color: getColor('/projects') }} />
                 </ListItemButton>
             )}
 
@@ -100,33 +95,48 @@ const LeftMenu = () => {
                     component={Link}
                     to="/dashboard/topics"
                 >
-                    <ListItemIcon>
-                        <TopicIcon style={{ color: location.pathname.endsWith('/topics') ? '#14DB8D' : '#fff' }} />
+                    <ListItemIcon style={{ minWidth: "36px" }}>
+                        <TopicIcon style={{ color: getColor('/topics') }} />
                     </ListItemIcon>
-                    <ListItemText primary="Topics" style={{ color: location.pathname.endsWith('/topics') ? '#14DB8D' : '#fff' }} />
+                    <ListItemText primary="Topics" style={{ color: getColor('/topics') }} />
                 </ListItemButton>
             )}
-             {isRoleAllowed('Admin') && (
+
+            {isRoleAllowed('Admin') && (
                 <ListItemButton
                     selected={location.pathname === '/dashboard/supportteam'}
                     component={Link}
                     to="/dashboard/supportteam"
                 >
-                    <ListItemIcon>
-                        <TopicIcon style={{ color: location.pathname.endsWith('/supportteam') ? '#14DB8D' : '#fff' }} />
+                    <ListItemIcon style={{ minWidth: "36px" }}>
+                        <TopicIcon style={{ color: getColor('/supportteam') }} />
                     </ListItemIcon>
-                    <ListItemText primary="Supportteam" style={{ color: location.pathname.endsWith('/supportteam') ? '#14DB8D' : '#fff' }} />
+                    <ListItemText primary="Support Team" style={{ color: getColor('/supportteam') }} />
                 </ListItemButton>
             )}
+
+            {isRoleAllowed('Admin, Support') && (
+                <ListItemButton
+                    selected={location.pathname === '/dashboard/supportTeamSchedule'}
+                    component={Link}
+                    to="/dashboard/supportTeamSchedule"
+                >
+                    <ListItemIcon style={{ minWidth: "36px" }}>
+                        <TopicIcon style={{ color: getColor('/supportTeamSchedule') }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Support Team Schedule" style={{ color: getColor('/supportTeamSchedule') }} />
+                </ListItemButton>
+            )}
+
             <ListItemButton
                 selected={location.pathname === '/dashboard/changePassword'}
                 component={Link}
                 to="/dashboard/changePassword"
             >
-                <ListItemIcon>
-                    <LockResetOutlinedIcon style={{ color: location.pathname.endsWith('/changePassword') ? '#14DB8D' : '#fff', fontSize: '24px' }} />
+                <ListItemIcon style={{ minWidth: "36px" }}>
+                    <LockResetOutlinedIcon style={{ color: getColor('/changePassword'), fontSize: '24px' }} />
                 </ListItemIcon>
-                <ListItemText primary="Change Password" style={{ color: location.pathname.endsWith('/changePassword') ? '#14DB8D' : '#fff' }} />
+                <ListItemText primary="Change Password" style={{ color: getColor('/changePassword') }} />
             </ListItemButton>
         </List>
     );

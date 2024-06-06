@@ -165,6 +165,7 @@ export default function ChangePassword() {
                             label="Current Password"
                             value={formData.currentPassword}
                             onChange={handleInputChange}
+                            type="password"
                             sx={{ mb: 4 }}
                             fullWidth
                             autoFocus
@@ -176,6 +177,7 @@ export default function ChangePassword() {
                             variant="outlined"
                             name="newPassword"
                             label="New Password"
+                            type="password"
                             value={formData.newPassword}
                             onChange={handleInputChange}
                             fullWidth
