@@ -6,7 +6,7 @@ import GlobalContext from '../GlobalContext';
 import UserAvatar from '../components/common/UserAvatar';
 
 const NavBar = () => {
-    const { loggedIn, onLogout } = useContext(GlobalContext);
+    const { loggedIn } = useContext(GlobalContext);
 
     // Define JSON configuration for the navigation items
     const navItems = [
@@ -25,10 +25,8 @@ const NavBar = () => {
                         {navItems.filter(item => item.condition).map((item, index) => (
                             <li className={`nav-item ${item.itemType === 'authentication' ? 'ml-auto me-1 pe-2' : ''}`} key={index} style={{ position: item.title === 'Signup' ? 'absolute' : 'static', right: item.title === 'Signup' ? 80 : '', }}>
                                 {item.action ? (
-                                    <>
-                                     {/* <Button style={{ color: '#fff', fontWeight: '400', fontFamily: 'revert' }}> */}
+                                    <>                                     
                                         {item.title}
-                                    {/* // </Button> */}
                                     </>
                                 ) : (
                                     <Link className={`nav-link ${index === 0 ? 'active d-flex' : ''}`} to={item.path} style={{ color: '#fff', fontWeight: '400', fontFamily: 'revert' }}>

@@ -22,6 +22,7 @@ import Tickets from "./components/tickets/Tickets";
 import Ticket from "./page/Ticket";
 import ProfileUpdate from "./page/ProfileUpdate";
 import CreateTicket from "./components/tickets/CreateTicket";
+import SupportTeamSchedules from "./components/supportSchedules/SupportSchedules"
 
 const RouteComponent = () => {
     return (
@@ -54,6 +55,7 @@ const RouteComponent = () => {
                     <Route path='projects' element={<Projects />} />
                     <Route path='topics' element={<Topics />} />
                     <Route path='supportteam' element={<Supportteam />} />
+                    <Route path='supportTeamSchedule' element={<SupportTeamSchedules />} />
                 </Route>
                 <Route element={<ProtectedRoute roles={['Support']} />}>
                     <Route path='supportdashboard' element={<Supportdashboard />} />
