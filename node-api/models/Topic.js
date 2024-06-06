@@ -12,7 +12,11 @@ const Topic = sequelize.define('Topic', {
   description: {
     type: DataTypes.STRING,
     allowNull: true // Description is optional
-  }
+  },
+  supportTeamId: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
 });
 
 // Define association with Project

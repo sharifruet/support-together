@@ -1,4 +1,5 @@
-@BASE_URL = http://support.i2gether.com/api
+//@BASE_URL = http://support.i2gether.com/api
+@BASE_URL = http://localhost:5000/api
 @TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInJvbGVzIjpbeyJwcm9qZWN0SWQiOjEsInJvbGUiOiJDdXN0b21lciJ9XSwiaWF0IjoxNzE2NDY4NTU2LCJleHAiOjE3MTY0NzIxNTZ9.2aZWZ8yeH0XSqmYzrhff_MjCK-TEms2Da7LqU-4Iw_8
 
 ### User Login
@@ -7,8 +8,8 @@ POST {{BASE_URL}}/login
 Content-Type: application/json
 
 {
-  "email": "john1@example.com",
-  "password": "password123"
+  "email": "sharifruet@gmail.com",
+  "password": "pass@123"
 }
 ### Get Token
 @TOKEN = {{postLogin.response.body.token}}
@@ -20,6 +21,7 @@ Content-Type: application/json
 
 {
   "projectId": 1,
+  "supportTeamId": 1,
   "name": "Topic 1",
   "description": "Description of Topic 1"
 }
@@ -38,7 +40,8 @@ Content-Type: application/json
 
 {
   "name": "Updated Topic 1",
-  "description": "Updated description of Topic 1"
+  "description": "Updated description of Topic 1",
+  "supportTeamId": 2
 }
 
 ### Delete Topic (DELETE /api/topics/:id)

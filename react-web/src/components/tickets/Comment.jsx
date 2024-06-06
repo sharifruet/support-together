@@ -1,23 +1,17 @@
 import React, { useContext } from 'react';
 import { Card } from 'react-bootstrap';
 import GlobalContext from '../../GlobalContext';
+import { format } from 'date-fns';
 
 const Comment = ({comment}) => {
     const {users} = useContext(GlobalContext);
 
     const getCommenter = () => users?.find(u=>u.id===comment.createdBy)?.name;
-    const getCommentAt = () => users?.find(u=>u.id===comment.createdBy)?.createdAt;
-
-    const getCommentTime = () => {
-        const commentDate = new Date (getCommentAt());
-
-        return commentDate.toLocaleDateString() + ' ' + commentDate.toLocaleTimeString();
-    }
 
     return (
         <Card>
             <Card.Body>{comment.content}</Card.Body>
-            <Card.Footer className='text-end'>{getCommenter()} on {getCommentTime()}</Card.Footer>
+            <Card.Footer className='text-end'>{getCommenter()} on {format(new Date(comment.createdAt||'2024'),'yyyy-MM-dd hh:mm aaa')}</Card.Footer>
         </Card>
     );
 };

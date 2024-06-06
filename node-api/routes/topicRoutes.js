@@ -8,13 +8,13 @@ const Project = require('../models/Project');
 // Create topic
 router.post('/topics', async (req, res) => {
   try {
-    const { projectId, name, description } = req.body;
+    const { projectId, name, description, supportTeamId } = req.body;
     // Check if the project exists
     const project = await Project.findByPk(projectId);
     if (!project) {
       return res.status(404).json({ error: 'Project not found' });
     }
-    const topic = await Topic.create({ name, description, ProjectId: projectId });
+    const topic = await Topic.create({ name, description, ProjectId: projectId, supportTeamId: supportTeamId });
     res.status(201).json(topic);
   } catch (error) {
     console.error('Error creating topic:', error);
@@ -51,13 +51,13 @@ router.get('/topics/:id', async (req, res) => {
 // Update topic
 router.put('/topics/:id', async (req, res) => {
   const { id } = req.params;
-  const { name, description } = req.body;
+  const { name, description, supportTeamId } = req.body;
   try {
     const topic = await Topic.findByPk(id);
     if (!topic) {
       return res.status(404).json({ error: 'Topic not found' });
     }
-    await topic.update({ name, description });
+    await topic.update({ name, description, supportTeamId });
     res.json({ message: 'Topic updated successfully' });
   } catch (error) {
     console.error('Error updating topic:', error);
