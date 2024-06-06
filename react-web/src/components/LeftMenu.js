@@ -106,6 +106,18 @@ const LeftMenu = () => {
                     <ListItemText primary="Topics" style={{ color: location.pathname.endsWith('/topics') ? '#14DB8D' : '#fff' }} />
                 </ListItemButton>
             )}
+             {isRoleAllowed('Admin') && (
+                <ListItemButton
+                    selected={location.pathname === '/dashboard/supportteam'}
+                    component={Link}
+                    to="/dashboard/supportteam"
+                >
+                    <ListItemIcon>
+                        <TopicIcon style={{ color: location.pathname.endsWith('/supportteam') ? '#14DB8D' : '#fff' }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Supportteam" style={{ color: location.pathname.endsWith('/supportteam') ? '#14DB8D' : '#fff' }} />
+                </ListItemButton>
+            )}
             <ListItemButton
                 selected={location.pathname === '/dashboard/changePassword'}
                 component={Link}
