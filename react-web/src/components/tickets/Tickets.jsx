@@ -7,6 +7,7 @@ import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
 import OpenModalButton from '../common/OpenModalButton';
 import { Link, useNavigate } from 'react-router-dom';
 import ResponseTimeProgressBar from '../common/ResponseTimeProgressBar';
+import { format } from 'date-fns';
 
 const Tickets = () => {
     const { getAll } = useCrud();
@@ -109,13 +110,11 @@ const Tickets = () => {
                         <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">    
                             <div className="ms-2 me-auto">  
                                 <div class="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={`/dashboard/ticket/${ticket.code}`}> {ticket.code} </Link>] {ticket.title} </div>
-                                <div className="fs-6">Created At {new Date(ticket.createdAt).toLocaleDateString()} </div>
-                                <ResponseTimeProgressBar 
-                                    createdAt={ticket.createdAt} 
-                                    updatedAt={ticket.updatedAt}
-                                    priority={ticket.priority}
-                                    responseStatus={ticket.status}
-                                />
+                                <div className="fs-6">
+                                    Created At {format(new Date(ticket.createdAt),'yyyy-MM-dd hh:mm aaa')} 
+                                    <ResponseTimeProgressBar createdAt={ticket.createdAt} updatedAt={ticket.updatedAt} priority={ticket.priority} responseStatus={ticket.status}/>
+                                </div>
+                                
                             </div>
                             <Badge bg="primary"> {ticket.status} </Badge>
                         </ListGroup.Item>

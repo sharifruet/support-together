@@ -4,18 +4,17 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useLocation } from 'react-router-dom';
 import ListGroup from 'react-bootstrap/ListGroup';
-import Table from 'react-bootstrap/Table';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import axios from "../api/axios";
 import GlobalContext from '../GlobalContext';
 import { Image } from 'react-bootstrap';
-import { MenuItem, Select } from '@mui/material';
 import {BASE_URL, TICKET_STATUS_LIST} from '../conf';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Comment from '../components/tickets/Comment';
 import { format } from 'date-fns';
+import ResponseTimeProgressBar from '../components/common/ResponseTimeProgressBar';
 const Comments_URL = "/comments"; 
 
 export default function Ticket() {
@@ -25,7 +24,7 @@ export default function Ticket() {
     const [comment, setComment] = useState();
     const [topic, setTopic] = useState(null);
     const [project, setProject] = useState(null);
-    const {headerConfig, users,topics, projects} = useContext(GlobalContext);
+    const {headerConfig, users, topics, projects} = useContext(GlobalContext);
     const location = useLocation();
 
     const loadTicket = ()=>{
@@ -44,9 +43,10 @@ export default function Ticket() {
 
     useEffect(() => {
         if(ticket){
-            
+            console.log("Topics....");
+            console.log(topics);
             setStatus(ticket.status);
-            const topic = topics?.find(t=>t.id == ticket.topicId);
+            const topic = topics?.find(t=>t.id === ticket.topicId);
             console.log(topic);
             const project = projects?.find(p=>p.id===topic?.ProjectId);
             setTopic(topic);
@@ -87,6 +87,8 @@ export default function Ticket() {
         });
     }
 
+    const getUserName = (id) => users?.find(u=>u.id===id)?.name;
+
     return (
         <Container fluid="md">
             <Row>
@@ -124,25 +126,57 @@ export default function Ticket() {
                 <Col sm={4}>
                     <Card>
                         <Card.Body>
-                            <Table>
-                                <tbody>
-                                    <tr><td><b>Status</b> :</td>
-                                        <td> 
-                                            <Select labelId="ticket-status-select-label" id="ticket-status-select" onChange={changeStatus} value={status||''} >
-                                                {TICKET_STATUS_LIST.map(status=>(
-                                                    <MenuItem key={status} value={status}>{status}</MenuItem>
-                                                ))}
-                                            </Select>
-                                        </td>
-                                    </tr>
-                                    <tr><td><b>Topic</b> :</td> <td> {topic?.name}</td></tr>
-                                    <tr><td><b>Project</b> :</td> <td> {project?.name}</td></tr>
-                                    <tr><td><b>Created date</b> :</td> <td> {format(new Date(ticket?.createdAt||'2024'),'yyyy-MM-dd hh:mm aaa')}</td></tr>
-                                    <tr><td><b>Updated date</b> :</td> <td> {format(new Date(ticket?.updatedAt||'2024'),'yyyy-MM-dd hh:mm aaa')} </td></tr>
-                                </tbody>
-                            </Table>
+                            <Row>
+                                <Col className='text-end'>Status</Col>
+                                <Col className='text-left'>
+                                    <Form.Select onChange={changeStatus} value={status||''}>
+                                        {TICKET_STATUS_LIST.map(status=>(
+                                            <option key={status} value={status}>{status}</option>
+                                        ))}
+                                    </Form.Select>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col className='text-end'>Created By</Col>
+                                <Col className='text-left'>{getUserName(ticket?.createdBy)}</Col>
+                            </Row>
+                            <Row>
+                                <Col className='text-end'>Topic</Col>
+                                <Col className='text-left'>{topic?.name}</Col>
+                            </Row>
+                            <Row>
+                                <Col className='text-end'>Project</Col>
+                                <Col className='text-left'>{project?.name}</Col>
+                            </Row>
+                            <Row>
+                                <Col className='text-end'>Created date</Col>
+                                <Col className='text-left'>{format(new Date(ticket?.createdAt||'2024'),'yyyy-MM-dd hh:mm aaa')}</Col>
+                            </Row>
+                            <Row>
+                                <Col className='text-end'>Updated date</Col>
+                                <Col className='text-left'>{format(new Date(ticket?.updatedAt||'2024'),'yyyy-MM-dd hh:mm aaa')}</Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <ResponseTimeProgressBar createdAt={ticket?.createdAt} updatedAt={ticket?.updatedAt} priority={ticket?.priority} responseStatus={ticket?.status}/>
+                                </Col>
+                            </Row>
                         </Card.Body>
                     </Card>
+                    {ticket?.status !== 'Created' &&
+                    <Card>
+                        <Card.Body>
+                            <Row>
+                                <Col className='text-end'>Assignment Status</Col>
+                                <Col className='text-left'>{ticket?.assignmentStatus}</Col>
+                            </Row>
+                            <Row>
+                                <Col className='text-end'>Assigned To</Col>
+                                <Col className='text-left'>{getUserName(ticket?.assignedTo) }</Col>
+                            </Row>
+                        </Card.Body>
+                    </Card>
+                    }
                 </Col>
             </Row>
         </Container>
