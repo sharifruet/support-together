@@ -10,7 +10,7 @@ import OpenModalButton from '../common/OpenModalButton';
 
 
 const Supportteam = () => {
-    const { getAllSupportteam } = useSupportteamService();
+    const { getAllSupportteam} = useSupportteamService();
     const [supportteam, setSupportteam] = useState([]);
     const [selectedSupportteam, setSelectedSupportteam] = useState(null);
     const [openModal, setOpenModal] = useState(false);
@@ -21,7 +21,6 @@ const Supportteam = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
-console.log(supportteam);
     const handlePageChange = (newPage) => {
         setPage(newPage);
     };
@@ -31,7 +30,7 @@ console.log(supportteam);
         setPage(1);
     };
 
-    const handleOpenModal = (topic, modalType) => {
+    const handleOpenModal = (supportteam, modalType) => {
         setSelectedSupportteam(supportteam);
         setModalType(modalType);
         setOpenModal(true);
@@ -82,7 +81,7 @@ console.log(supportteam);
 
     const startIndex = (page - 1) * rowsPerPage;
     const paginatedSupportteam = sortedSupportteam.slice(startIndex, startIndex + rowsPerPage);
-
+    
     return (
         <>
             <Container>
@@ -116,7 +115,9 @@ console.log(supportteam);
                         {paginatedSupportteam.map((supportteam) => (
                             <tr key={supportteam.id}>
                                 <td>{supportteam.name}</td>
-                                <td>{supportteam.userids}</td>
+                                <td>
+                                    {supportteam?.Users?.map((user) => user.name+', ')}
+                                </td>
                                 <td>{format(new Date(supportteam.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
                                     <Tooltip title={`Edit this ${supportteam.name} supportteam`} arrow placement="top">
@@ -124,17 +125,12 @@ console.log(supportteam);
                                             <FaEdit />
                                         </Button>
                                     </Tooltip>
-                                    <Tooltip title={`View this ${supportteam.name} supportteam`} arrow placement="top">
-                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0' onClick={() => handleOpenModal(supportteam, "view")}>
-                                            <FaEye />
-                                        </Button>
-                                    </Tooltip>
+                                   
                                     <Tooltip title={`Delete this ${supportteam.name} supportteam`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-danger border-0' onClick={() => handleOpenModal(supportteam, "delete")}>
                                             <FaTrashAlt />
                                         </Button>
                                     </Tooltip>
-
                                 </td>
                             </tr>
                         ))}
@@ -155,7 +151,7 @@ console.log(supportteam);
 
             <SupportteamModal
                 modalType={modalType}
-                supportteam={setSelectedSupportteam}
+                supportteam={selectedSupportteam}
                 closeModal={handleCloseModal}
                 fetchSupportteam={fetchSupportteam}
                 users
