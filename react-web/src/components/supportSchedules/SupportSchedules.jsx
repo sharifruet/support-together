@@ -15,7 +15,7 @@ const SupportSchedules = () => {
     const [supportSchedules, setSupportSchedules] = useState([]);
     const [selectedSupportSchedule, setSelectedSupportSchedule] = useState(null);
     const [modalType, setModalType] = useState(null);
-    const userUrl = "/users";
+    const supportTeamSchedulesUrl = "/support-schedules";
 
     const [page, setPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -54,8 +54,9 @@ const SupportSchedules = () => {
 
     const fetchSupportSchedules = async () => {
         try {
-            const data = await getAll(userUrl);
+            const data = await getAll(supportTeamSchedulesUrl);
             setSupportSchedules(data);
+            console.log(data)
         } catch (error) {
             // Handle error here
             console.error('Error fetching Support Team Schedule:', error);
@@ -66,8 +67,8 @@ const SupportSchedules = () => {
         fetchSupportSchedules();
     }, []);
 
-    const filteredSupportSchedules = supportSchedules.filter((supportSchedule) =>
-        supportSchedule.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredSupportSchedules = supportSchedules?.filter((supportSchedule) =>
+        supportSchedule?.name?.toLowerCase()?.includes(searchQuery.toLowerCase())
     );
 
     let sortedSupportSchedules = [...filteredSupportSchedules];
@@ -112,22 +113,22 @@ const SupportSchedules = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {paginatedSupportSchedules.map((supportSchedule) => (
+                        {paginatedSupportSchedules?.map((supportSchedule) => (
                             <tr key={supportSchedule.id}>
-                                <td>{supportSchedule.name}</td>
+                                <td>{supportSchedule?.name}</td>
                                 <td>{format(new Date(supportSchedule.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
-                                    <Tooltip title={`Edit this ${supportSchedule.name} SupportSchedule`} arrow placement="top">
+                                    <Tooltip title={`Edit this ${supportSchedule?.name} SupportSchedule`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0' onClick={() => handleOpenModal(supportSchedule, "edit")}>
                                             <FaEdit />
                                         </Button>
                                     </Tooltip>
-                                    <Tooltip title={`View this ${supportSchedule.name} SupportSchedule`} arrow placement="top">
+                                    <Tooltip title={`View this ${supportSchedule?.name} SupportSchedule`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0' onClick={() => handleOpenModal(supportSchedule, "view")}>
                                             <FaEye />
                                         </Button>
                                     </Tooltip>
-                                    <Tooltip title={`Delete this ${supportSchedule.name} SupportSchedule`} arrow placement="top">
+                                    <Tooltip title={`Delete this ${supportSchedule?.name} SupportSchedule`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-danger border-0' onClick={() => handleOpenModal(supportSchedule, "delete")}>
                                             <FaTrashAlt />
                                         </Button>
