@@ -22,7 +22,7 @@ import GlobalContext from '../GlobalContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import axios from "../api/axios";
-import { BASE_URL } from '../conf';
+import {BASE_URL} from '../conf';
 const TICKET_URL = "/tickets";
 const ProjWiseTICKET_URL = "/tickets/project";
 const TOPIC_URL = "/topics";
@@ -84,16 +84,13 @@ const TicketList = ({ project, tickets }) => {
     setFiles(newFiles);
   };
   useEffect(() => {
-    if (tid) {
-      console.log(tid)
-      axios.get(`${TICKET_URL}/${tid}`, gContext.headerConfig())
-        .then((response) => {
-          setDatabyid(response.data);
-        })
-        .catch((error) => {
-          console.error('Error fetching data:', error);
-        });
-    }
+    axios.get(`${TICKET_URL}/${tid}`, gContext.headerConfig())
+      .then((response) => {
+        setDatabyid(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
   }, [show, tid]);
 
   useEffect(() => {
