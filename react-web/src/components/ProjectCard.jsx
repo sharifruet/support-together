@@ -7,6 +7,7 @@ import {
 import GlobalContext from "../GlobalContext";
 import TicketList from '../components/ticketlist';
 import ViewListIcon from '@mui/icons-material/ViewList';
+import SupportForm from "./supportform";
 
 const ICONS = {
     high: <MdKeyboardDoubleArrowUp />,
@@ -23,6 +24,7 @@ const ProjectCard = ({ project, tickets }) => {
     return (
         <>
             <div style={{ width: "100%" }} className="bg-white shadow p-4 rounded">
+                {isVisible && <SupportForm project={project}/>}
                 <h2 className="text-left"><ViewListIcon/> Ticket List</h2>
                 <div style={{ width: "100%", marginTop: "0.5rem" }} />
                 <div style={{ padding: "0.75rem 0", borderTop: "1px solid #e5e7eb" }}>
