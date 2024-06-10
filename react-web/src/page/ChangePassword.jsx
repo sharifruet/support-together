@@ -169,7 +169,7 @@ export default function ChangePassword() {
                             sx={{ mb: 4 }}
                             fullWidth
                             autoFocus
-                            error={Boolean(fieldErrors.currentPassword)} // Set error prop based on field error
+                            error={!!(fieldErrors.currentPassword)} // Set error prop based on field error
                             helperText={fieldErrors.currentPassword} // Provide the error message
                         />
                         <TextField
@@ -181,7 +181,7 @@ export default function ChangePassword() {
                             value={formData.newPassword}
                             onChange={handleInputChange}
                             fullWidth
-                            error={Boolean(fieldErrors.newPassword)} // Set error prop based on field error
+                            error={!!(fieldErrors.newPassword)} // Set error prop based on field error
                             helperText={fieldErrors.newPassword} // Provide the error message
                         />
                         <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">

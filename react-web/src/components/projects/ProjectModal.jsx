@@ -326,7 +326,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                                                     </>
                                                 ),
                                             }}
-                                            error={Boolean(fieldErrors.organizationId)} // Set error prop based on field error
+                                            error={!!(fieldErrors.organizationId)} // Set error prop based on field error
                                             helperText={fieldErrors.organizationId} // Provide the error message
                                         />
                                     )}
@@ -344,7 +344,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                                     value={formData.code}
                                     onChange={handleInputChange}
                                     fullWidth
-                                    error={Boolean(fieldErrors.code)} // Set error prop based on field error
+                                    error={!!(fieldErrors.code)} // Set error prop based on field error
                                     helperText={fieldErrors.code} // Provide the error message
                                 />
                             </div>
@@ -358,7 +358,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                                     value={formData.name}
                                     onChange={handleInputChange}
                                     fullWidth
-                                    error={Boolean(fieldErrors.name)} // Set error prop based on field error
+                                    error={!!(fieldErrors.name)} // Set error prop based on field error
                                     helperText={fieldErrors.name} // Provide the error message
                                 />
                             </div>
@@ -374,7 +374,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                                     fullWidth
                                     multiline
                                     rows={3}
-                                    error={Boolean(fieldErrors.description)} // Set error prop based on field error
+                                    error={!!(fieldErrors.description)} // Set error prop based on field error
                                     helperText={fieldErrors.description} // Provide the error message
                                 />
                             </div>

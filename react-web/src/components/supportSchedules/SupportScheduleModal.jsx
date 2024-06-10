@@ -12,7 +12,7 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
     const { create, update, remove, getAll } = useCrud();
     const usersUrl = "/users";
     const supportTeamsUrl = "/support-teams";
-    const supportSchedulesUrl = "/support-schedules";
+    const supportTeamSchedulesUrl = "/support-schedules";
 
     // State to manage form data
     const [formData, setFormData] = useState({
@@ -48,7 +48,7 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
     const [selectedUser, setSelectedUser] = useState(null);
     // Reference for the autocomplete field
     const autocompleteRef = useRef(null);
-
+   
     // Object to show button labels based on the modal type
     const buttonLabels = {
         add: "Create Support Team Schedule", // Label for the "add" modal type
@@ -124,21 +124,21 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
 
     // Effect to initialize form data based on modal type and supportSchedule(passed props)
     useEffect(() => {
-        if (modalType === 'edit' && supportSchedule && userOptions.length > 0 && supportTeamOptions.length > 0 ) {
-            const { startTime, endTime, escalationLevel, supportTeamId, id, userId } = supportSchedule;
-            const matchedUser = userOptions.find(userOption => userOption.id === userId);
-            const matchedSupport = supportTeamOptions.find(supportTeamOption => supportTeamOption.id === supportTeamId);
+        if (modalType === 'edit' && supportSchedule && userOptions.length > 0 && supportTeamOptions.length > 0) {
+            const { startTime, endTime, escalationLevel, SupportTeamId, id, UserId } = supportSchedule;
+            const matchedUser = userOptions.find(userOption => userOption.id === UserId);
+            const matchedSupportTeam = supportTeamOptions.find(supportTeamOption => supportTeamOption.id === SupportTeamId);
 
             // To prefilled the material ui AutoComplete component
             setSelectedUser(matchedUser);
-            setSelectedSupportTeam(matchedSupport);
+            setSelectedSupportTeam(matchedSupportTeam);
             setFormData({
                 ...formData,
-                userId: userId || "",
+                userId: UserId || "",
                 startTime: startTime || "",
                 endTime: endTime || "",
                 escalationLevel: escalationLevel || "",
-                supportTeamId: supportTeamId || "",
+                supportTeamId: SupportTeamId || "",
                 id: id || "",
                 success: false,
                 error: false,
@@ -269,6 +269,28 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
         return errors;
     };
 
+    // Generalized function to handle time changes
+    const handleTimeChange = (timeType, newTime) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            [timeType]: newTime,
+        }));
+
+        // Clear error message for the field when it receives a value
+        if (newTime) {
+            setFieldErrors((prevErrors) => ({
+                ...prevErrors,
+                [timeType]: "", // Clear error message if field has a value
+            }));
+        } else {
+            // If field value becomes empty, show error message
+            setFieldErrors((prevErrors) => ({
+                ...prevErrors,
+                [timeType]: `${timeType.replace(/([A-Z])/g, ' $1')} is required`,
+            }));
+        }
+    };
+
     // Function to handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -297,9 +319,9 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
 
         // Define actions for different modal types
         const actions = {
-            add: () => create(supportSchedulesUrl, formData),
-            edit: () => update(supportSchedulesUrl, formData.id, formData),
-            delete: () => remove(supportSchedulesUrl, supportSchedule.id)
+            add: () => create(supportTeamSchedulesUrl, formData),
+            edit: () => update(supportTeamSchedulesUrl, formData.id, formData),
+            delete: () => remove(supportTeamSchedulesUrl, supportSchedule.id)
         };
 
         try {
@@ -376,7 +398,7 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
                                                     </>
                                                 ),
                                             }}
-                                            error={Boolean(fieldErrors.userId)} // Set error prop based on field error
+                                            error={!!(fieldErrors.userId)} // Set error prop based on field error
                                             helperText={fieldErrors.userId} // Provide the error message
                                         />
                                     )}
@@ -406,7 +428,7 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
                                                     </>
                                                 ),
                                             }}
-                                            error={Boolean(fieldErrors.supportTeamId)} // Set error prop based on field error
+                                            error={!!(fieldErrors.supportTeamId)} // Set error prop based on field error
                                             helperText={fieldErrors.supportTeamId} // Provide the error message
                                         />
                                     )}
@@ -416,31 +438,34 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
                             <div className="flex flex-col space-y-1 w-full mb-4">
                                 <TextField
                                     id="startTime"
-                                    variant="outlined"
-                                    name="startTime"
-                                    autoComplete="startTime"
                                     label="Start Time"
+                                    type="time"
+                                    name="startTime"
                                     value={formData.startTime}
-                                    onChange={handleInputChange}
+                                    onChange={(e) => handleTimeChange('startTime', e.target.value)}
+                                    error={!!fieldErrors.startTime}
+                                    helperText={fieldErrors.startTime}
                                     fullWidth
-                                    error={Boolean(fieldErrors.startTime)} // Set error prop based on field error
-                                    helperText={fieldErrors.startTime} // Provide the error message
-                                />
+                                    inputProps={{
+                                        step: 300,
+                                    }}
+                                    variant="outlined"
+                                />                                
                             </div>
-                            <div className="flex flex-col space-y-1 w-full">
+                            <div className="flex flex-col space-y-1 w-full mb-4">
                                 <TextField
                                     id="endTime"
-                                    variant="outlined"
-                                    name="endTime"
-                                    autoComplete="endTime"
                                     label="End Time"
+                                    name="endTime"
+                                    type="time"
                                     value={formData.endTime}
-                                    onChange={handleInputChange}
+                                    onChange={(e) => handleTimeChange("endTime", e.target.value)}
+                                    error={!!fieldErrors.endTime}
+                                    helperText={fieldErrors.endTime}
                                     fullWidth
-                                    multiline
-                                    rows={3}
-                                    error={Boolean(fieldErrors.endTime)} // Set error prop based on field error
-                                    helperText={fieldErrors.endTime} // Provide the error message
+                                    inputProps={{
+                                        step: 300,
+                                    }}
                                 />
                             </div>
                             <div className="flex flex-col space-y-1 w-full">
@@ -453,9 +478,7 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
                                     value={formData.escalationLevel}
                                     onChange={handleInputChange}
                                     fullWidth
-                                    multiline
-                                    rows={3}
-                                    error={Boolean(fieldErrors.escalationLevel)} // Set error prop based on field error
+                                    error={!!(fieldErrors.escalationLevel)} // Set error prop based on field error
                                     helperText={fieldErrors.escalationLevel} // Provide the error message
                                 />
                             </div>

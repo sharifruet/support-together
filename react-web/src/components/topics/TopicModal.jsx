@@ -103,6 +103,8 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
             // To prefilled the material ui AutoComplete component
             setSelectedProject(matchedProject);
+        console.log(selectedProject)
+
             setFormData({
                 ...formData,
                 projectId: ProjectId || "",
@@ -161,6 +163,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
     // Function to handle form Material UI Autocomplete component changes
     const handleAutocompleteChange = (event, newValue) => {
         setSelectedProject(newValue);
+        console.log(selectedProject)
         setFormData((prevData) => ({
             ...prevData,
             projectId: newValue ? newValue.id : "",
@@ -319,7 +322,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                                                     </>
                                                 ),
                                             }}
-                                            error={Boolean(fieldErrors.projectId)} // Set error prop based on field error
+                                            error={!!(fieldErrors.projectId)} // Set error prop based on field error
                                             helperText={fieldErrors.projectId} // Provide the error message
                                         />
                                     )}
@@ -337,7 +340,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                                     value={formData.name}
                                     onChange={handleInputChange}
                                     fullWidth
-                                    error={Boolean(fieldErrors.name)} // Set error prop based on field error
+                                    error={!!(fieldErrors.name)} // Set error prop based on field error
                                     helperText={fieldErrors.name} // Provide the error message
                                 />
                             </div>
@@ -353,7 +356,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                                     fullWidth
                                     multiline
                                     rows={3}
-                                    error={Boolean(fieldErrors.description)} // Set error prop based on field error
+                                    error={!!(fieldErrors.description)} // Set error prop based on field error
                                     helperText={fieldErrors.description} // Provide the error message
                                 />
                             </div>

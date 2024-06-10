@@ -14,7 +14,7 @@ import SideBar from "./components/SideBar";
 import Organizations from "./components/organizations/Organizations";
 import Projects from "./components/projects/Projects";
 import Topics from "./components/topics/Topics";
-import Supportteam from "./components/supportteam/Supportteam";
+import SupportTeams from "./components/supportTeams/SupportTeams";
 import EmailTemplates from "./components/emails/EmailTemplates";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ChangePassword from "./page/ChangePassword";
@@ -54,7 +54,7 @@ const RouteComponent = () => {
                     <Route path='organizations' element={<Organizations />} />
                     <Route path='projects' element={<Projects />} />
                     <Route path='topics' element={<Topics />} />
-                    <Route path='supportteam' element={<Supportteam />} />
+                    <Route path='SupportTeams' element={<SupportTeams />} />
                     <Route path='supportTeamSchedule' element={<SupportTeamSchedules />} />
                 </Route>
                 <Route element={<ProtectedRoute roles={['Support']} />}>

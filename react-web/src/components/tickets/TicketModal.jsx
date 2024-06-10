@@ -421,7 +421,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
                                                         </>
                                                     ),
                                                 }}
-                                                error={Boolean(fieldErrors.topicId)} // Set error prop based on field error
+                                                error={!!(fieldErrors.topicId)} // Set error prop based on field error
                                                 helperText={fieldErrors.topicId} // Provide the error message
                                             />
                                         )}
@@ -451,7 +451,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
                                                         </>
                                                     ),
                                                 }}
-                                                error={Boolean(fieldErrors.priority)} // Set error prop based on field error
+                                                error={!!(fieldErrors.priority)} // Set error prop based on field error
                                                 helperText={fieldErrors.priority} // Provide the error message
                                             />
                                         )}
@@ -470,7 +470,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
                                         value={formData.title}
                                         onChange={handleInputChange}
                                         fullWidth
-                                        error={Boolean(fieldErrors.title)} // Set error prop based on field error
+                                        error={!!(fieldErrors.title)} // Set error prop based on field error
                                         helperText={fieldErrors.title} // Provide the error message
                                     />
                                 </div>
@@ -485,7 +485,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
                                         label="Requested By"
                                         fullWidth
                                         autoComplete="requestedBy"
-                                        error={Boolean(fieldErrors.requestedBy)} // Set error prop based on field error
+                                        error={!!(fieldErrors.requestedBy)} // Set error prop based on field error
                                         helperText={fieldErrors.requestedBy} // Provide the error message
                                     />
                                 </div>
@@ -502,12 +502,12 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic }) => 
                                     fullWidth
                                     multiline
                                     rows={3}
-                                    error={Boolean(fieldErrors.description)} // Set error prop based on field error
+                                    error={!!(fieldErrors.description)} // Set error prop based on field error
                                     helperText={fieldErrors.description} // Provide the error message
                                 />
                             </div>
                             <div className="flex flex-col space-y-1 w-full mb-4">
-                                <EmailField setSelectedCcEmails={setSelectedCcEmails} clear={clear} error={Boolean(fieldErrors.fyiTo ? fieldErrors.fyiTo : "")} helperText={fieldErrors.fyiTo} />
+                                <EmailField setSelectedCcEmails={setSelectedCcEmails} clear={clear} error={!!(fieldErrors.fyiTo ? fieldErrors.fyiTo : "")} helperText={fieldErrors.fyiTo} />
                             </div>
                             <div className="flex flex-col space-y-1 w-full mb-4">
                                 <CustomFileAttachment setSelectedAttachments={setSelectedAttachments} clear={clear} error={fieldErrors.attachments} helperText={fieldErrors.attachments} />

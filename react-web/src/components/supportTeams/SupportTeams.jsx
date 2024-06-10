@@ -3,17 +3,16 @@ import { Table, Container, Row, Col, Form, Button, Pagination } from 'react-boot
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
 import { Tooltip } from "@mui/material";
 import { format } from 'date-fns';
-import useSupportteamService from '../../hooks/useSupportteamService';
-import SupportteamModal from './SupportteamModal';
+import useSupportTeamService from '../../hooks/useSupportTeamService';
+import SupportTeamModal from './SupportTeamModal';
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
 import OpenModalButton from '../common/OpenModalButton';
 
 
-const Supportteam = () => {
-    const { getAllSupportteam } = useSupportteamService();
-    const [supportteam, setSupportteam] = useState([]);
-    const [selectedSupportteam, setSelectedSupportteam] = useState(null);
-    const [openModal, setOpenModal] = useState(false);
+const SupportTeams = () => {
+    const { getAllSupportTeams} = useSupportTeamService();
+    const [supportTeams, setSupportTeams] = useState([]);
+    const [selectedSupportTeam, setSelectedSupportTeam] = useState(null);
     const [modalType, setModalType] = useState(null);
 
     const [page, setPage] = useState(1);
@@ -21,7 +20,7 @@ const Supportteam = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
-console.log(supportteam);
+
     const handlePageChange = (newPage) => {
         setPage(newPage);
     };
@@ -31,16 +30,14 @@ console.log(supportteam);
         setPage(1);
     };
 
-    const handleOpenModal = (topic, modalType) => {
-        setSelectedSupportteam(supportteam);
+    const handleOpenModal = (supportTeam, modalType) => {
+        setSelectedSupportTeam(supportTeam);
         setModalType(modalType);
-        setOpenModal(true);
     };
 
     const handleCloseModal = () => {
-        setOpenModal(false);
         setModalType(null);
-        setSelectedSupportteam(null);
+        setSelectedSupportTeam(null);
     };
 
     const handleSearchChange = (event) => {
@@ -53,27 +50,27 @@ console.log(supportteam);
         setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     };
 
-    const fetchSupportteam = async () => {
+    const fetchSupportTeams = async () => {
         try {
-            const data = await getAllSupportteam();
-            setSupportteam(data);
+            const data = await getAllSupportTeams();
+            setSupportTeams(data);
         } catch (error) {
             // Handle error here
-            console.error('Error fetching Suppor-tteam:', error);
+            console.error('Error fetching Support Team:', error);
         }
     };
 
     useEffect(() => {
-        fetchSupportteam();
+        fetchSupportTeams();
     }, []);
 
-    const filteredSupportteam = supportteam.filter((topic) =>
+    const filteredSupportTeam = supportTeams.filter((topic) =>
         topic.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    let sortedSupportteam = [...filteredSupportteam];
+    let sortedSupportTeam = [...filteredSupportTeam];
     if (sortField) {
-        sortedSupportteam = sortedSupportteam.sort((a, b) => {
+        sortedSupportTeam = sortedSupportTeam.sort((a, b) => {
             const x = a[sortField];
             const y = b[sortField];
             return sortOrder === 'asc' ? x.localeCompare(y) : y.localeCompare(x);
@@ -81,16 +78,17 @@ console.log(supportteam);
     }
 
     const startIndex = (page - 1) * rowsPerPage;
-    const paginatedSupportteam = sortedSupportteam.slice(startIndex, startIndex + rowsPerPage);
-
+    const paginatedSupportTeam = sortedSupportTeam.slice(startIndex, startIndex + rowsPerPage);
+    
     return (
         <>
             <Container>
                 <Row className="mb-3">
                     <Col>
                         <div className="col-span-1 flex items-center">
+                            {/* It's open the add organization modal */}
                             <div onClick={() => handleOpenModal(null, "add")}>
-                                <OpenModalButton label={"Add Supportteam"} icon={<AddIcon />} />
+                                <OpenModalButton label={"Add Support Team"} icon={<AddIcon />} />
                             </div>
                         </div>
                     </Col>
@@ -113,28 +111,25 @@ console.log(supportteam);
                         </tr>
                     </thead>
                     <tbody>
-                        {paginatedSupportteam.map((supportteam) => (
-                            <tr key={supportteam.id}>
-                                <td>{supportteam.name}</td>
-                                <td>{supportteam.userids}</td>
-                                <td>{format(new Date(supportteam.createdAt), 'MM/dd/yyyy')}</td>
+                        {paginatedSupportTeam?.map((supportTeam) => (
+                            <tr key={supportTeam.id}>
+                                <td>{supportTeam.name}</td>
                                 <td>
-                                    <Tooltip title={`Edit this ${supportteam.name} supportteam`} arrow placement="top">
-                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0' onClick={() => handleOpenModal(supportteam, "edit")}>
+                                    {supportTeam?.Users?.map((user) => user.name+', ')}
+                                </td>
+                                <td>{format(new Date(supportTeam.createdAt), 'MM/dd/yyyy')}</td>
+                                <td>
+                                    <Tooltip title={`Edit this ${supportTeam.name} Support Team`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0' onClick={() => handleOpenModal(supportTeam, "edit")}>
                                             <FaEdit />
                                         </Button>
                                     </Tooltip>
-                                    <Tooltip title={`View this ${supportteam.name} supportteam`} arrow placement="top">
-                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-success border-0' onClick={() => handleOpenModal(supportteam, "view")}>
-                                            <FaEye />
-                                        </Button>
-                                    </Tooltip>
-                                    <Tooltip title={`Delete this ${supportteam.name} supportteam`} arrow placement="top">
-                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-danger border-0' onClick={() => handleOpenModal(supportteam, "delete")}>
+                                   
+                                    <Tooltip title={`Delete this ${supportTeam.name} Support Team`} arrow placement="top">
+                                        <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-danger border-0' onClick={() => handleOpenModal(supportTeam, "delete")}>
                                             <FaTrashAlt />
                                         </Button>
                                     </Tooltip>
-
                                 </td>
                             </tr>
                         ))}
@@ -143,25 +138,24 @@ console.log(supportteam);
                 <Pagination>
                     <Pagination.First onClick={() => handlePageChange(1)} />
                     <Pagination.Prev onClick={() => handlePageChange(page - 1)} />
-                    {[...Array(Math.ceil(filteredSupportteam.length / rowsPerPage)).keys()].map(number => (
+                    {[...Array(Math.ceil(filteredSupportTeam.length / rowsPerPage)).keys()]?.map(number => (
                         <Pagination.Item key={number + 1} active={number + 1 === page} onClick={() => handlePageChange(number + 1)}>
                             {number + 1}
                         </Pagination.Item>
                     ))}
                     <Pagination.Next onClick={() => handlePageChange(page + 1)} />
-                    <Pagination.Last onClick={() => handlePageChange(Math.ceil(filteredSupportteam.length / rowsPerPage))} />
+                    <Pagination.Last onClick={() => handlePageChange(Math.ceil(filteredSupportTeam.length / rowsPerPage))} />
                 </Pagination>
             </Container>
 
-            <SupportteamModal
+            <SupportTeamModal
                 modalType={modalType}
-                supportteam={setSelectedSupportteam}
+                supportTeam={selectedSupportTeam}
                 closeModal={handleCloseModal}
-                fetchSupportteam={fetchSupportteam}
-                users
+                fetchSupportTeams={fetchSupportTeams}
             />
         </>
     );
 };
 
-export default Supportteam;
+export default SupportTeams;

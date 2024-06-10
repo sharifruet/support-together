@@ -101,7 +101,7 @@ export default function Login() {
                             autoFocus
                             onChange={e => setEmail(e.target.value)}
                             value={email}
-                            error={Boolean(emailError)}
+                            error={!!(emailError)}
                             helperText={emailError}
                             disabled={loading}
                             aria-label="email"
@@ -116,7 +116,7 @@ export default function Login() {
                             id="password"
                             onChange={e => setPassword(e.target.value)}
                             value={password}
-                            error={Boolean(passwordError)}
+                            error={!!(passwordError)}
                             helperText={passwordError}
                             disabled={loading}
                             autoComplete="current-password"

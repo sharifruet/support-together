@@ -1,16 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation } from "react-router-dom";
 import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import EmailIcon from '@mui/icons-material/Email';
-import CorporateFareIcon from '@mui/icons-material/CorporateFare';
-import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import LocalActivityOutlinedIcon from '@mui/icons-material/LocalActivityOutlined';
-import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
-import TopicIcon from '@mui/icons-material/Topic';
+import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Dashboard, Email, SupportAgent, LockResetOutlined, Schedule, LocalActivityOutlined, CorporateFare, BusinessCenter, Topic } from '@mui/icons-material';
 import GlobalContext from '../GlobalContext';
 
 const LeftMenu = () => {
@@ -34,7 +26,7 @@ const LeftMenu = () => {
                 to="/dashboard"
             >
                 <ListItemIcon style={{ minWidth: "36px" }}>
-                    <DashboardIcon style={{ color: getColor('/dashboard') }} />
+                    <Dashboard style={{ color: getColor('/dashboard') }} />
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" style={{ color: getColor('/dashboard') }} />
             </ListItemButton>
@@ -45,7 +37,7 @@ const LeftMenu = () => {
                 to="/dashboard/tickets"
             >
                 <ListItemIcon style={{ minWidth: "36px" }}>
-                    <LocalActivityOutlinedIcon style={{ color: getColor('/tickets'), fontSize: '24px' }} />
+                    <LocalActivityOutlined style={{ color: getColor('/tickets'), fontSize: '24px' }} />
                 </ListItemIcon>
                 <ListItemText primary="Tickets" style={{ color: getColor('/tickets') }} />
             </ListItemButton>
@@ -57,7 +49,7 @@ const LeftMenu = () => {
                     to="/dashboard/emailTemplates"
                 >
                     <ListItemIcon style={{ minWidth: "36px" }}>
-                        <EmailIcon style={{ color: getColor('/emailTemplates') }} />
+                        <Email style={{ color: getColor('/emailTemplates') }} />
                     </ListItemIcon>
                     <ListItemText primary="Email Templates" style={{ color: getColor('/emailTemplates') }} />
                 </ListItemButton>
@@ -70,7 +62,7 @@ const LeftMenu = () => {
                     to="/dashboard/organizations"
                 >
                     <ListItemIcon style={{ minWidth: "36px" }}>
-                        <CorporateFareIcon style={{ color: getColor('/organizations') }} />
+                        <CorporateFare style={{ color: getColor('/organizations') }} />
                     </ListItemIcon>
                     <ListItemText primary="Organizations" style={{ color: getColor('/organizations') }} />
                 </ListItemButton>
@@ -83,7 +75,7 @@ const LeftMenu = () => {
                     to="/dashboard/projects"
                 >
                     <ListItemIcon style={{ minWidth: "36px" }}>
-                        <BusinessCenterIcon style={{ color: getColor('/projects') }} />
+                        <BusinessCenter style={{ color: getColor('/projects') }} />
                     </ListItemIcon>
                     <ListItemText primary="Projects" style={{ color: getColor('/projects') }} />
                 </ListItemButton>
@@ -96,7 +88,7 @@ const LeftMenu = () => {
                     to="/dashboard/topics"
                 >
                     <ListItemIcon style={{ minWidth: "36px" }}>
-                        <TopicIcon style={{ color: getColor('/topics') }} />
+                        <Topic style={{ color: getColor('/topics') }} />
                     </ListItemIcon>
                     <ListItemText primary="Topics" style={{ color: getColor('/topics') }} />
                 </ListItemButton>
@@ -104,14 +96,14 @@ const LeftMenu = () => {
 
             {isRoleAllowed('Admin') && (
                 <ListItemButton
-                    selected={location.pathname === '/dashboard/supportteam'}
+                    selected={location.pathname === '/dashboard/supportTeams'}
                     component={Link}
-                    to="/dashboard/supportteam"
+                    to="/dashboard/supportTeams"
                 >
                     <ListItemIcon style={{ minWidth: "36px" }}>
-                        <TopicIcon style={{ color: getColor('/supportteam') }} />
+                        <SupportAgent style={{ color: getColor('/supportTeams') }} />
                     </ListItemIcon>
-                    <ListItemText primary="Support Team" style={{ color: getColor('/supportteam') }} />
+                    <ListItemText primary="Support Team" style={{ color: getColor('/supportTeams') }} />
                 </ListItemButton>
             )}
 
@@ -122,7 +114,7 @@ const LeftMenu = () => {
                     to="/dashboard/supportTeamSchedule"
                 >
                     <ListItemIcon style={{ minWidth: "36px" }}>
-                        <TopicIcon style={{ color: getColor('/supportTeamSchedule') }} />
+                        <Schedule style={{ color: getColor('/supportTeamSchedule') }} />
                     </ListItemIcon>
                     <ListItemText primary="Support Team Schedule" style={{ color: getColor('/supportTeamSchedule') }} />
                 </ListItemButton>
@@ -134,7 +126,7 @@ const LeftMenu = () => {
                 to="/dashboard/changePassword"
             >
                 <ListItemIcon style={{ minWidth: "36px" }}>
-                    <LockResetOutlinedIcon style={{ color: getColor('/changePassword'), fontSize: '24px' }} />
+                    <LockResetOutlined style={{ color: getColor('/changePassword'), fontSize: '24px' }} />
                 </ListItemIcon>
                 <ListItemText primary="Change Password" style={{ color: getColor('/changePassword') }} />
             </ListItemButton>
