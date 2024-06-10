@@ -211,12 +211,12 @@ const InviteUsersModal = ({ modalType, project, closeModal, fetchProjects }) => 
                                     onChange={handleInputChange}
                                     fullWidth
                                     autoFocus
-                                    error={Boolean(fieldErrors.email)} // Set error prop based on field error
+                                    error={!!(fieldErrors.email)} // Set error prop based on field error
                                     helperText={fieldErrors.email} // Provide the error message
                                 />
                             </div>
                             <div className="flex flex-col space-y-1 w-full mb-4">
-                                <FormControl component="fieldset" error={Boolean(fieldErrors.role)}>
+                                <FormControl component="fieldset" error={!!(fieldErrors.role)}>
                                     <RadioGroup
                                         row
                                         aria-labelledby="demo-row-radio-buttons-group-label"

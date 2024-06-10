@@ -1,39 +1,39 @@
 import useCrud from './useCrud';
 
-const useSupportteamService = () => {
+const useSupportTeamService = () => {
   const { getAll, getById, create, update, remove } = useCrud();
 
-  const getAllSupportteam = () => {
+  const getAllSupportTeams = () => {
     return getAll('/support-teams');
   };
 
-  const getSupportteamById = (id) => {
+  const getSupportTeamById = (id) => {
     return getById('/support-teams', id);
   };
 
-  const createSupportteam = (data) => {
+  const createSupportTeam = (data) => {
     return create('/support-teams', data);
   };
 
-  const updateSupportteam = (id, data) => {
+  const updateSupportTeam = (id, data) => {
     return update('/support-teams', id, data);
   };
 
-  const deleteSupportteam = (id) => {
+  const deleteSupportTeam = (id) => {
     return remove('/support-teams', id);
   };
-  const getSupportteamMemberById = (id) => {
+  const getSupportTeamMemberById = (id) => {
     return getById('/support-teams', id);
   };
 
   return {
-    getAllSupportteam,
-    getSupportteamById,
-    createSupportteam,
-    updateSupportteam,
-    deleteSupportteam,
-    getSupportteamMemberById,
+    getAllSupportTeams,
+    getSupportTeamById,
+    createSupportTeam,
+    updateSupportTeam,
+    deleteSupportTeam,
+    getSupportTeamMemberById,
   };
 };
 
-export default useSupportteamService;
+export default useSupportTeamService;

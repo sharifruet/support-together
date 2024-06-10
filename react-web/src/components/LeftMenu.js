@@ -96,14 +96,14 @@ const LeftMenu = () => {
 
             {isRoleAllowed('Admin') && (
                 <ListItemButton
-                    selected={location.pathname === '/dashboard/supportteam'}
+                    selected={location.pathname === '/dashboard/supportTeams'}
                     component={Link}
-                    to="/dashboard/supportteam"
+                    to="/dashboard/supportTeams"
                 >
                     <ListItemIcon style={{ minWidth: "36px" }}>
-                        <SupportAgent style={{ color: getColor('/supportteam') }} />
+                        <SupportAgent style={{ color: getColor('/supportTeams') }} />
                     </ListItemIcon>
-                    <ListItemText primary="Support Team" style={{ color: getColor('/supportteam') }} />
+                    <ListItemText primary="Support Team" style={{ color: getColor('/supportTeams') }} />
                 </ListItemButton>
             )}
 

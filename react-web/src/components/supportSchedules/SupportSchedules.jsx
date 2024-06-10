@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Table, Container, Row, Col, Form, Button, Pagination } from 'react-bootstrap';
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
 import { Tooltip } from "@mui/material";
-import { format } from 'date-fns';
 import useCrud from '../../hooks/useCrud';
+import { format } from 'date-fns';
 import './SupportSchedulesStyles.css';
 import SupportScheduleModal from './SupportScheduleModal';
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
 import OpenModalButton from '../common/OpenModalButton';
-
+import moment from 'moment';
 
 const SupportSchedules = () => {
     const { getAll } = useCrud();
@@ -22,6 +22,19 @@ const SupportSchedules = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
+
+    // Bangladesh time zone
+    const timeZone = 'Asia/Dhaka';
+    // const inputTimeString = '20:00:00';
+
+    // // Parse the input time string into a Date object (assuming UTC)
+    // const inputTime = new Date(inputTimeString);
+
+    // // Convert the UTC time to zoned time in Bangladesh
+    // const zonedTime = zonedTimeToUtc(inputTime, timeZone);
+
+    // // Format the zoned time for display
+    // const formattedTime = format(zonedTime, 'h:mm:ss a z');
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
@@ -68,7 +81,7 @@ const SupportSchedules = () => {
     }, []);
 
     const filteredSupportSchedules = supportSchedules?.filter((supportSchedule) =>
-        supportSchedule?.name?.toLowerCase()?.includes(searchQuery.toLowerCase())
+        supportSchedule?.startTime?.toLowerCase()?.includes(searchQuery.toLowerCase())
     );
 
     let sortedSupportSchedules = [...filteredSupportSchedules];
@@ -82,6 +95,11 @@ const SupportSchedules = () => {
 
     const startIndex = (page - 1) * rowsPerPage;
     const paginatedSupportSchedules = sortedSupportSchedules.slice(startIndex, startIndex + rowsPerPage);
+
+    const formatTimeToLocal = (time) => {
+        // Assuming time is in HH:mm:ss format
+        return moment(time, 'HH:mm:ss').format('hh:mm:ss A');
+    };
 
     return (
         <>
@@ -107,7 +125,8 @@ const SupportSchedules = () => {
                 <Table striped bordered hover>
                     <thead>
                         <tr>
-                            <th onClick={() => handleSortChange('name')}>Name</th>
+                            <th onClick={() => handleSortChange('startTime')}>Start Time</th>
+                            <th onClick={() => handleSortChange('endTime')}>End Time</th>
                             <th onClick={() => handleSortChange('createdAt')}>Created At</th>
                             <th>Actions</th>
                         </tr>
@@ -115,7 +134,8 @@ const SupportSchedules = () => {
                     <tbody>
                         {paginatedSupportSchedules?.map((supportSchedule) => (
                             <tr key={supportSchedule.id}>
-                                <td>{supportSchedule?.name}</td>
+                                <td>{formatTimeToLocal(supportSchedule.startTime)}</td>
+                                <td>{formatTimeToLocal(supportSchedule.endTime)}</td>
                                 <td>{format(new Date(supportSchedule.createdAt), 'MM/dd/yyyy')}</td>
                                 <td>
                                     <Tooltip title={`Edit this ${supportSchedule?.name} SupportSchedule`} arrow placement="top">

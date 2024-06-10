@@ -125,20 +125,20 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
     // Effect to initialize form data based on modal type and supportSchedule(passed props)
     useEffect(() => {
         if (modalType === 'edit' && supportSchedule && userOptions.length > 0 && supportTeamOptions.length > 0) {
-            const { startTime, endTime, escalationLevel, supportTeamId, id, userId } = supportSchedule;
-            const matchedUser = userOptions.find(userOption => userOption.id === userId);
-            const matchedSupport = supportTeamOptions.find(supportTeamOption => supportTeamOption.id === supportTeamId);
+            const { startTime, endTime, escalationLevel, SupportTeamId, id, UserId } = supportSchedule;
+            const matchedUser = userOptions.find(userOption => userOption.id === UserId);
+            const matchedSupportTeam = supportTeamOptions.find(supportTeamOption => supportTeamOption.id === SupportTeamId);
 
             // To prefilled the material ui AutoComplete component
             setSelectedUser(matchedUser);
-            setSelectedSupportTeam(matchedSupport);
+            setSelectedSupportTeam(matchedSupportTeam);
             setFormData({
                 ...formData,
-                userId: userId || "",
+                userId: UserId || "",
                 startTime: startTime || "",
                 endTime: endTime || "",
                 escalationLevel: escalationLevel || "",
-                supportTeamId: supportTeamId || "",
+                supportTeamId: SupportTeamId || "",
                 id: id || "",
                 success: false,
                 error: false,
@@ -326,8 +326,6 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
 
         try {
             setLoading(true);
-            console.log(formData);
-            return;
             const responseData = Object.keys(errors).length === 0 && await actions[modalType]();
             console.log(responseData)
 
@@ -400,7 +398,7 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
                                                     </>
                                                 ),
                                             }}
-                                            error={Boolean(fieldErrors.userId)} // Set error prop based on field error
+                                            error={!!(fieldErrors.userId)} // Set error prop based on field error
                                             helperText={fieldErrors.userId} // Provide the error message
                                         />
                                     )}
@@ -430,7 +428,7 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
                                                     </>
                                                 ),
                                             }}
-                                            error={Boolean(fieldErrors.supportTeamId)} // Set error prop based on field error
+                                            error={!!(fieldErrors.supportTeamId)} // Set error prop based on field error
                                             helperText={fieldErrors.supportTeamId} // Provide the error message
                                         />
                                     )}
@@ -480,7 +478,7 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
                                     value={formData.escalationLevel}
                                     onChange={handleInputChange}
                                     fullWidth
-                                    error={Boolean(fieldErrors.escalationLevel)} // Set error prop based on field error
+                                    error={!!(fieldErrors.escalationLevel)} // Set error prop based on field error
                                     helperText={fieldErrors.escalationLevel} // Provide the error message
                                 />
                             </div>

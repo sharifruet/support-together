@@ -219,7 +219,7 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
                                     onChange={handleInputChange}
                                     fullWidth
                                     autoFocus
-                                    error={Boolean(fieldErrors.name)} // Set error prop based on field error
+                                    error={!!(fieldErrors.name)} // Set error prop based on field error
                                     helperText={fieldErrors.name} // Provide the error message
                                 />
                             </div>
@@ -232,7 +232,7 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
                                     label="Subject"
                                     variant="outlined"
                                     fullWidth
-                                    error={Boolean(fieldErrors.subject)} // Set error prop based on field error
+                                    error={!!(fieldErrors.subject)} // Set error prop based on field error
                                     helperText={fieldErrors.subject} // Provide the error message
                                 />
                             </div>
@@ -247,7 +247,7 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
                                     fullWidth
                                     multiline
                                     rows={10}
-                                    error={Boolean(fieldErrors.body)} // Set error prop based on field error
+                                    error={!!(fieldErrors.body)} // Set error prop based on field error
                                     helperText={fieldErrors.body} // Provide the error message
                                 />
                             </div>

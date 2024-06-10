@@ -178,7 +178,7 @@ const ProfileUpdate = () => {
                             sx={{ mb: 4 }}
                             fullWidth
                             autoFocus
-                            error={Boolean(fieldErrors.name)} // Set error prop based on field error
+                            error={!!(fieldErrors.name)} // Set error prop based on field error
                             helperText={fieldErrors.name} // Provide the error message
                         />
                         <TextField
@@ -190,7 +190,7 @@ const ProfileUpdate = () => {
                             onChange={handleInputChange}
                             sx={{ mb: 4 }}
                             fullWidth
-                            error={Boolean(fieldErrors.email)} // Set error prop based on field error
+                            error={!!(fieldErrors.email)} // Set error prop based on field error
                             helperText={fieldErrors.email} // Provide the error message
                             type="email"
                         />
@@ -203,7 +203,7 @@ const ProfileUpdate = () => {
                             onChange={handleInputChange}
                             sx={{ mb: 4 }}
                             fullWidth
-                            error={Boolean(fieldErrors.phoneNumber)} // Set error prop based on field error
+                            error={!!(fieldErrors.phoneNumber)} // Set error prop based on field error
                             helperText={fieldErrors.phoneNumber} // Provide the error message
                             type="number"
                         />
@@ -215,7 +215,7 @@ const ProfileUpdate = () => {
                             value={formData.password}
                             onChange={handleInputChange}
                             fullWidth
-                            error={Boolean(fieldErrors.password)} // Set error prop based on field error
+                            error={!!(fieldErrors.password)} // Set error prop based on field error
                             helperText={fieldErrors.password} // Provide the error message
                             type="password"
                         />

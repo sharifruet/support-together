@@ -14,7 +14,6 @@ const Topics = () => {
     const { getAllTopics } = useTopicService();
     const [topics, setTopics] = useState([]);
     const [selectedTopic, setSelectedTopic] = useState(null);
-    const [openModal, setOpenModal] = useState(false);
     const [modalType, setModalType] = useState(null);
 
     const [page, setPage] = useState(1);
@@ -35,11 +34,9 @@ const Topics = () => {
     const handleOpenModal = (topic, modalType) => {
         setSelectedTopic(topic);
         setModalType(modalType);
-        setOpenModal(true);
     };
 
     const handleCloseModal = () => {
-        setOpenModal(false);
         setModalType(null);
         setSelectedTopic(null);
     };

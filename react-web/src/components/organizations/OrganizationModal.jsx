@@ -221,7 +221,7 @@ const OrganizationModal = ({ modalType, organization, closeModal, fetchOrganizat
                                     onChange={handleInputChange}
                                     fullWidth
                                     autoFocus
-                                    error={Boolean(fieldErrors.code)} // Set error prop based on field error
+                                    error={!!(fieldErrors.code)} // Set error prop based on field error
                                     helperText={fieldErrors.code} // Provide the error message
                                 />
                             </div>
@@ -236,7 +236,7 @@ const OrganizationModal = ({ modalType, organization, closeModal, fetchOrganizat
                                     label="Name"
                                     fullWidth
                                     autoComplete="name"
-                                    error={Boolean(fieldErrors.name)} // Set error prop based on field error
+                                    error={!!(fieldErrors.name)} // Set error prop based on field error
                                     helperText={fieldErrors.name} // Provide the error message
                                 />
                             </div>
@@ -252,7 +252,7 @@ const OrganizationModal = ({ modalType, organization, closeModal, fetchOrganizat
                                     fullWidth
                                     multiline
                                     rows={3}
-                                    error={Boolean(fieldErrors.address)} // Set error prop based on field error
+                                    error={!!(fieldErrors.address)} // Set error prop based on field error
                                     helperText={fieldErrors.description} // Provide the error message
                                 />
                             </div>

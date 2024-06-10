@@ -418,7 +418,7 @@ const TicketModal = () => {
                                                 </>
                                             ),
                                         }}
-                                        error={Boolean(fieldErrors.project)} // Set error prop based on field error
+                                        error={!!(fieldErrors.project)} // Set error prop based on field error
                                         helperText={fieldErrors.project} // Provide the error message
                                     />
                                 )}
@@ -448,7 +448,7 @@ const TicketModal = () => {
                                                 </>
                                             ),
                                         }}
-                                        error={Boolean(fieldErrors.topicId)} // Set error prop based on field error
+                                        error={!!(fieldErrors.topicId)} // Set error prop based on field error
                                         helperText={fieldErrors.topicId} // Provide the error message
                                     />
                                 )}
@@ -477,7 +477,7 @@ const TicketModal = () => {
                                                 </>
                                             ),
                                         }}
-                                        error={Boolean(fieldErrors.priority)} // Set error prop based on field error
+                                        error={!!(fieldErrors.priority)} // Set error prop based on field error
                                         helperText={fieldErrors.priority} // Provide the error message
                                     />
                                 )}
@@ -496,7 +496,7 @@ const TicketModal = () => {
                                 value={formData.title}
                                 onChange={handleInputChange}
                                 fullWidth
-                                error={Boolean(fieldErrors.title)} // Set error prop based on field error
+                                error={!!(fieldErrors.title)} // Set error prop based on field error
                                 helperText={fieldErrors.title} // Provide the error message
                             />
                         </div>
@@ -511,7 +511,7 @@ const TicketModal = () => {
                                 label="Requested By"
                                 fullWidth
                                 autoComplete="requestedBy"
-                                // error={Boolean(fieldErrors.requestedBy)} // Set error prop based on field error
+                                // error={!!(fieldErrors.requestedBy)} // Set error prop based on field error
                                 // helperText={fieldErrors.requestedBy} // Provide the error message
                             />
                         </div>
@@ -531,7 +531,7 @@ const TicketModal = () => {
                             fullWidth
                             multiline
                             rows={3}
-                            error={Boolean(fieldErrors.description)} // Set error prop based on field error
+                            error={!!(fieldErrors.description)} // Set error prop based on field error
                             helperText={fieldErrors.description} // Provide the error message
                         />
                     </div>
