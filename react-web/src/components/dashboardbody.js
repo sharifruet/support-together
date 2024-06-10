@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-//import { summary } from "../assets/data";
 import { Card as BootstrapCard, Col } from "react-bootstrap";
 import useCrud from "../hooks/useCrud";
 import ProjectCard from "../components/ProjectCard";
 import GlobalContext from "../GlobalContext";
 import axios from "../api/axios";
 import ViewListIcon from '@mui/icons-material/ViewList';
-//import TicketList from '../components/ticketlist';
 
 const DashboardBody = ({project}) => {
     const { getAll } = useCrud();
@@ -29,8 +27,6 @@ const DashboardBody = ({project}) => {
             setTickets(response.data);
         });
     }, []);
-
-//console.log(tickets);
 
     const stats = [
         {
