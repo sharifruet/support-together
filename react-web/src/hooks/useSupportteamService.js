@@ -22,6 +22,9 @@ const useSupportTeamService = () => {
   const deleteSupportTeam = (id) => {
     return remove('/support-teams', id);
   };
+  const getSupportTeamMemberById = (id) => {
+    return getById('/support-teams', id);
+  };
 
   return {
     getAllSupportTeams,
@@ -29,6 +32,7 @@ const useSupportTeamService = () => {
     createSupportTeam,
     updateSupportTeam,
     deleteSupportTeam,
+    getSupportTeamMemberById,
   };
 };
 
