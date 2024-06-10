@@ -23,6 +23,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import axios from "../api/axios";
 import {BASE_URL} from '../conf';
+import { format } from 'date-fns';
 const TICKET_URL = "/tickets";
 const ProjWiseTICKET_URL = "/tickets/project";
 const TOPIC_URL = "/topics";
@@ -296,7 +297,7 @@ const TicketList = ({ project, tickets }) => {
                 return (
                   <TableRow>
                     <TableCell align="left"> <Link to={`/dashboard/ticket/${row.code}`}>[{row.code}]</Link> {row.title}</TableCell>
-                    <TableCell align="left">{new Date(row.createdAt).toISOString()}</TableCell>
+                    <TableCell align="left">{format(new Date(row.createdAt),'yyyy-MM-dd hh:mm aaa')}</TableCell>
                     <TableCell align="left">{row.status}</TableCell>
                     {/* <TableCell align="right"><i role="button" onClick={() => handleShow(setTid(row.id))} className="bi bi-pencil-square"></i></TableCell> */}
                   </TableRow>

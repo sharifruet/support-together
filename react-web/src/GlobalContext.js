@@ -12,6 +12,7 @@ const GlobalProvider = ({ children }) => {
   const [users, setUsers] = useState(null)
   const [loggedIn, setLoggedIn] = useState(false);
   const [projects, setProjects] = useState([]);
+  const [topics, setTopics] = useState([]);
   const [organizations, setOrganizations] = useState([]);
   const [accesstoken, setAccesstoken] = useState(null);
 
@@ -79,8 +80,17 @@ const GlobalProvider = ({ children }) => {
       })
       .catch(error => {
         toast.error(error);
-      })
+      });
 
+      axios.get(`/projects/${projectId}/topics`, headerConfig())
+      .then((response) => {
+        let newTopics = response.data;
+        newTopics.push(...topics);
+        setTopics(newTopics);
+      })
+      .catch(error => {
+        toast.error(error);
+      });
   }
 
   const onLogout = () => {
@@ -96,7 +106,7 @@ const GlobalProvider = ({ children }) => {
 
   return (
     <GlobalContext.Provider
-      value={{ user, setUser, users, loginSuccess, onLogout, loggedIn, setLoggedIn, projects, organizations, headerConfig, accesstoken }}
+      value={{ user, setUser, users, loginSuccess, onLogout, loggedIn, setLoggedIn, topics, projects, organizations, headerConfig, accesstoken }}
     >
       {children}
     </GlobalContext.Provider>

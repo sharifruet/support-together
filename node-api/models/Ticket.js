@@ -29,7 +29,7 @@ const Ticket = db.define('Ticket', {
     allowNull: true
   },
   status: {
-    type: DataTypes.ENUM('Created', 'Open', 'Resolved', 'Closed'),
+    type: DataTypes.ENUM('Created', 'Assigned', 'In Progress', 'Resolved', 'Closed'),
     allowNull: false,
     defaultValue: 'Created'
   },
@@ -45,8 +45,16 @@ const Ticket = db.define('Ticket', {
     allowNull: true,
     defaultValue: null
   },
+  assignedTo: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: User,
+      key: 'id'
+    }
+  },
   createdBy: {
-    type: DataTypes.INTEGER, // Assuming createdBy is the ID of the user
+    type: DataTypes.INTEGER,
     allowNull: false,
     references: {
       model: User,
@@ -67,6 +75,5 @@ const Ticket = db.define('Ticket', {
   }
   
 });
-
 
 module.exports = Ticket;

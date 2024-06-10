@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const Project = require('../models/Project');
+const Topic = require('../models/Topic');
 const Organization = require('../models/Organization');
 
 // Create project
@@ -94,6 +95,21 @@ router.delete('/projects/:id', async (req, res) => {
   } catch (error) {
     console.error('Error deleting project:', error);
     res.status(500).json({ error: 'Failed to delete project' });
+  }
+});
+
+// Get topic by ID
+router.get('/projects/:id/topics', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const topics = await Topic.findAll({where:{projectId:id}});
+    if (!topics) {
+      return res.status(404).json({ error: 'No topics not found' });
+    }
+    res.json(topics);
+  } catch (error) {
+    console.error('Error fetching topics:', error);
+    res.status(500).json({ error: 'Failed to fetch topics' });
   }
 });
 
