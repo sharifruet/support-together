@@ -118,9 +118,6 @@ const TicketModal = () => {
         }, 1000);
     }, []);
 
-
-
-
     // Fetch all topics for the Autocomplete options
     useEffect(() => {
         const fetchProjects = async () => {
@@ -140,6 +137,16 @@ const TicketModal = () => {
         if (user) fetchProjects();
     }, [user]);
 
+    // Effect to check while the project length is 1 or more 
+    useEffect(() => {
+        projectOptions.length === 1 && setSelectedProject(projectOptions[0]);
+
+    },[projectOptions]); 
+
+    // Effect to fetch topics if the project length is 1
+    useEffect(() => {
+        selectedProject && fetchTopicsByProjectId(selectedProject.id)
+    },[selectedProject])
 
     // Function to show topic dropdown options
     const fetchTopicsByProjectId = async (projectId) => {
@@ -511,12 +518,12 @@ const TicketModal = () => {
                                 label="Requested By"
                                 fullWidth
                                 autoComplete="requestedBy"
-                                // error={!!(fieldErrors.requestedBy)} // Set error prop based on field error
-                                // helperText={fieldErrors.requestedBy} // Provide the error message
+                            // error={!!(fieldErrors.requestedBy)} // Set error prop based on field error
+                            // helperText={fieldErrors.requestedBy} // Provide the error message
                             />
                         </div>
                         <div className="flex flex-col space-y-1 w-full">
-                            <EmailField setSelectedCcEmails={setSelectedCcEmails} clear={clear} error={fyiToError} helperText={fieldErrors.fyiTo} />
+                            <EmailField setSelectedCcEmails={setSelectedCcEmails} clear={clear} error={fyiToError} helperText={fieldErrors.fyiTo} size="" />
                         </div>
                     </div>
                     <div className="flex flex-col space-y-1 w-full mb-4">
@@ -541,14 +548,14 @@ const TicketModal = () => {
                 </div>
                 <div className="flex flex-col space-y-1 justify-center pb-4 md:pb-6 mt-4">
                     {/* <div className=""> */}
-                        <CustomButton
-                            isLoading={loading}
-                            type="submit"
-                            icon={buttonIcons.add}
-                            label={buttonLabels.add}
-                            disabled={loading}
-                            style={{maxWidth: "40px"}}
-                        />
+                    <CustomButton
+                        isLoading={loading}
+                        type="submit"
+                        icon={buttonIcons.add}
+                        label={buttonLabels.add}
+                        disabled={loading}
+                        style={{ maxWidth: "40px" }}
+                    />
                     {/* </div> */}
                 </div>
             </form>

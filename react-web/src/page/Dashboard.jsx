@@ -1,9 +1,8 @@
 import React, { useContext } from "react";
-import ProjectTabs from '../components/tabcomponent';
 import { Tab, Tabs } from "react-bootstrap";
 
 import GlobalContext from "../GlobalContext";
-import DashboardBody from "../components/dashboardbody";
+import DashboardBody from "../components/DashboardBody";
 const Dashboard = () => {
     const {projects} = useContext(GlobalContext);
     return (

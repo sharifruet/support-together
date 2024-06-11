@@ -1,20 +1,17 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Card as BootstrapCard, Col } from "react-bootstrap";
 import useCrud from "../hooks/useCrud";
-import ProjectCard from "../components/ProjectCard";
-import GlobalContext from "../GlobalContext";
-import axios from "../api/axios";
+import ProjectCard from "./ProjectCard";
 import ViewListIcon from '@mui/icons-material/ViewList';
 
 const DashboardBody = ({project}) => {
-    const { getAll } = useCrud();
+    const { getById } = useCrud();
     const [tickets, setTickets] = useState([]);
-    const ticketUrl = `/tickets/project/${project.id}`;
-    const {headerConfig} = useContext(GlobalContext);
+    const ticketUrl = "/tickets/project";
 
-    const fetchProjects = async () => {
+    const fetchTicketsByProjectId = async () => {
         try {
-            const data = await getAll(ticketUrl);
+            const data = await getById(ticketUrl, project.id);
             setTickets(data);
         } catch (error) {
             console.error('Error fetching project:', error);
@@ -22,39 +19,8 @@ const DashboardBody = ({project}) => {
     };
 
     useEffect(() => {
-        axios.get(ticketUrl, headerConfig())
-        .then((response) => {
-            setTickets(response.data);
-        });
+        fetchTicketsByProjectId();
     }, []);
-
-    const stats = [
-        {
-            _id: "1",
-            label: "TOTAL TICKETS",
-            total: tickets?.length,
-            bg: "bg-primary",
-        },
-        {
-            _id: "2",
-            label: "COMPLETED TICKETS",
-            total: tickets?.filter(t=>t.status==='Created')?.length || 0,
-            bg: "bg-success",
-        },
-        {
-            _id: "3",
-            label: "PROGRESS TICKETS",
-            total: tickets?.filter(t=>t.status==='Created')?.length || 0,
-            bg: "bg-warning",
-        },
-        {
-            _id: "4",
-            label: "PENDING TICKETS",
-            total: tickets?.filter(t=>t.status==='Created')?.length,
-            bg: "bg-danger",
-        },
-    ];
-
 
     const Card = ({ label, count, bg, icon }) => {
         return (

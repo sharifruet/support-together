@@ -3,7 +3,7 @@ import { Autocomplete, TextField, Chip, Box } from '@mui/material';
 import AvatarIcon from '../../assets/imgIcons/avatar.png';
 import Avatar from '../common/Avatar';
 
-const EmailField = ({ setSelectedCcEmails, clear, error, helperText }) => {
+const EmailField = ({ setSelectedCcEmails, clear, error, helperText, size }) => {
     const [searchInput, setSearchInput] = useState('');
     const [ccList, setCcList] = useState([]);
     const [showSelectedOnly, setShowSelectedOnly] = useState(false);
@@ -52,6 +52,7 @@ const EmailField = ({ setSelectedCcEmails, clear, error, helperText }) => {
                 inputValue={searchInput}
                 onInputChange={handleInputChange}
                 onChange={handleCcChange}
+                size={size}
                 renderTags={(value, getTagProps) =>
                     value.map((option, index) => {
                         const { key, ...tagProps } = getTagProps({ index });

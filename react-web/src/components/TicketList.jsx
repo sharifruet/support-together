@@ -22,7 +22,7 @@ import GlobalContext from '../GlobalContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import axios from "../api/axios";
-import {BASE_URL} from '../conf';
+import { BASE_URL } from '../conf';
 import { format } from 'date-fns';
 const TICKET_URL = "/tickets";
 const ProjWiseTICKET_URL = "/tickets/project";
@@ -38,13 +38,13 @@ const textareaStyle = {
   borderRadius: '4px',
   marginTop: '20px'
 };
-const imgstyle = {
+const imgStyle = {
   overflow: 'hidden',
   minHeight: '90px',
   width: '80px',
   border: '1px solid #888',
 };
-const theader = {
+const tHeader = {
   backgroundColor: '#ddd',
   borderRadius: '5px',
 };
@@ -61,20 +61,20 @@ const TicketList = ({ project, tickets }) => {
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
   const [tid, setTid] = useState();
-  const [databyid, setDatabyid] = useState();
+  const [dataById, setDataById] = useState();
   const [title, setTitle] = useState();
   const [priority, setPriority] = useState();
   const [requestedBy, setRequestedBy] = useState();
   const [topicId, setTopicId] = useState();
   const [description, setDescription] = useState();
-  const [topiclist, setTopiclist] = useState();
+  const [topicList, setTopicList] = useState();
   const [fyiTo, setFyiTo] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [files, setFiles] = useState([]);
   const [arr, setArr] = useState([inputArr]);
   const gContext = useContext(GlobalContext);
   const navigate = useNavigate();
-  const [filepth, setFilepth] = useState([]);
+  const [filePath, setFilePath] = useState([]);
 
   const handleFileChange = (event) => {
     setFiles([...files, ...event.target.files]);
@@ -85,33 +85,34 @@ const TicketList = ({ project, tickets }) => {
     setFiles(newFiles);
   };
   useEffect(() => {
-    axios.get(`${TICKET_URL}/${tid}`, gContext.headerConfig())
-      .then((response) => {
-        setDatabyid(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
+    if (tid) {
+      axios.get(`${TICKET_URL}/${tid}`, gContext.headerConfig())
+        .then((response) => {
+          setDataById(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+    }
   }, [show, tid]);
 
   useEffect(() => {
     axios.get(TOPIC_URL, gContext.headerConfig())
       .then((response) => {
-        setTopiclist(response.data);
-        console.log(topiclist);
+        setTopicList(response.data);
       });
-  }, [databyid]);
+  }, [dataById]);
 
   useEffect(() => {
-    if (databyid) {
-      setTitle(databyid.title);
-      setRequestedBy(databyid.requestedBy);
-      setTopicId(databyid.topicId);
-      setDescription(databyid.description);
-      setFyiTo(databyid.fyiTo);
-      setPriority(databyid.priority);
+    if (dataById) {
+      setTitle(dataById.title);
+      setRequestedBy(dataById.requestedBy);
+      setTopicId(dataById.topicId);
+      setDescription(dataById.description);
+      setFyiTo(dataById.fyiTo);
+      setPriority(dataById.priority);
     }
-  }, [databyid]);
+  }, [dataById]);
 
   const addInput = () => {
     setArr(s => {
@@ -169,7 +170,7 @@ const TicketList = ({ project, tickets }) => {
   };
   const cb = (d) => {
     setAttachments([...attachments, d.fileName]);
-    setFilepth(...filepth, d.filePath);
+    setFilePath(...filePath, d.filePath);
   }
   return (
     <>
@@ -215,7 +216,7 @@ const TicketList = ({ project, tickets }) => {
                 <InputLabel id="demo-simple-select-standard-label">Select Topic *</InputLabel>
                 <Select label="Topic" name="topicId" id="topicId"
                   onChange={e => setTopicId(e.target.value)}>
-                  {topiclist?.map((tlist) => <MenuItem value={tlist.id}>{tlist.name}</MenuItem>)}
+                  {topicList?.map((topic) => <MenuItem key={topic.id} value={topic.id}>{topic.name}</MenuItem>)}
                 </Select>
               </FormControl>
               <FormControl variant="standard" sx={{ minWidth: 330 }}>
@@ -231,7 +232,7 @@ const TicketList = ({ project, tickets }) => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <TextareaAutosize
+              <TextField
                 id="description"
                 name="description"
                 label="Description"
@@ -241,14 +242,17 @@ const TicketList = ({ project, tickets }) => {
                 placeholder='Description...'
                 style={textareaStyle}
                 onChange={e => setDescription(e.target.value)}
-                value={description}>
-              </TextareaAutosize>
+                value={description}
+                multiline
+                rows={3}
+              />
             </Grid>
             <Grid item xs={10}>
               <label>FyiTo : &nbsp;</label>
               {arr.map((item, i) => {
                 return (
                   <input
+                    key={i}
                     onChange={handleChange}
                     value={item.value}
                     id={i}
@@ -260,13 +264,13 @@ const TicketList = ({ project, tickets }) => {
                 );
               })}
             </Grid>
-            <Grid sm={2}><br /><br /><button className="form-control add" onClick={addInput} type="button">+</button></Grid>
+            <Grid item sm={2}><br /><br /><button className="form-control add" onClick={addInput} type="button">+</button></Grid>
             <Grid item xs={12}>
               <label>Attached your document : &nbsp;</label>
               <br />
               <Upload cb={cb} />
-              {filepth && <Card style={imgstyle}>
-                <img src={`${BASE_URL}/${filepth}`} />
+              {filePath && <Card style={imgStyle}>
+                <img src={`${BASE_URL}/${filePath}`} />
               </Card>}
               <br />
               <Button variant="primary" onClick={handleSubmit} className='btn-sm'>
@@ -285,7 +289,7 @@ const TicketList = ({ project, tickets }) => {
         <TableContainer>
           <Table>
             <TableHead>
-              <TableRow style={theader}>
+              <TableRow style={tHeader}>
                 <TableCell>Title</TableCell>
                 <TableCell>Created</TableCell>
                 <TableCell>Status</TableCell>
@@ -295,9 +299,9 @@ const TicketList = ({ project, tickets }) => {
             <TableBody>
               {tickets.map((row, index) => {
                 return (
-                  <TableRow>
+                  <TableRow key={index}>
                     <TableCell align="left"> <Link to={`/dashboard/ticket/${row.code}`}>[{row.code}]</Link> {row.title}</TableCell>
-                    <TableCell align="left">{format(new Date(row.createdAt),'yyyy-MM-dd hh:mm aaa')}</TableCell>
+                    <TableCell align="left">{format(new Date(row.createdAt), 'EEE, d MMMMMMMMMMMMM, yyyy hh:mm aaa')}</TableCell>
                     <TableCell align="left">{row.status}</TableCell>
                     {/* <TableCell align="right"><i role="button" onClick={() => handleShow(setTid(row.id))} className="bi bi-pencil-square"></i></TableCell> */}
                   </TableRow>
