@@ -13,23 +13,23 @@ import { TextareaAutosize } from '@mui/material';
 import GlobalContext from '../GlobalContext';
 import { useNavigate } from 'react-router-dom';
 import Upload from './upload';
-const TICKET_URL = "/tickets"; 
+const TICKET_URL = "/tickets";
 const TOPIC_URL = "/topics";
 
 const textareaStyle = {
-  overflow: 'hidden', 
-  minHeight: '100px',  
-  width: '100%',  
-  padding: '8px',  
-  border: '1px solid #888',  
-  borderRadius: '4px',  
+  overflow: 'hidden',
+  minHeight: '100px',
+  width: '100%',
+  padding: '8px',
+  border: '1px solid #888',
+  borderRadius: '4px',
   marginTop: '20px',
   marginBottom: '20px'
 };
-const imgstyle = {
-  overflow: 'hidden', 
-  height: '100px',  
-  width: '190px', 
+const imgStyle = {
+  overflow: 'hidden',
+  height: '100px',
+  width: '190px',
 }
 const inputArr = [
   {
@@ -38,26 +38,26 @@ const inputArr = [
     value: ""
   }
 ];
-const fyitoStyle = 
- {
+const fyiToStyle =
+{
   paddingLeft: "15px"
- } 
+}
 
-const formtitle = {
+const formTitle = {
   border: "1px solid #ddd",
   padding: "10px"
 }
 
 export default function SupportForm({ project }) {
 
-  let [ title, setTitle ] = useState();
-  let [ topicId, setTopic ] = useState();
-  let [ priority, setPriority ] = useState();
-  let [ description, setDescription ] = useState();
-  let [ requestedBy, setRequestedBy ] = useState();
-  let [ topiclist, setTopiclist] = useState();
-  let [ fyiTo, setFyiTo] = useState([]);
-  let [filepth, setFilepth] = useState([]);
+  let [title, setTitle] = useState();
+  let [topicId, setTopic] = useState();
+  let [priority, setPriority] = useState();
+  let [description, setDescription] = useState();
+  let [requestedBy, setRequestedBy] = useState();
+  let [topicList, setTopicList] = useState();
+  let [fyiTo, setFyiTo] = useState([]);
+  let [filePath, setFilePath] = useState([]);
   let [attachments, setAttachments] = useState([]);
   const [arr, setArr] = useState([inputArr]);
   const gContext = useContext(GlobalContext);
@@ -76,7 +76,7 @@ export default function SupportForm({ project }) {
   };
   React.useEffect(() => {
     axios.get(TOPIC_URL, gContext.headerConfig()).then((response) => {
-      setTopiclist(response.data);
+      setTopicList(response.data);
     });
 
   }, []);
@@ -94,8 +94,8 @@ export default function SupportForm({ project }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        await axios.post(
-        TICKET_URL, 
+      await axios.post(
+        TICKET_URL,
         JSON.stringify({ topicId, title, description, priority, requestedBy, attachments, fyiTo }),
         gContext.headerConfig()
       );
@@ -111,28 +111,27 @@ export default function SupportForm({ project }) {
       }
     }
   };
-  const cb = (d)=>{
-    setAttachments([...attachments,d.fileName]);
-    setFilepth(...filepth, d.filePath);
+  const cb = (d) => {
+    setAttachments([...attachments, d.fileName]);
+    setFilePath(...filePath, d.filePath);
   }
-  if (!topiclist) return null;
+  if (!topicList) return null;
   return (
     <React.Fragment>
       <Grid container spacing={2}>
         <Grid item sm={2}></Grid>
         <Grid item sm={8}>
-          <Card style={{padding:'50px'}}>
-            <Grid item sm={12} style={formtitle}><h5>Create a new ticket</h5></Grid>
+          <Card style={{ padding: '50px' }}>
+            <Grid item sm={12} style={formTitle}><h5>Create a new ticket</h5></Grid>
             <Grid container spacing={2}>
-              <Grid sm={12}><br/><b>Project Name</b>: {project?.name}</Grid>
+              <Grid sm={12}><br /><b>Project Name</b>: {project?.name}</Grid>
               <Grid item sm={12}>
-              <br/><br/>
+                <br /><br />
                 <TextField
                   required
                   id="title"
                   name="title"
                   label="Title"
-                  fullWidth
                   autoComplete="title"
                   variant="standard"
                   onChange={e => setTitle(e.target.value)}
@@ -143,33 +142,32 @@ export default function SupportForm({ project }) {
                   id="requestedBy"
                   name="requestedBy"
                   label="RequestedBy"
-                  fullWidth
                   autoComplete="requestedBy"
                   variant="standard"
                   onChange={e => setRequestedBy(e.target.value)}
                   value={requestedBy}
-                /><br/><br/>
+                /><br /><br />
                 <FormControl variant="standard" sx={{ minWidth: '100%' }}>
                   <InputLabel id="demo-simple-select-standard-label">Select Topic *</InputLabel>
                   <Select label="Topic" name="topicId" id="topicId"
                     onChange={e => setTopic(e.target.value)}>
-                    {topiclist.map((tlist) => <MenuItem value={tlist.id}>{tlist.name}</MenuItem>)}
+                    {topicList.map((topic, index) => <MenuItem key={index} value={topic.id}>{topic.name}</MenuItem>)}
                   </Select>
                 </FormControl>
-                <br/>
+                <br />
                 <FormControl variant="standard" sx={{ minWidth: '30%', float: 'left' }}>
                   <InputLabel id="demo-simple-select-standard-label">Select Priority *</InputLabel>
                   <Select label="Priority" name="priority" id="priority"
-                  onChange={e => setPriority(e.target.value)}>
-                      <MenuItem value={'P1'}>P1</MenuItem>
-                      <MenuItem value={'P2'}>P2</MenuItem>
-                      <MenuItem value={'P3'} Selected>P3</MenuItem>
-                      <MenuItem value={'P4'}>P4</MenuItem>
-                      <MenuItem value={'P5'}>P5</MenuItem>
+                    onChange={e => setPriority(e.target.value)}>
+                    <MenuItem value={'P1'}>P1</MenuItem>
+                    <MenuItem value={'P2'}>P2</MenuItem>
+                    <MenuItem value={'P3'}>P3</MenuItem>
+                    <MenuItem value={'P4'}>P4</MenuItem>
+                    <MenuItem value={'P5'}>P5</MenuItem>
                   </Select>
                 </FormControl>
-                <br/><br/>
-                <TextareaAutosize 
+                <br /><br />
+                <TextareaAutosize
                   id="description"
                   name="description"
                   label="Description"
@@ -179,40 +177,41 @@ export default function SupportForm({ project }) {
                   placeholder='Description...'
                   style={textareaStyle}
                   onChange={e => setDescription(e.target.value)}
-                  value={description}>
-                </TextareaAutosize>
+                  value={description}
+                />
               </Grid>
-              <Grid sm={11} style={fyitoStyle}>
+              <Grid sm={11} style={fyiToStyle}>
                 {arr.map((item, i) => {
-                    return (
-                      <input
-                        onChange={handleChange}
-                        value={item.value}
-                        id={i}
-                        type={item.type}
-                        size="10"
-                        placeholder='CC...'
-                        className='form-control'
-                      />
-                    );
-                  })}
+                  return (
+                    <input
+                      key={i}
+                      onChange={handleChange}
+                      value={item.value}
+                      id={i}
+                      type={item.type}
+                      size="10"
+                      placeholder='CC...'
+                      className='form-control'
+                    />
+                  );
+                })}
               </Grid>
-              <Grid sm={1}><button className="btn btn-info add"  onClick={addInput} type="button">+</button></Grid>
-              <Grid sm={7} style={fyitoStyle}>
-                <br/>
+              <Grid sm={1}><button className="btn btn-info add" onClick={addInput} type="button">+</button></Grid>
+              <Grid sm={7} style={fyiToStyle}>
+                <br />
                 <label>Attached your document : &nbsp;</label>
-                <Upload cb={cb}/>
+                <Upload cb={cb} />
               </Grid>
               <Grid sm={1}></Grid>
               <Grid sm={4}>
-                <br/>
-                {filepth && <Card style={imgstyle}>
-                <img src={'https://support.i2gether.com/api/'+filepth}/>
-                </Card> }
+                <br />
+                {filePath && <Card style={imgStyle}>
+                  <img src={'https://support.i2gether.com/api/' + filePath} />
+                </Card>}
               </Grid>
               <Grid item sm={12}>
-                <hr/>
-                <Button variant="contained"  onClick={handleSubmit}><strong>Submit</strong></Button>
+                <hr />
+                <Button variant="contained" onClick={handleSubmit}><strong>Submit</strong></Button>
               </Grid>
             </Grid>
           </Card>

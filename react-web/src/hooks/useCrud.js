@@ -9,7 +9,7 @@ import {BASE_URL} from "../conf";
 const useCrud = () => {
     const getToken = () => localStorage.getItem('accessToken');
 
-    const { onLogout, accesstoken, loggedIn, setLoggedIn } = useContext(GlobalContext);
+    const { onLogout, accessToken, loggedIn, setLoggedIn } = useContext(GlobalContext);
 
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -26,7 +26,7 @@ const useCrud = () => {
         setLoading(true);
         setError(null);
         try {
-            const token = accesstoken || getToken();
+            const token = accessToken || getToken();
             if (!token) throw new Error('Token not found');
 
             const requestConfig = {
@@ -55,7 +55,7 @@ const useCrud = () => {
         } finally {
             setLoading(false);
         }
-    }, [axiosInstance, accesstoken, getToken, setLoggedIn]);
+    }, [axiosInstance, accessToken, getToken, setLoggedIn]);
 
     const getAll = useCallback((endpoint) => {
         return loggedIn && fetchApi(endpoint, 'GET');

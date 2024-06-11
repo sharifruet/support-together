@@ -3,13 +3,9 @@ import Home from './page/home';
 import About from './page/about';
 import Login from "./page/Login";
 import Signup from "./page/signup";
-import Slider from "./layout/slider";
 import ForgotPass from "./page/forgotPass";
 import Dashboard from "./page/Dashboard";
 import AdminDashboard from "./page/admindashboard";
-import Supportdashboard from "./page/supportdashboard";
-import SupportForm from "./components/supportform";
-import ProjectListOrgwise from "./components/projectlistorgwise";
 import SideBar from "./components/SideBar";
 import Organizations from "./components/organizations/Organizations";
 import Projects from "./components/projects/Projects";
@@ -28,14 +24,10 @@ const RouteComponent = () => {
     return (
         <Routes>
             <Route path='/' element={<Navigate to="/home" />} />
-            <Route path='/home' element={<Home />} />
-            <Route path='/about' element={<About />} />
-            <Route path='/login' element={<Login />} />
-            <Route path='/signup' element={<Signup />} />
-            <Route path='/slider' element={<Slider />} />
+            <Route path='home' element={<Home />} />
+            <Route path='about' element={<About />} />
+            <Route path='login' element={<Login />} />
             <Route path='forgotPass' element={<ForgotPass />} />
-            {/* <Route path='/ticket/:code' element={<Ticket />} /> */}
-
 
             {/* Logged in users route */}
             <Route element={<ProtectedRoute roles={['Customer', 'Admin', 'Support']} />}>
@@ -43,11 +35,15 @@ const RouteComponent = () => {
             </Route>
             {/* Routes that should be wrapped by the SideBar component */}
             <Route path='dashboard' element={<SideBar />}>
-                <Route index element={<Dashboard />} />
-                <Route path='changePassword' element={<ChangePassword />} />
-                <Route path='tickets' element={<Tickets />} />
-                <Route path='createTicket' element={<CreateTicket />} />
-
+                <Route element={<ProtectedRoute roles={['Admin', 'Support', 'Customer']} />}>
+                    <Route index element={<Dashboard />} />
+                    <Route path='changePassword' element={<ChangePassword />} />
+                    <Route path='tickets' element={<Tickets />} />
+                    <Route path='createTicket' element={<CreateTicket />} />
+                    <Route path='ticket/:code' element={<Ticket />} />
+                </Route>
+                <Route element={<ProtectedRoute roles={['Admin', 'Support']} />}>
+                </Route>
                 <Route element={<ProtectedRoute roles={['Admin']} />}>
                     <Route path='adminDashboard' element={<AdminDashboard />} />
                     <Route path='emailTemplates' element={<EmailTemplates />} />
@@ -56,14 +52,6 @@ const RouteComponent = () => {
                     <Route path='topics' element={<Topics />} />
                     <Route path='SupportTeams' element={<SupportTeams />} />
                     <Route path='supportTeamSchedule' element={<SupportTeamSchedules />} />
-                </Route>
-                <Route element={<ProtectedRoute roles={['Support']} />}>
-                    <Route path='supportdashboard' element={<Supportdashboard />} />
-                    <Route path='supportform' element={<SupportForm />} />
-                </Route>
-                <Route element={<ProtectedRoute roles={['Customer', 'Admin', 'Support']} />}>
-                    <Route path='ticket/:code' element={<Ticket />} />
-                    <Route path='projectlistorgwise/:id' element={<ProjectListOrgwise />} />
                 </Route>
             </Route>
         </Routes>

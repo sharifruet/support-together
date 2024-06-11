@@ -111,7 +111,9 @@ const Tickets = () => {
                             <div className="ms-2 me-auto">  
                                 <div class="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={`/dashboard/ticket/${ticket.code}`}> {ticket.code} </Link>] {ticket.title} </div>
                                 <div className="fs-6">
-                                    Created At {format(new Date(ticket.createdAt),'yyyy-MM-dd hh:mm aaa')} 
+                                    {/* 'yyyy-MM-dd hh:mm aaa'   'EEE, MMM d, yyyy hh:mm aaa'*/}
+
+                                    Created At {format(new Date(ticket.createdAt),'EEE, MMM d, yyyy hh:mm aaa')} 
                                     <ResponseTimeProgressBar createdAt={ticket.createdAt} updatedAt={ticket.updatedAt} priority={ticket.priority} responseStatus={ticket.status}/>
                                 </div>
                                 
@@ -142,6 +144,7 @@ const Tickets = () => {
                 closeModal={handleCloseModal}
                 fetchTickets={fetchTickets}
                 topic={null}
+                userProject={null}
             />
         </>
     );

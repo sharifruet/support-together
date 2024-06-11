@@ -5,12 +5,6 @@ import { ReactComponent as CancelIcon } from '../../assets/svgIcons/cancel.svg';
 const ModalOverlay = ({ modalType, closeModal, modalName, formData, children }) => {
     return (
         <>
-            {/* Black Overlay */}
-            <div
-                onClick={closeModal}
-                className={`${modalType ? "" : "hidden"
-                    } fixed top-0 left-0 z-30 w-full h-full bg-black opacity-50`}
-            />
             {/* Modal */}
             <Modal
                 open={!!modalType}
