@@ -16,3 +16,22 @@ const OpenModalButton = ({ label, icon }) => {
 };
 
 export default OpenModalButton;
+
+// import React from 'react';
+// import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
+
+// const OpenModalButton = ({ label, icon }) => {
+//   return (
+//     <button
+//       type="button"
+//       className="btn btn-rounded mt-5 px-2 shadow-sm hover:shadow-md focus:outline-none text-white font-semibold uppercase text-sm sm:w-full"
+//       data-mdb-ripple-init
+//     >
+//       <span className="w-6 h-6">{icon}</span>
+//       {label}
+//     </button>
+//   );
+// };
+
+// export default OpenModalButton;
+
