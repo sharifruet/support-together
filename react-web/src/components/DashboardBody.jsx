@@ -24,19 +24,6 @@ const DashboardBody = ({ project }) => {
         fetchTicketsByProjectId();
     }, []);
 
-    // const Card = ({ label, count, bg, icon: IconComponent }) => {
-    //     return (
-    //         <div className={`card text-center ${bg} shadow-sm`}>
-    //             <div className="card-body">
-    //                 <p className="card-text text-white">
-    //                     {IconComponent && <IconComponent className="me-2" />} {label}
-    //                 </p>
-    //                 <span className="card-title fs-4 fw-semibold text-white">{count}</span>
-    //             </div>
-    //         </div>
-    //     );
-    // };
-
     const Card = ({ icon: IconComponent, bg, label, count }) => (
         <div className={`card text-center ${bg} shadow`}>
             <div className="card-body text-white">
