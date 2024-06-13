@@ -74,11 +74,9 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
 
     // Priority AutoComplete's options
     const priorityOptions = [
-        { id: 1, name: "P1", value: "P1" },
-        { id: 2, name: "P2", value: "P2" },
-        { id: 3, name: "P3", value: "P3" },
-        { id: 4, name: "P4", value: "P4" },
-        { id: 5, name: "P5", value: "P5" },
+        { id: 3, name: "Minor", value: "P3" },
+        { id: 2, name: "Major", value: "P2" },
+        { id: 1, name: "Critical", value: "P1" },
     ];
 
     // Object to show button labels based on the modal type
