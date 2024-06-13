@@ -79,11 +79,9 @@ const TicketModal = () => {
 
     // Priority AutoComplete's options
     const priorityOptions = [
-        { id: 1, name: "P1", value: "P1" },
-        { id: 2, name: "P2", value: "P2" },
-        { id: 3, name: "P3", value: "P3" },
-        { id: 4, name: "P4", value: "P4" },
-        { id: 5, name: "P5", value: "P5" },
+        { id: 3, name: "Minor", value: "P3" },
+        { id: 2, name: "Major", value: "P2" },
+        { id: 1, name: "Critical", value: "P1" },
     ];
 
     // Object to show button labels based on the modal type
@@ -411,6 +409,7 @@ const TicketModal = () => {
                                 onChange={handleProjectChange}
                                 options={projectOptions}
                                 getOptionLabel={(option) => option.name}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -442,6 +441,7 @@ const TicketModal = () => {
                                 onChange={handleAutocompleteChange}
                                 options={topicOptions}
                                 getOptionLabel={(option) => option.name}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -471,6 +471,7 @@ const TicketModal = () => {
                                 onChange={handlePriorityChange}
                                 options={priorityOptions}
                                 getOptionLabel={(priorityOption) => priorityOption.name}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -546,7 +547,7 @@ const TicketModal = () => {
                         <CustomFileAttachment setSelectedAttachments={setSelectedAttachments} clear={clear} error={fieldErrors.attachments} helperText={fieldErrors.attachments} />
                     </div>
                 </div>
-                <div className="flex flex-col space-y-1 justify-center pb-4 md:pb-6 mt-4">
+                <div className="flex flex-col space-y-1 justify-center mt-4">
                     {/* <div className=""> */}
                     <CustomButton
                         isLoading={loading}

@@ -13,7 +13,7 @@ const ModalOverlay = ({ modalType, closeModal, modalName, formData, children }) 
                 aria-describedby="add-category-modal-description"
             >
                 <div className="fixed inset-0 m-4 flex items-center justify-center">
-                    <div className="bg-white w-1/3 md:w-3/6 shadow-lg flex flex-col items-center space-y-4 overflow-y-auto px-4 py-4 md:px-8">
+                    <div className="bg-white w-1/3 md:w-3/6 shadow-lg flex flex-col items-center space-y-4 overflow-y-auto px-4 py-4 md:px-8 rounded border border-3 border-dark">
                         <div className="flex items-center justify-between w-full">
                             <span className="text-left font-semibold text-2xl tracking-wider">
                                 {/* Modal Name depending on modalType*/}
