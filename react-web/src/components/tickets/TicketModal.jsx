@@ -451,6 +451,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                 setSelectedPriority(null);
                 setSelectedCcEmails(null);
                 setSelectedAttachments(null);
+                closeModal();
             } else {
                 setFormData((prevData) => ({
                     ...prevData,
@@ -466,7 +467,6 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
         } finally {
             setLoading(false);
             setClear(false);
-            closeModal();
         }
     };
     return (
@@ -482,7 +482,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                     {modalType === 'delete' ? (
                         <DeleteText message={"Ticket"} />
                     ) : (
-                        <div style={{height: "70vh", overflowY:"scroll"}}>
+                        <div style={{ height: "65vh", overflowY: "auto" }}>
 
                             <div className="d-flex py-4">
                                 <div className="flex flex-col space-y-1 w-full me-3">
@@ -494,6 +494,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                         onChange={handleProjectChange}
                                         options={projectOptions}
                                         getOptionLabel={(option) => option.name}
+                                        isOptionEqualToValue={(option, value) => option.id === value.id}
                                         size="small"
                                         renderInput={(params) => (
                                             <TextField
@@ -511,37 +512,6 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                                 }}
                                                 error={!!(fieldErrors.project)} // Set error prop based on field error
                                                 helperText={fieldErrors.project} // Provide the error message
-                                            />
-                                        )}
-                                        getOptionKey={(option) => option.id}
-                                        autoFocus
-                                    />
-                                </div>
-                                <div className="flex flex-col space-y-1 w-full me-3">
-                                    <Autocomplete
-                                        disablePortal
-                                        id="combo-box-demo"
-                                        loading={topicLoading}
-                                        value={selectedTopic}
-                                        onChange={handleAutocompleteChange}
-                                        options={topicOptions}
-                                        getOptionLabel={(option) => option.name}
-                                        size="small"
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                label="Select Topic"
-                                                InputProps={{
-                                                    ...params.InputProps,
-                                                    endAdornment: (
-                                                        <>
-                                                            {topicLoading ? <CircularProgress color="inherit" size={20} /> : null}
-                                                            {params.InputProps.endAdornment}
-                                                        </>
-                                                    ),
-                                                }}
-                                                error={!!(fieldErrors.topicId)} // Set error prop based on field error
-                                                helperText={fieldErrors.topicId} // Provide the error message
                                             />
                                         )}
                                         getOptionKey={(option) => option.id}
@@ -580,38 +550,68 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                     />
                                 </div>
                             </div>
-                            <div className="d-flex mb-4">
-                                <div className="flex flex-col space-y-1 w-full me-3">
-                                    <TextField
-                                        id="title"
-                                        variant="outlined"
-                                        name="title"
-                                        autoComplete="title"
-                                        label="Title"
-                                        value={formData.title}
-                                        onChange={handleInputChange}
-                                        fullWidth
-                                        size="small"
-                                        error={!!(fieldErrors.title)} // Set error prop based on field error
-                                        helperText={fieldErrors.title} // Provide the error message
-                                    />
-                                </div>
-                                <div className="flex flex-col space-y-1 w-full">
-                                    <TextField
-                                        name="requestedBy"
-                                        value={formData.requestedBy}
-                                        onChange={handleInputChange}
-                                        variant="outlined"
-                                        className="w-full"
-                                        id="requestedBy"
-                                        label="Requested By"
-                                        fullWidth
-                                        autoComplete="requestedBy"
-                                        size="small"
-                                        error={!!(fieldErrors.requestedBy)} // Set error prop based on field error
-                                        helperText={fieldErrors.requestedBy} // Provide the error message
-                                    />
-                                </div>
+                            <div className="flex flex-col space-y-1 w-full mb-4">
+                                <Autocomplete
+                                    disablePortal
+                                    id="combo-box-demo"
+                                    loading={topicLoading}
+                                    value={selectedTopic}
+                                    onChange={handleAutocompleteChange}
+                                    options={topicOptions}
+                                    getOptionLabel={(option) => option.name}
+                                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                                    size="small"
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Select Topic"
+                                            InputProps={{
+                                                ...params.InputProps,
+                                                endAdornment: (
+                                                    <>
+                                                        {topicLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                                                        {params.InputProps.endAdornment}
+                                                    </>
+                                                ),
+                                            }}
+                                            error={!!(fieldErrors.topicId)} // Set error prop based on field error
+                                            helperText={fieldErrors.topicId} // Provide the error message
+                                        />
+                                    )}
+                                    getOptionKey={(option) => option.id}
+                                    autoFocus
+                                />
+                            </div>
+                            <div className="flex flex-col space-y-1 w-full mb-4">
+                                <TextField
+                                    id="title"
+                                    variant="outlined"
+                                    name="title"
+                                    autoComplete="title"
+                                    label="Title"
+                                    value={formData.title}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    size="small"
+                                    error={!!(fieldErrors.title)} // Set error prop based on field error
+                                    helperText={fieldErrors.title} // Provide the error message
+                                />
+                            </div>
+                            <div className="flex flex-col space-y-1 w-full mb-4">
+                                <TextField
+                                    name="requestedBy"
+                                    value={formData.requestedBy}
+                                    onChange={handleInputChange}
+                                    variant="outlined"
+                                    className="w-full"
+                                    id="requestedBy"
+                                    label="Requested By"
+                                    fullWidth
+                                    autoComplete="requestedBy"
+                                    size="small"
+                                    error={!!(fieldErrors.requestedBy)} // Set error prop based on field error
+                                    helperText={fieldErrors.requestedBy} // Provide the error message
+                                />
                             </div>
                             <div className="flex flex-col space-y-1 w-full mb-4">
                                 <EmailField setSelectedCcEmails={setSelectedCcEmails} clear={clear} error={!!(fieldErrors.fyiTo ? fieldErrors.fyiTo : "")} helperText={fieldErrors.fyiTo} size="small" />
@@ -633,12 +633,12 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                     helperText={fieldErrors.description} // Provide the error message
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="flex flex-col space-y-1 w-full">
                                 <CustomFileAttachment setSelectedAttachments={setSelectedAttachments} clear={clear} error={fieldErrors.attachments} helperText={fieldErrors.attachments} />
                             </div>
                         </div>
                     )}
-                    <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
+                    <div className="flex flex-col space-y-1 w-full mt-4">
                         <CustomButton
                             isLoading={loading}
                             type="submit"

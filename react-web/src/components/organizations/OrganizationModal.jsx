@@ -258,7 +258,7 @@ const OrganizationModal = ({ modalType, organization, closeModal, fetchOrganizat
                             </div>
                         </div>
                     )}
-                    <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
+                    <div className="flex flex-col space-y-1 w-full mt-4">
                         <CustomButton
                             isLoading={loading}
                             type="submit"

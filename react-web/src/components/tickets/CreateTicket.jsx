@@ -411,6 +411,7 @@ const TicketModal = () => {
                                 onChange={handleProjectChange}
                                 options={projectOptions}
                                 getOptionLabel={(option) => option.name}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -442,6 +443,7 @@ const TicketModal = () => {
                                 onChange={handleAutocompleteChange}
                                 options={topicOptions}
                                 getOptionLabel={(option) => option.name}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -471,6 +473,7 @@ const TicketModal = () => {
                                 onChange={handlePriorityChange}
                                 options={priorityOptions}
                                 getOptionLabel={(priorityOption) => priorityOption.name}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -546,7 +549,7 @@ const TicketModal = () => {
                         <CustomFileAttachment setSelectedAttachments={setSelectedAttachments} clear={clear} error={fieldErrors.attachments} helperText={fieldErrors.attachments} />
                     </div>
                 </div>
-                <div className="flex flex-col space-y-1 justify-center pb-4 md:pb-6 mt-4">
+                <div className="flex flex-col space-y-1 justify-center mt-4">
                     {/* <div className=""> */}
                     <CustomButton
                         isLoading={loading}

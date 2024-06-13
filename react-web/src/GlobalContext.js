@@ -74,7 +74,18 @@ const GlobalProvider = ({ children }) => {
     const loadProject = (projectId) => {
         axios.get("/projects/" + projectId, headerConfig())
             .then((response) => {
-                setProjects([...projects, response.data]);
+                // setProjects([...projects, response.data]);
+                
+                setProjects(prevProjects => {
+                    // Create a Map from the previous projects array
+                    const projectMap = new Map(prevProjects.map(project => [project.id, project]));
+    
+                    // Add or update the project in the Map
+                    projectMap.set(response.data.id, response.data);
+    
+                    // Convert the Map back to an array and return it
+                    return Array.from(projectMap.values());
+                });
             })
             .catch(error => {
                 toast.error(error);

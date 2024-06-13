@@ -8,6 +8,7 @@ const Dashboard = () => {
     return (
         <div className="h-full pb-4">
             <Tabs id="dashboard-project-tab" className="mb-3">
+                {console.log(projects)}
                 {projects.map((project) =>
                     <Tab key={project.id} eventKey={project.id} title={project.name}>
                         <DashboardBody project={project}/>

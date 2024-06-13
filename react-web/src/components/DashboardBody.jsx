@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Card as BootstrapCard, Col } from "react-bootstrap";
 import useCrud from "../hooks/useCrud";
 import ProjectCard from "./ProjectCard";
 import ViewListIcon from '@mui/icons-material/ViewList';
+import DoneIcon from '@mui/icons-material/Done';
+import InProgressIcon from '@mui/icons-material/Autorenew';
+import PendingIcon from '@mui/icons-material/HourglassEmpty';
 
-const DashboardBody = ({project}) => {
+const DashboardBody = ({ project }) => {
     const { getById } = useCrud();
     const [tickets, setTickets] = useState([]);
     const ticketUrl = "/tickets/project";
@@ -22,40 +24,51 @@ const DashboardBody = ({project}) => {
         fetchTicketsByProjectId();
     }, []);
 
-    const Card = ({ label, count, bg, icon }) => {
-        return (
-            <BootstrapCard className={` ${bg} w-100 h-32 p-3 shadow-md rounded d-flex align-items-center justify-between`}>
-                <div className={`h-100 d-flex flex-column justify-between flex-1 ${bg}`}>
-                    <p className={`text-base text-white`}> <ViewListIcon/> {label}</p>
-                    <span className="text-2xl font-semibold text-white">{count}</span>
-                </div>
-                <div className={`w-10 h-10 rounded-circle d-flex align-items-center justify-center text-white`}>
-                
-                </div>
-            </BootstrapCard>
-        );
-    };
+    // const Card = ({ label, count, bg, icon: IconComponent }) => {
+    //     return (
+    //         <div className={`card text-center ${bg} shadow-sm`}>
+    //             <div className="card-body">
+    //                 <p className="card-text text-white">
+    //                     {IconComponent && <IconComponent className="me-2" />} {label}
+    //                 </p>
+    //                 <span className="card-title fs-4 fw-semibold text-white">{count}</span>
+    //             </div>
+    //         </div>
+    //     );
+    // };
+
+    const Card = ({ icon: IconComponent, bg, label, count }) => (
+        <div className={`card text-center ${bg} shadow`}>
+            <div className="card-body text-white">
+                <p className="card-text text-white">
+                    {IconComponent && <IconComponent className="me-2" />} {label}
+                </p>
+                <span className="card-title fs-4 fw-semibold">
+                    {count}
+                </span>
+            </div>
+        </div>
+    );
 
     return (
-        <div className="h-full pb-4">
+        <div className="h-100 pb-4">
             <div className="row row-cols-1 row-cols-md-4 g-4">
-                <Col>
-                    <Card icon={''} bg={'bg-primary'} label={'TOTAL'} count={tickets.length} />
-                </Col>
-                <Col>
-                    <Card icon={''} bg={'bg-success'} label={'DONE'} count={tickets.filter(t=>t.status==='Done').length} />
-                </Col>
-                <Col>
-                    <Card icon={''} bg={'bg-info'} label={'IN PROGRESS'} count={tickets.filter(t=>t.status!='Done' && t.status!='Created').length} />
-                </Col>
-                <Col>
-                    <Card icon={''} bg={'bg-warning'} label={'PENDING'} count={tickets.filter(t=>t.status==='Created').length} />
-                </Col>
-            </div>
-
-            <div>
                 <div className="col">
-                    <ProjectCard project={project}  tickets={tickets} />
+                    <Card icon={ViewListIcon} bg={'bg-primary'} label={'TOTAL'} count={tickets.length} />
+                </div>
+                <div className="col">
+                    <Card icon={DoneIcon} bg={'bg-success'} label={'DONE'} count={tickets.filter(t => t.status === 'Resolved' || t.status === 'Closed').length} />
+                </div>
+                <div className="col">
+                    <Card icon={InProgressIcon} bg={'bg-info'} label={'IN PROGRESS'} count={tickets.filter(t => t.status !== 'Resolved' || t.status !== 'Closed' || t.status !== 'Assigned' || t.status !== 'Created').length} />
+                </div>
+                <div className="col">
+                    <Card icon={PendingIcon} bg={'bg-warning'} label={'PENDING'} count={tickets.filter(t => t.status === 'Created').length} />
+                </div>
+            </div>
+            <div className="mt-4">
+                <div className="col">
+                    <ProjectCard project={project} tickets={tickets} />
                 </div>
             </div>
         </div>

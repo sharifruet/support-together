@@ -41,8 +41,8 @@ const SupportTeamModal = ({ modalType, supportTeam, closeModal, fetchSupportTeam
 
     // Object to show button labels based on the modal type
     const buttonLabels = {
-        add: "Create Support team", // Label for the "add" modal type
-        edit: "Update Support team", // Label for the "edit" modal type
+        add: "Create Support Team", // Label for the "add" modal type
+        edit: "Update Support Team", // Label for the "edit" modal type
         delete: "Confirm" // Label for the "delete" modal type
     };
 
@@ -319,7 +319,7 @@ const SupportTeamModal = ({ modalType, supportTeam, closeModal, fetchSupportTeam
                         </div>
                     </div>
                 )}
-                <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
+                <div className="flex flex-col space-y-1 w-full mt-4">
                     <CustomButton
                         isLoading={loading}
                         type="submit"

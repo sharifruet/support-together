@@ -184,7 +184,7 @@ export default function ChangePassword() {
                             error={!!(fieldErrors.newPassword)} // Set error prop based on field error
                             helperText={fieldErrors.newPassword} // Provide the error message
                         />
-                        <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
+                        <div className="flex flex-col space-y-1 w-full mt-4">
                             <CustomButton
                                 isLoading={loading}
                                 type="submit"
@@ -195,7 +195,6 @@ export default function ChangePassword() {
                         </div>
                     </Box>
                 </Box>
-                <h1><br /><br /><br /></h1>
             </Container>
         </ThemeProvider>
     );
