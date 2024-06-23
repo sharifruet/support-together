@@ -298,12 +298,12 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                 formData={formData}
             >
                 {/* Content of the modal */}
-                <form className="w-full" onSubmit={handleSubmit}>
+                <form className="w-100" onSubmit={handleSubmit}>
                     {modalType === 'delete' ? (
                         <DeleteText message={"Project"} />
                     ) : (
                         <div>
-                            <div className="flex flex-col space-y-1 w-full">
+                            <div className="d-flex flex-column w-100">
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
@@ -334,7 +334,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                                     autoFocus
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full py-4">
+                            <div className="flex flex-col space-y-1 w-100 py-4">
                                 <TextField
                                     id="code"
                                     variant="outlined"
@@ -348,7 +348,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                                     helperText={fieldErrors.code} // Provide the error message
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <TextField
                                     id="name"
                                     variant="outlined"
@@ -362,7 +362,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                                     helperText={fieldErrors.name} // Provide the error message
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full">
+                            <div className="d-flex flex-column w-100">
                                 <TextField
                                     id="description"
                                     variant="outlined"
@@ -380,7 +380,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                             </div>
                         </div>
                     )}
-                    <div className="flex flex-col space-y-1 w-full mt-4">
+                    <div className="d-flex flex-column w-100 mt-4">
                         <CustomButton
                             isLoading={loading}
                             type="submit"

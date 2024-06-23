@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Container, Row, Col, Form, Button, Pagination } from 'react-bootstrap';
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
 import { Tooltip } from "@mui/material";
-import { format } from 'date-fns';
+import moment from 'moment';
 import useSupportTeamService from '../../hooks/useSupportTeamService';
 import SupportTeamModal from './SupportTeamModal';
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
@@ -117,7 +117,7 @@ const SupportTeams = () => {
                                 <td>
                                     {supportTeam?.Users?.map((user) => user.name+', ')}
                                 </td>
-                                <td>{format(new Date(supportTeam.createdAt), 'MM/dd/yyyy')}</td>
+                                <td>{moment(supportTeam.createdAt).format('ddd, D MMMM, YYYY hh:mm A')}</td>
                                 <td>
                                     <Tooltip title={`Edit this ${supportTeam.name} Support Team`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0' onClick={() => handleOpenModal(supportTeam, "edit")}>

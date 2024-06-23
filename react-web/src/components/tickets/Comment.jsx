@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Card } from 'react-bootstrap';
 import GlobalContext from '../../GlobalContext';
-import { format } from 'date-fns';
+import moment from 'moment';
 
 const Comment = ({comment}) => {
     const {users} = useContext(GlobalContext);
@@ -11,7 +11,7 @@ const Comment = ({comment}) => {
     return (
         <Card>
             <Card.Body>{comment.content}</Card.Body>
-            <Card.Footer className='text-end'>{getCommenter()} on {format(new Date(comment.createdAt||'2024'),'yyyy-MM-dd hh:mm aaa')}</Card.Footer>
+            <Card.Footer className='text-end'>{getCommenter()} on {moment(comment.createdAt||'2024').format('ddd, D MMMM, YYYY hh:mm A')}</Card.Footer>
         </Card>
     );
 };

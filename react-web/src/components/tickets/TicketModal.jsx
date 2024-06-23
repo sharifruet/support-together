@@ -476,14 +476,14 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                 formData={formData}
             >
                 {/* Content of the modal */}
-                <form className="w-full" onSubmit={handleSubmit}>
+                <form className="w-100" onSubmit={handleSubmit}>
                     {modalType === 'delete' ? (
                         <DeleteText message={"Ticket"} />
                     ) : (
                         <div style={{ height: "65vh", overflowY: "auto" }}>
 
                             <div className="d-flex py-4">
-                                <div className="flex flex-col space-y-1 w-full me-3">
+                                <div className="d-flex flex-column w-100 me-3">
                                     <Autocomplete
                                         disablePortal
                                         id="combo-box-demo"
@@ -516,7 +516,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                         autoFocus
                                     />
                                 </div>
-                                <div className="flex flex-col space-y-1 w-full">
+                                <div className="d-flex flex-column w-100">
                                     <Autocomplete
                                         disablePortal
                                         id="combo-box-demo1"
@@ -548,7 +548,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                     />
                                 </div>
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
@@ -580,7 +580,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                     autoFocus
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <TextField
                                     id="title"
                                     variant="outlined"
@@ -595,13 +595,13 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                     helperText={fieldErrors.title} // Provide the error message
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <TextField
                                     name="requestedBy"
                                     value={formData.requestedBy}
                                     onChange={handleInputChange}
                                     variant="outlined"
-                                    className="w-full"
+                                    className="w-100"
                                     id="requestedBy"
                                     label="Requested By"
                                     fullWidth
@@ -611,10 +611,10 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                     helperText={fieldErrors.requestedBy} // Provide the error message
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <EmailField setSelectedCcEmails={setSelectedCcEmails} clear={clear} error={!!(fieldErrors.fyiTo ? fieldErrors.fyiTo : "")} helperText={fieldErrors.fyiTo} size="small" />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <TextField
                                     id="description"
                                     variant="outlined"
@@ -631,12 +631,12 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                     helperText={fieldErrors.description} // Provide the error message
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full">
+                            <div className="d-flex flex-column w-100">
                                 <CustomFileAttachment setSelectedAttachments={setSelectedAttachments} clear={clear} error={fieldErrors.attachments} helperText={fieldErrors.attachments} />
                             </div>
                         </div>
                     )}
-                    <div className="flex flex-col space-y-1 w-full mt-4">
+                    <div className="d-flex flex-column w-100 mt-4">
                         <CustomButton
                             isLoading={loading}
                             type="submit"

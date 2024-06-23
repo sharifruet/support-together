@@ -219,7 +219,7 @@ const ProfileUpdate = () => {
                             helperText={fieldErrors.password} // Provide the error message
                             type="password"
                         />
-                        <div className="flex flex-col space-y-1 w-full mt-4">
+                        <div className="d-flex flex-column w-100 mt-4">
                             <CustomButton
                                 isLoading={loading}
                                 type="submit"

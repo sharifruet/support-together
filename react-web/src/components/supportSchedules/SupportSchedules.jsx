@@ -3,7 +3,6 @@ import { Table, Container, Row, Col, Form, Button, Pagination } from 'react-boot
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
 import { Tooltip } from "@mui/material";
 import useCrud from '../../hooks/useCrud';
-import { format } from 'date-fns';
 import './SupportSchedulesStyles.css';
 import SupportScheduleModal from './SupportScheduleModal';
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
@@ -136,7 +135,7 @@ const SupportSchedules = () => {
                             <tr key={supportSchedule.id}>
                                 <td>{formatTimeToLocal(supportSchedule.startTime)}</td>
                                 <td>{formatTimeToLocal(supportSchedule.endTime)}</td>
-                                <td>{format(new Date(supportSchedule.createdAt), 'MM/dd/yyyy')}</td>
+                                <td>{moment(supportSchedule.createdAt).format('ddd, D MMMM, YYYY hh:mm A')}</td>
                                 <td>
                                     <Tooltip title={`Edit this ${supportSchedule?.name} SupportSchedule`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0' onClick={() => handleOpenModal(supportSchedule, "edit")}>

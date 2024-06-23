@@ -7,7 +7,7 @@ import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
 import OpenModalButton from '../common/OpenModalButton';
 import { Link, useNavigate } from 'react-router-dom';
 import ResponseTimeProgressBar from '../common/ResponseTimeProgressBar';
-import { format } from 'date-fns';
+import moment from 'moment';
 
 const Tickets = () => {
     const { getAll } = useCrud();
@@ -107,13 +107,13 @@ const Tickets = () => {
                 </Row>
                 <ListGroup as="ol">
                     {paginatedTickets.map((ticket) => (
-                        <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start">    
+                        <ListGroup.Item key={ticket.id} as="li" className="d-flex justify-content-between align-items-start">    
                             <div className="ms-2 me-auto">  
-                                <div class="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={`/dashboard/ticket/${ticket.code}`}> {ticket.code} </Link>] {ticket.title} </div>
+                                <div class="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={`/ticket/${ticket.code}`}> {ticket.code} </Link>] {ticket.title} </div>
                                 <div className="fs-6">
                                     {/* 'yyyy-MM-dd hh:mm aaa'   'EEE, MMM d, yyyy hh:mm aaa'*/}
 
-                                    Created At {format(new Date(ticket.createdAt),'EEE, MMM d, yyyy hh:mm aaa')} 
+                                    Created At {moment(ticket.createdAt).format('ddd, D MMMM, YYYY hh:mm A')} 
                                     <ResponseTimeProgressBar createdAt={ticket.createdAt} updatedAt={ticket.updatedAt} priority={ticket.priority} responseStatus={ticket.status}/>
                                 </div>
                                 

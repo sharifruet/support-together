@@ -397,10 +397,10 @@ const TicketModal = () => {
     return (
         <>
             <div className="text-left font-semibold text-2xl tracking-wider">Create Ticket</div>
-            <form className="w-full" onSubmit={handleSubmit}>
+            <form className="w-100" onSubmit={handleSubmit}>
                 <div>
                     <div className="d-flex py-4">
-                        <div className="flex flex-col space-y-1 w-full me-3">
+                        <div className="d-flex flex-column w-100 me-3">
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
@@ -432,7 +432,7 @@ const TicketModal = () => {
                                 autoFocus
                             />
                         </div>
-                        <div className="flex flex-col space-y-1 w-full me-3">
+                        <div className="d-flex flex-column w-100 me-3">
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
@@ -462,7 +462,7 @@ const TicketModal = () => {
                                 getOptionKey={(option) => option.id}
                             />
                         </div>
-                        <div className="flex flex-col space-y-1 w-full">
+                        <div className="d-flex flex-column w-100">
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo1"
@@ -494,7 +494,7 @@ const TicketModal = () => {
                         </div>
                     </div>
                     <div className="d-flex mb-4">
-                        <div className="flex flex-col space-y-1 w-full me-3">
+                        <div className="d-flex flex-column w-100 me-3">
                             <TextField
                                 id="title"
                                 variant="outlined"
@@ -508,13 +508,13 @@ const TicketModal = () => {
                                 helperText={fieldErrors.title} // Provide the error message
                             />
                         </div>
-                        <div className="flex flex-col space-y-1 w-full me-3">
+                        <div className="d-flex flex-column w-100 me-3">
                             <TextField
                                 name="requestedBy"
                                 value={formData.requestedBy}
                                 onChange={handleInputChange}
                                 variant="outlined"
-                                className="w-full"
+                                className="w-100"
                                 id="requestedBy"
                                 label="Requested By"
                                 fullWidth
@@ -523,11 +523,11 @@ const TicketModal = () => {
                             // helperText={fieldErrors.requestedBy} // Provide the error message
                             />
                         </div>
-                        <div className="flex flex-col space-y-1 w-full">
+                        <div className="d-flex flex-column w-100">
                             <EmailField setSelectedCcEmails={setSelectedCcEmails} clear={clear} error={fyiToError} helperText={fieldErrors.fyiTo} size="" />
                         </div>
                     </div>
-                    <div className="flex flex-col space-y-1 w-full mb-4">
+                    <div className="d-flex flex-column w-100 mb-4">
                         <TextField
                             id="description"
                             variant="outlined"
@@ -543,7 +543,7 @@ const TicketModal = () => {
                             helperText={fieldErrors.description} // Provide the error message
                         />
                     </div>
-                    <div className="flex flex-col space-y-1 w-full mb-4">
+                    <div className="d-flex flex-column w-100 mb-4">
                         <CustomFileAttachment setSelectedAttachments={setSelectedAttachments} clear={clear} error={fieldErrors.attachments} helperText={fieldErrors.attachments} />
                     </div>
                 </div>

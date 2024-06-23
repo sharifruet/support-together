@@ -13,7 +13,7 @@ import {BASE_URL, TICKET_STATUS_LIST} from '../conf';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Comment from '../components/tickets/Comment';
-import { format } from 'date-fns';
+import moment from 'moment';
 import ResponseTimeProgressBar from '../components/common/ResponseTimeProgressBar';
 const Comments_URL = "/comments"; 
 
@@ -29,7 +29,7 @@ export default function Ticket() {
 
     const loadTicket = ()=>{
     
-        const code = location.pathname.split("/")[3];
+        const code = location.pathname.split("/")[2];
         axios.get(`/tickets/code/${code}`, headerConfig()
         ).then(data=>{
             setTicket(data.data);
@@ -87,6 +87,18 @@ export default function Ticket() {
         });
     }
 
+    const priorityList = {
+        P1: 'Critical',
+        P2: 'Major',
+        P3: 'Minor',
+      }
+    
+      const priorityColor = {
+        P1: 'text-bg-danger',
+        P2: 'text-bg-warning',
+        P3: 'text-bg-primary',
+      }
+
     const getUserName = (id) => users?.find(u=>u.id===id)?.name;
 
     return (
@@ -101,7 +113,7 @@ export default function Ticket() {
 
                             <br/>
                             {ticket?.attachments?.map((attachment)=>(                               
-                                <Image key={attachment.id} style={{width: "200px"}} src={`${BASE_URL}/${attachment.fileName}`}/>
+                                <Image key={attachment.id} style={{width: "200px"}} src={`${BASE_URL}/${attachment?.fileName}`}/>
                             )
                             )}
                         </Card.Body>
@@ -113,9 +125,9 @@ export default function Ticket() {
                     </InputGroup>
 
                     <ListGroup className='p-0'>
-                            {comments.map((comnt)=>(   
-                                <ListGroup.Item  className='p-0 mt-1' key={comnt.id} style={{textAlign:'left'}}>
-                                    <Comment comment={comnt}/>
+                            {comments.map((comment)=>(   
+                                <ListGroup.Item  className='p-0 mt-1' key={comment.id} style={{textAlign:'left'}}>
+                                    <Comment comment={comment}/>
                                 </ListGroup.Item>
                             )
                             )}
@@ -149,12 +161,16 @@ export default function Ticket() {
                                 <Col className='text-left'>{project?.name}</Col>
                             </Row>
                             <Row>
+                                <Col className='text-end'>Priority</Col>
+                                <Col className='text-left'><span className={`badge rounded-pill text-bg-primary ${priorityColor[ticket.priority]}`}>{priorityList[ticket.priority]}</span></Col>
+                            </Row>
+                            <Row>
                                 <Col className='text-end'>Created date</Col>
-                                <Col className='text-left'>{format(new Date(ticket?.createdAt||'2024'),'yyyy-MM-dd hh:mm aaa')}</Col>
+                                <Col className='text-left'>{moment(ticket?.createdAt)?.format('ddd, D MMMM, YYYY hh:mm A')}</Col>
                             </Row>
                             <Row>
                                 <Col className='text-end'>Updated date</Col>
-                                <Col className='text-left'>{format(new Date(ticket?.updatedAt||'2024'),'yyyy-MM-dd hh:mm aaa')}</Col>
+                                <Col className='text-left'>{moment(ticket?.createdAt)?.format('ddd, D MMMM, YYYY hh:mm A')}</Col>
                             </Row>
                             <Row>
                                 <Col>

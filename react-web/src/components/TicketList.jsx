@@ -23,7 +23,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import axios from "../api/axios";
 import { BASE_URL } from '../conf';
-import { format } from 'date-fns';
+import moment from 'moment';
 const TICKET_URL = "/tickets";
 const ProjWiseTICKET_URL = "/tickets/project";
 const TOPIC_URL = "/topics";
@@ -75,6 +75,18 @@ const TicketList = ({ project, tickets }) => {
   const gContext = useContext(GlobalContext);
   const navigate = useNavigate();
   const [filePath, setFilePath] = useState([]);
+
+  const priorityList = {
+    P1: 'Critical',
+    P2: 'Major',
+    P3: 'Minor',
+  }
+
+  const priorityColor = {
+    P1: 'text-bg-danger',
+    P2: 'text-bg-warning',
+    P3: 'text-bg-primary',
+  }
 
   const handleFileChange = (event) => {
     setFiles([...files, ...event.target.files]);
@@ -292,6 +304,7 @@ const TicketList = ({ project, tickets }) => {
               <TableRow style={tHeader}>
                 <TableCell>Title</TableCell>
                 <TableCell>Created</TableCell>
+                <TableCell>Priority</TableCell>
                 <TableCell>Status</TableCell>
                 {/* <TableCell align="right">Action</TableCell> */}
               </TableRow>
@@ -300,8 +313,9 @@ const TicketList = ({ project, tickets }) => {
               {tickets.map((row, index) => {
                 return (
                   <TableRow key={index}>
-                    <TableCell align="left"> <Link to={`/dashboard/ticket/${row.code}`}>[{row.code}]</Link> {row.title}</TableCell>
-                    <TableCell align="left">{format(new Date(row.createdAt), 'EEE, d MMMMMMMMMMMMM, yyyy hh:mm aaa')}</TableCell>
+                    <TableCell align="left"> <Link to={`/ticket/${row.code}`}>[{row.code}]</Link> {row.title}</TableCell>
+                    <TableCell align="left">{moment(row.createdAt).format('ddd, D MMMM, YYYY hh:mm A')}</TableCell>
+                    <TableCell align="left"><span className={`badge rounded-pill text-bg-primary ${priorityColor[row.priority]}`}>{priorityList[row.priority]}</span></TableCell>
                     <TableCell align="left">{row.status}</TableCell>
                     {/* <TableCell align="right"><i role="button" onClick={() => handleShow(setTid(row.id))} className="bi bi-pencil-square"></i></TableCell> */}
                   </TableRow>

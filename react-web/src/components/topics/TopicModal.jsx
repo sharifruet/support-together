@@ -294,12 +294,12 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                 formData={formData}
             >
                 {/* Content of the modal */}
-                <form className="w-full" onSubmit={handleSubmit}>
+                <form className="w-100" onSubmit={handleSubmit}>
                     {modalType === 'delete' ? (
                         <DeleteText message={"Topic"} />
                     ) : (
                         <div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
@@ -330,7 +330,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                                     autoFocus
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <TextField
                                     id="name"
                                     variant="outlined"
@@ -344,7 +344,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                                     helperText={fieldErrors.name} // Provide the error message
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full">
+                            <div className="d-flex flex-column w-100">
                                 <TextField
                                     id="description"
                                     variant="outlined"
@@ -362,7 +362,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                             </div>
                         </div>
                     )}
-                    <div className="flex flex-col space-y-1 w-full mt-4">
+                    <div className="d-flex flex-column w-100 mt-4">
                         <CustomButton
                             isLoading={loading}
                             type="submit"

@@ -3,7 +3,7 @@ import { Table, Container, Row, Col, Form, Button, Pagination } from 'react-boot
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
 import { FaCirclePlus } from "react-icons/fa6";
 import { Tooltip } from "@mui/material";
-import { format } from 'date-fns';
+import moment from 'moment';
 import useProjectService from '../../hooks/useProjectService';
 import './ProjectsStyles.css';
 import ProjectModal from './ProjectModal';
@@ -131,7 +131,7 @@ const Projects = () => {
                         {paginatedProjects.map((project) => (
                             <tr key={project.id}>
                                 <td>{project.name}</td>
-                                <td>{format(new Date(project.createdAt), 'MM/dd/yyyy')}</td>
+                                <td>{moment(project.createdAt).format('ddd, D MMMM, YYYY hh:mm A')}</td>
                                 <td>
 
                                     <Tooltip title={`Assign user to this ${project.name} Project`} arrow placement="top">

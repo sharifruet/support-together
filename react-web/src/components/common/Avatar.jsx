@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const Avatar = ({
