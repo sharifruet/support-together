@@ -8,7 +8,7 @@ const CustomButton = ({ isLoading, type, icon, label, disabled }) => {
             style={{ background: "#303031" }}
             type={type}
             // onClick={onClick}
-            className={`text-gray-100 rounded-full font-semibold py-2 ${isLoading ? "cursor-not-allowed" : "cursor-pointer"}`}
+            className={`text-gray-100 rounded-pill font-semibold py-2 ${isLoading ? "cursor-not-allowed" : "cursor-pointer"}`}
             disabled={isLoading || disabled}
         >
             {isLoading ? (

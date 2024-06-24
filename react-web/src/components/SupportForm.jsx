@@ -100,7 +100,7 @@ export default function SupportForm({ project }) {
         gContext.headerConfig()
       );
       alert('Data inserted successfully.');
-      navigate("/dashboard/tickets");
+      navigate("/tickets");
     } catch (err) {
       if (!err?.response) {
         alert("No Server Response");

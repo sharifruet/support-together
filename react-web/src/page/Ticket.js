@@ -9,7 +9,7 @@ import Button from 'react-bootstrap/Button';
 import axios from "../api/axios";
 import GlobalContext from '../GlobalContext';
 import { Image } from 'react-bootstrap';
-import {BASE_URL, TICKET_STATUS_LIST} from '../conf';
+import {BASE_URL, TICKET_STATUS_LIST, PRIORITY_COLOR, PRIORITY_LIST} from '../conf';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Comment from '../components/tickets/Comment';
@@ -87,18 +87,6 @@ export default function Ticket() {
         });
     }
 
-    const priorityList = {
-        P1: 'Critical',
-        P2: 'Major',
-        P3: 'Minor',
-      }
-    
-      const priorityColor = {
-        P1: 'text-bg-danger',
-        P2: 'text-bg-warning',
-        P3: 'text-bg-primary',
-      }
-
     const getUserName = (id) => users?.find(u=>u.id===id)?.name;
 
     return (
@@ -142,7 +130,7 @@ export default function Ticket() {
                                 <Col className='text-end'>Status</Col>
                                 <Col className='text-left'>
                                     <Form.Select onChange={changeStatus} value={status||''}>
-                                        {TICKET_STATUS_LIST.map(status=>(
+                                        {TICKET_STATUS_LIST?.map(status=>(
                                             <option key={status} value={status}>{status}</option>
                                         ))}
                                     </Form.Select>
@@ -162,7 +150,7 @@ export default function Ticket() {
                             </Row>
                             <Row>
                                 <Col className='text-end'>Priority</Col>
-                                <Col className='text-left'><span className={`badge rounded-pill text-bg-primary ${priorityColor[ticket.priority]}`}>{priorityList[ticket.priority]}</span></Col>
+                                <Col className='text-left'><span className={`badge rounded-pill text-bg-primary ${PRIORITY_COLOR[ticket?.priority]}`}>{PRIORITY_LIST[ticket?.priority]}</span></Col>
                             </Row>
                             <Row>
                                 <Col className='text-end'>Created date</Col>

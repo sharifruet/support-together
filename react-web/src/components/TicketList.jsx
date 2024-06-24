@@ -22,7 +22,7 @@ import GlobalContext from '../GlobalContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import axios from "../api/axios";
-import { BASE_URL } from '../conf';
+import { BASE_URL, PRIORITY_LIST, PRIORITY_COLOR } from '../conf';
 import moment from 'moment';
 const TICKET_URL = "/tickets";
 const ProjWiseTICKET_URL = "/tickets/project";
@@ -75,18 +75,6 @@ const TicketList = ({ project, tickets }) => {
   const gContext = useContext(GlobalContext);
   const navigate = useNavigate();
   const [filePath, setFilePath] = useState([]);
-
-  const priorityList = {
-    P1: 'Critical',
-    P2: 'Major',
-    P3: 'Minor',
-  }
-
-  const priorityColor = {
-    P1: 'text-bg-danger',
-    P2: 'text-bg-warning',
-    P3: 'text-bg-primary',
-  }
 
   const handleFileChange = (event) => {
     setFiles([...files, ...event.target.files]);
@@ -297,6 +285,7 @@ const TicketList = ({ project, tickets }) => {
           </Button>
         </Modal.Footer>
       </Modal>
+      {project.name}
       <Box sx={{ width: '100%' }}>
         <TableContainer>
           <Table>
@@ -315,7 +304,7 @@ const TicketList = ({ project, tickets }) => {
                   <TableRow key={index}>
                     <TableCell align="left"> <Link to={`/ticket/${row.code}`}>[{row.code}]</Link> {row.title}</TableCell>
                     <TableCell align="left">{moment(row.createdAt).format('ddd, D MMMM, YYYY hh:mm A')}</TableCell>
-                    <TableCell align="left"><span className={`badge rounded-pill text-bg-primary ${priorityColor[row.priority]}`}>{priorityList[row.priority]}</span></TableCell>
+                    <TableCell align="left"><span className={`badge rounded-pill text-bg-primary ${PRIORITY_COLOR[row.priority]}`}>{PRIORITY_LIST[row.priority]}</span></TableCell>
                     <TableCell align="left">{row.status}</TableCell>
                     {/* <TableCell align="right"><i role="button" onClick={() => handleShow(setTid(row.id))} className="bi bi-pencil-square"></i></TableCell> */}
                   </TableRow>

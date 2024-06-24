@@ -25,7 +25,7 @@ const DashboardBody = ({ project }) => {
     }, []);
 
     const Card = ({ icon: IconComponent, bg, label, count }) => (
-        <div className={`card text-center ${bg} shadow`}>
+        <div className={`card text-center ${bg} shadow border-0`}>
             <div className="card-body text-white">
                 <p className="card-text text-white">
                     {IconComponent && <IconComponent className="me-2" />} {label}
@@ -47,7 +47,7 @@ const DashboardBody = ({ project }) => {
                     <Card icon={DoneIcon} bg={'bg-success'} label={'DONE'} count={tickets.filter(t => t.status === 'Resolved' || t.status === 'Closed').length} />
                 </div>
                 <div className="col">
-                    <Card icon={InProgressIcon} bg={'bg-info'} label={'IN PROGRESS'} count={tickets.filter(t => t.status !== 'Resolved' || t.status !== 'Closed' || t.status !== 'Assigned' || t.status !== 'Created').length} />
+                    <Card icon={InProgressIcon} bg={'bg-info'} label={'IN PROGRESS'} count={tickets.filter(t => t.status !== 'Resolved' && t.status !== 'Closed' && t.status === 'Assigned' && t.status !== 'Created').length} />
                 </div>
                 <div className="col">
                     <Card icon={PendingIcon} bg={'bg-warning'} label={'PENDING'} count={tickets.filter(t => t.status === 'Created').length} />
