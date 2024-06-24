@@ -9,6 +9,8 @@ import ModalOverlay from "../common/ModalOverlay";
 import EmailField from "./EmailField";
 import CustomFileAttachment from "../common/CustomFileAttachment";
 import GlobalContext from "../../GlobalContext";
+import {PRIORITY_OPTIONS} from "../../conf"
+
 
 const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userProject }) => {
     // Destructuring service or api calls functions
@@ -71,15 +73,6 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
         // attachments: [],
         // fyiTo: [],
     });
-
-    // Priority AutoComplete's options
-    const priorityOptions = [
-        { id: 1, name: "P1", value: "P1" },
-        { id: 2, name: "P2", value: "P2" },
-        { id: 3, name: "P3", value: "P3" },
-        { id: 4, name: "P4", value: "P4" },
-        { id: 5, name: "P5", value: "P5" },
-    ];
 
     // Object to show button labels based on the modal type
     const buttonLabels = {
@@ -184,7 +177,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
         if (modalType === 'edit' && ticket && topicOptions.length > 0) {
             const { topicId, title, description, priority, requestedBy, attachments, fyiTo, id } = ticket;
             const matchedTopic = topicOptions?.find(option => option.id === topicId);
-            const matchedPriority = priorityOptions?.find(option => option.value === priority);
+            const matchedPriority = PRIORITY_OPTIONS?.find(option => option.value === priority);
 
             // To prefill the material ui AutoComplete component
             matchedTopic && setSelectedTopic(matchedTopic);
@@ -451,6 +444,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                 setSelectedPriority(null);
                 setSelectedCcEmails(null);
                 setSelectedAttachments(null);
+                closeModal();
             } else {
                 setFormData((prevData) => ({
                     ...prevData,
@@ -466,7 +460,6 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
         } finally {
             setLoading(false);
             setClear(false);
-            closeModal();
         }
     };
     return (
@@ -478,14 +471,14 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                 formData={formData}
             >
                 {/* Content of the modal */}
-                <form className="w-full" onSubmit={handleSubmit}>
+                <form className="w-100" onSubmit={handleSubmit}>
                     {modalType === 'delete' ? (
                         <DeleteText message={"Ticket"} />
                     ) : (
-                        <div style={{height: "70vh", overflowY:"scroll"}}>
+                        <div style={{ height: "65vh", overflowY: "auto" }}>
 
                             <div className="d-flex py-4">
-                                <div className="flex flex-col space-y-1 w-full me-3">
+                                <div className="d-flex flex-column w-100 me-3">
                                     <Autocomplete
                                         disablePortal
                                         id="combo-box-demo"
@@ -494,6 +487,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                         onChange={handleProjectChange}
                                         options={projectOptions}
                                         getOptionLabel={(option) => option.name}
+                                        isOptionEqualToValue={(option, value) => option.id === value.id}
                                         size="small"
                                         renderInput={(params) => (
                                             <TextField
@@ -517,45 +511,14 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                         autoFocus
                                     />
                                 </div>
-                                <div className="flex flex-col space-y-1 w-full me-3">
-                                    <Autocomplete
-                                        disablePortal
-                                        id="combo-box-demo"
-                                        loading={topicLoading}
-                                        value={selectedTopic}
-                                        onChange={handleAutocompleteChange}
-                                        options={topicOptions}
-                                        getOptionLabel={(option) => option.name}
-                                        size="small"
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                label="Select Topic"
-                                                InputProps={{
-                                                    ...params.InputProps,
-                                                    endAdornment: (
-                                                        <>
-                                                            {topicLoading ? <CircularProgress color="inherit" size={20} /> : null}
-                                                            {params.InputProps.endAdornment}
-                                                        </>
-                                                    ),
-                                                }}
-                                                error={!!(fieldErrors.topicId)} // Set error prop based on field error
-                                                helperText={fieldErrors.topicId} // Provide the error message
-                                            />
-                                        )}
-                                        getOptionKey={(option) => option.id}
-                                        autoFocus
-                                    />
-                                </div>
-                                <div className="flex flex-col space-y-1 w-full">
+                                <div className="d-flex flex-column w-100">
                                     <Autocomplete
                                         disablePortal
                                         id="combo-box-demo1"
                                         loading={autocompleteLoading}
                                         value={selectedPriority}
                                         onChange={handlePriorityChange}
-                                        options={priorityOptions}
+                                        options={PRIORITY_OPTIONS}
                                         getOptionLabel={(priorityOption) => priorityOption.name}
                                         isOptionEqualToValue={(option, value) => option.id === value.id}
                                         size="small"
@@ -580,43 +543,73 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                     />
                                 </div>
                             </div>
-                            <div className="d-flex mb-4">
-                                <div className="flex flex-col space-y-1 w-full me-3">
-                                    <TextField
-                                        id="title"
-                                        variant="outlined"
-                                        name="title"
-                                        autoComplete="title"
-                                        label="Title"
-                                        value={formData.title}
-                                        onChange={handleInputChange}
-                                        fullWidth
-                                        size="small"
-                                        error={!!(fieldErrors.title)} // Set error prop based on field error
-                                        helperText={fieldErrors.title} // Provide the error message
-                                    />
-                                </div>
-                                <div className="flex flex-col space-y-1 w-full">
-                                    <TextField
-                                        name="requestedBy"
-                                        value={formData.requestedBy}
-                                        onChange={handleInputChange}
-                                        variant="outlined"
-                                        className="w-full"
-                                        id="requestedBy"
-                                        label="Requested By"
-                                        fullWidth
-                                        autoComplete="requestedBy"
-                                        size="small"
-                                        error={!!(fieldErrors.requestedBy)} // Set error prop based on field error
-                                        helperText={fieldErrors.requestedBy} // Provide the error message
-                                    />
-                                </div>
+                            <div className="d-flex flex-column w-100 mb-4">
+                                <Autocomplete
+                                    disablePortal
+                                    id="combo-box-demo"
+                                    loading={topicLoading}
+                                    value={selectedTopic}
+                                    onChange={handleAutocompleteChange}
+                                    options={topicOptions}
+                                    getOptionLabel={(option) => option.name}
+                                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                                    size="small"
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Select Topic"
+                                            InputProps={{
+                                                ...params.InputProps,
+                                                endAdornment: (
+                                                    <>
+                                                        {topicLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                                                        {params.InputProps.endAdornment}
+                                                    </>
+                                                ),
+                                            }}
+                                            error={!!(fieldErrors.topicId)} // Set error prop based on field error
+                                            helperText={fieldErrors.topicId} // Provide the error message
+                                        />
+                                    )}
+                                    getOptionKey={(option) => option.id}
+                                    autoFocus
+                                />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
+                                <TextField
+                                    id="title"
+                                    variant="outlined"
+                                    name="title"
+                                    autoComplete="title"
+                                    label="Title"
+                                    value={formData.title}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    size="small"
+                                    error={!!(fieldErrors.title)} // Set error prop based on field error
+                                    helperText={fieldErrors.title} // Provide the error message
+                                />
+                            </div>
+                            <div className="d-flex flex-column w-100 mb-4">
+                                <TextField
+                                    name="requestedBy"
+                                    value={formData.requestedBy}
+                                    onChange={handleInputChange}
+                                    variant="outlined"
+                                    className="w-100"
+                                    id="requestedBy"
+                                    label="Requested By"
+                                    fullWidth
+                                    autoComplete="requestedBy"
+                                    size="small"
+                                    error={!!(fieldErrors.requestedBy)} // Set error prop based on field error
+                                    helperText={fieldErrors.requestedBy} // Provide the error message
+                                />
+                            </div>
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <EmailField setSelectedCcEmails={setSelectedCcEmails} clear={clear} error={!!(fieldErrors.fyiTo ? fieldErrors.fyiTo : "")} helperText={fieldErrors.fyiTo} size="small" />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <TextField
                                     id="description"
                                     variant="outlined"
@@ -633,12 +626,12 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                     helperText={fieldErrors.description} // Provide the error message
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100">
                                 <CustomFileAttachment setSelectedAttachments={setSelectedAttachments} clear={clear} error={fieldErrors.attachments} helperText={fieldErrors.attachments} />
                             </div>
                         </div>
                     )}
-                    <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
+                    <div className="d-flex flex-column w-100 mt-4">
                         <CustomButton
                             isLoading={loading}
                             type="submit"

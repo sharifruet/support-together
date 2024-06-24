@@ -8,7 +8,7 @@ import EmailField from "./EmailField";
 import CustomFileAttachment from "../common/CustomFileAttachment";
 import { toast } from 'react-toastify';
 import GlobalContext from "../../GlobalContext";
-
+import { PRIORITY_OPTIONS } from "../../conf"
 
 const TicketModal = () => {
     // Destructuring service or api calls functions
@@ -76,15 +76,6 @@ const TicketModal = () => {
         // attachments: "",
         // fyiTo: "",
     });
-
-    // Priority AutoComplete's options
-    const priorityOptions = [
-        { id: 1, name: "P1", value: "P1" },
-        { id: 2, name: "P2", value: "P2" },
-        { id: 3, name: "P3", value: "P3" },
-        { id: 4, name: "P4", value: "P4" },
-        { id: 5, name: "P5", value: "P5" },
-    ];
 
     // Object to show button labels based on the modal type
     const buttonLabels = {
@@ -399,10 +390,10 @@ const TicketModal = () => {
     return (
         <>
             <div className="text-left font-semibold text-2xl tracking-wider">Create Ticket</div>
-            <form className="w-full" onSubmit={handleSubmit}>
+            <form className="w-100" onSubmit={handleSubmit}>
                 <div>
                     <div className="d-flex py-4">
-                        <div className="flex flex-col space-y-1 w-full me-3">
+                        <div className="d-flex flex-column w-100 me-3">
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
@@ -411,6 +402,7 @@ const TicketModal = () => {
                                 onChange={handleProjectChange}
                                 options={projectOptions}
                                 getOptionLabel={(option) => option.name}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -433,7 +425,7 @@ const TicketModal = () => {
                                 autoFocus
                             />
                         </div>
-                        <div className="flex flex-col space-y-1 w-full me-3">
+                        <div className="d-flex flex-column w-100 me-3">
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
@@ -442,6 +434,7 @@ const TicketModal = () => {
                                 onChange={handleAutocompleteChange}
                                 options={topicOptions}
                                 getOptionLabel={(option) => option.name}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -462,15 +455,16 @@ const TicketModal = () => {
                                 getOptionKey={(option) => option.id}
                             />
                         </div>
-                        <div className="flex flex-col space-y-1 w-full">
+                        <div className="d-flex flex-column w-100">
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo1"
                                 loading={autocompleteLoading}
                                 value={selectedPriority}
                                 onChange={handlePriorityChange}
-                                options={priorityOptions}
+                                options={PRIORITY_OPTIONS}
                                 getOptionLabel={(priorityOption) => priorityOption.name}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -493,7 +487,7 @@ const TicketModal = () => {
                         </div>
                     </div>
                     <div className="d-flex mb-4">
-                        <div className="flex flex-col space-y-1 w-full me-3">
+                        <div className="d-flex flex-column w-100 me-3">
                             <TextField
                                 id="title"
                                 variant="outlined"
@@ -507,13 +501,13 @@ const TicketModal = () => {
                                 helperText={fieldErrors.title} // Provide the error message
                             />
                         </div>
-                        <div className="flex flex-col space-y-1 w-full me-3">
+                        <div className="d-flex flex-column w-100 me-3">
                             <TextField
                                 name="requestedBy"
                                 value={formData.requestedBy}
                                 onChange={handleInputChange}
                                 variant="outlined"
-                                className="w-full"
+                                className="w-100"
                                 id="requestedBy"
                                 label="Requested By"
                                 fullWidth
@@ -522,11 +516,11 @@ const TicketModal = () => {
                             // helperText={fieldErrors.requestedBy} // Provide the error message
                             />
                         </div>
-                        <div className="flex flex-col space-y-1 w-full">
+                        <div className="d-flex flex-column w-100">
                             <EmailField setSelectedCcEmails={setSelectedCcEmails} clear={clear} error={fyiToError} helperText={fieldErrors.fyiTo} size="" />
                         </div>
                     </div>
-                    <div className="flex flex-col space-y-1 w-full mb-4">
+                    <div className="d-flex flex-column w-100 mb-4">
                         <TextField
                             id="description"
                             variant="outlined"
@@ -542,11 +536,11 @@ const TicketModal = () => {
                             helperText={fieldErrors.description} // Provide the error message
                         />
                     </div>
-                    <div className="flex flex-col space-y-1 w-full mb-4">
+                    <div className="d-flex flex-column w-100 mb-4">
                         <CustomFileAttachment setSelectedAttachments={setSelectedAttachments} clear={clear} error={fieldErrors.attachments} helperText={fieldErrors.attachments} />
                     </div>
                 </div>
-                <div className="flex flex-col space-y-1 justify-center pb-4 md:pb-6 mt-4">
+                <div className="flex flex-col space-y-1 justify-center mt-4">
                     {/* <div className=""> */}
                     <CustomButton
                         isLoading={loading}

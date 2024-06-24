@@ -34,9 +34,9 @@ const RouteComponent = () => {
                 <Route path='profileUpdate' element={<ProfileUpdate />} />
             </Route>
             {/* Routes that should be wrapped by the SideBar component */}
-            <Route path='dashboard' element={<SideBar />}>
+            <Route element={<SideBar />}>
                 <Route element={<ProtectedRoute roles={['Admin', 'Support', 'Customer']} />}>
-                    <Route index element={<Dashboard />} />
+                    <Route path='dashboard' element={<Dashboard />} />
                     <Route path='changePassword' element={<ChangePassword />} />
                     <Route path='tickets' element={<Tickets />} />
                     <Route path='createTicket' element={<CreateTicket />} />

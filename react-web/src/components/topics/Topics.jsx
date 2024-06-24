@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Container, Row, Col, Form, Button, Pagination } from 'react-bootstrap';
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
 import { Tooltip } from "@mui/material";
-import { format } from 'date-fns';
+import moment from 'moment';
 import useTopicService from '../../hooks/useTopicService';
 import './TopicsStyles.css';
 import TopicModal from './TopicModal';
@@ -114,7 +114,7 @@ const Topics = () => {
                         {paginatedTopics.map((topic) => (
                             <tr key={topic.id}>
                                 <td>{topic.name}</td>
-                                <td>{format(new Date(topic.createdAt), 'MM/dd/yyyy')}</td>
+                                <td>{moment(topic.createdAt).format('ddd, D MMMM, YYYY hh:mm A')}</td>
                                 <td>
                                     <Tooltip title={`Edit this ${topic.name} Topic`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0' onClick={() => handleOpenModal(topic, "edit")}>

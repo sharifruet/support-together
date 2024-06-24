@@ -3,7 +3,7 @@ import { Table, Container, Row, Col, Form, Button, Modal, Pagination } from 'rea
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
 import { FaCirclePlus } from "react-icons/fa6";
 import { Tooltip } from "@mui/material";
-import { format } from 'date-fns';
+import moment from 'moment';
 import useOrganizationService from '../../hooks/useOrganizationService';
 import './OrganizationsStyles.css';
 import OrganizationModal from './OrganizationModal';
@@ -121,7 +121,7 @@ const Organizations = () => {
                         {paginatedOrganizations.map((organization) => (
                             <tr key={organization.id}>
                                 <td>{organization.name}</td>
-                                <td>{format(new Date(organization.createdAt), 'MM/dd/yyyy')}</td>
+                                <td>{moment(organization.createdAt).format('ddd, D MMMM, YYYY hh:mm A')}</td>
                                 
                                 <td>
                                     <Tooltip title={`Add Project to this ${organization.name} Organization`} arrow placement="top">

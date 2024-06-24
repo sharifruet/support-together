@@ -41,8 +41,8 @@ const SupportTeamModal = ({ modalType, supportTeam, closeModal, fetchSupportTeam
 
     // Object to show button labels based on the modal type
     const buttonLabels = {
-        add: "Create Support team", // Label for the "add" modal type
-        edit: "Update Support team", // Label for the "edit" modal type
+        add: "Create Support Team", // Label for the "add" modal type
+        edit: "Update Support Team", // Label for the "edit" modal type
         delete: "Confirm" // Label for the "delete" modal type
     };
 
@@ -268,12 +268,12 @@ const SupportTeamModal = ({ modalType, supportTeam, closeModal, fetchSupportTeam
             modalName={modalName[modalType]}
             formData={formData}
         >
-            <form className="w-full" onSubmit={handleSubmit}>
+            <form className="w-100" onSubmit={handleSubmit}>
                 {modalType === 'delete' ? (
                     <DeleteText message={"Support team"} />
                 ) : (
                     <div>
-                        <div className="flex flex-col space-y-1 w-full mb-4">
+                        <div className="d-flex flex-column w-100 mb-4">
                             <TextField
                                 id="name"
                                 variant="outlined"
@@ -288,7 +288,7 @@ const SupportTeamModal = ({ modalType, supportTeam, closeModal, fetchSupportTeam
                                 autoFocus
                             />
                         </div>
-                        <div className="flex flex-col space-y-1 w-full mb-4">
+                        <div className="d-flex flex-column w-100 mb-4">
                             <Autocomplete
                                 multiple
                                 id="controllable-states-demo"
@@ -319,7 +319,7 @@ const SupportTeamModal = ({ modalType, supportTeam, closeModal, fetchSupportTeam
                         </div>
                     </div>
                 )}
-                <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
+                <div className="d-flex flex-column w-100 mt-4">
                     <CustomButton
                         isLoading={loading}
                         type="submit"

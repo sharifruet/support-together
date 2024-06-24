@@ -32,9 +32,9 @@ const LeftMenu = () => {
             </ListItemButton>
 
             <ListItemButton
-                selected={location.pathname === '/dashboard/tickets'}
+                selected={location.pathname === '/tickets'}
                 component={Link}
-                to="/dashboard/tickets"
+                to="/tickets"
             >
                 <ListItemIcon style={{ minWidth: "36px" }}>
                     <LocalActivityOutlined style={{ color: getColor('/tickets'), fontSize: '24px' }} />
@@ -44,9 +44,9 @@ const LeftMenu = () => {
 
             {isRoleAllowed('Admin') && (
                 <ListItemButton
-                    selected={location.pathname === '/dashboard/emailTemplates'}
+                    selected={location.pathname === '/emailTemplates'}
                     component={Link}
-                    to="/dashboard/emailTemplates"
+                    to="/emailTemplates"
                 >
                     <ListItemIcon style={{ minWidth: "36px" }}>
                         <Email style={{ color: getColor('/emailTemplates') }} />
@@ -59,7 +59,7 @@ const LeftMenu = () => {
                 <ListItemButton
                     selected={location.pathname.endsWith('/organizations')}
                     component={Link}
-                    to="/dashboard/organizations"
+                    to="/organizations"
                 >
                     <ListItemIcon style={{ minWidth: "36px" }}>
                         <CorporateFare style={{ color: getColor('/organizations') }} />
@@ -72,7 +72,7 @@ const LeftMenu = () => {
                 <ListItemButton
                     selected={location.pathname.endsWith('/projects')}
                     component={Link}
-                    to="/dashboard/projects"
+                    to="/projects"
                 >
                     <ListItemIcon style={{ minWidth: "36px" }}>
                         <BusinessCenter style={{ color: getColor('/projects') }} />
@@ -83,9 +83,9 @@ const LeftMenu = () => {
 
             {isRoleAllowed('Admin') && (
                 <ListItemButton
-                    selected={location.pathname === '/dashboard/topics'}
+                    selected={location.pathname === '/topics'}
                     component={Link}
-                    to="/dashboard/topics"
+                    to="/topics"
                 >
                     <ListItemIcon style={{ minWidth: "36px" }}>
                         <Topic style={{ color: getColor('/topics') }} />
@@ -96,9 +96,9 @@ const LeftMenu = () => {
 
             {isRoleAllowed('Admin') && (
                 <ListItemButton
-                    selected={location.pathname === '/dashboard/supportTeams'}
+                    selected={location.pathname === '/supportTeams'}
                     component={Link}
-                    to="/dashboard/supportTeams"
+                    to="/supportTeams"
                 >
                     <ListItemIcon style={{ minWidth: "36px" }}>
                         <SupportAgent style={{ color: getColor('/supportTeams') }} />
@@ -109,9 +109,9 @@ const LeftMenu = () => {
 
             {isRoleAllowed('Admin, Support') && (
                 <ListItemButton
-                    selected={location.pathname === '/dashboard/supportTeamSchedule'}
+                    selected={location.pathname === '/supportTeamSchedule'}
                     component={Link}
-                    to="/dashboard/supportTeamSchedule"
+                    to="/supportTeamSchedule"
                 >
                     <ListItemIcon style={{ minWidth: "36px" }}>
                         <Schedule style={{ color: getColor('/supportTeamSchedule') }} />
@@ -121,9 +121,9 @@ const LeftMenu = () => {
             )}
 
             <ListItemButton
-                selected={location.pathname === '/dashboard/changePassword'}
+                selected={location.pathname === '/changePassword'}
                 component={Link}
-                to="/dashboard/changePassword"
+                to="/changePassword"
             >
                 <ListItemIcon style={{ minWidth: "36px" }}>
                     <LockResetOutlined style={{ color: getColor('/changePassword'), fontSize: '24px' }} />
