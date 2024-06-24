@@ -91,7 +91,7 @@ const Tickets = () => {
                     <Col>
                         <div className="col-span-1 flex items-center">
                             {/* It's open the add ticket modal */}
-                            <div onClick={() => navigate("/dashboard/createTicket")}>
+                            <div onClick={() => navigate("/createTicket")}>
                                 <OpenModalButton label={"Create Ticket"} icon={<AddIcon />} />
                             </div>
                         </div>
@@ -106,15 +106,15 @@ const Tickets = () => {
                     </Col>
                 </Row>
                 <ListGroup as="ol">
-                    {paginatedTickets.map((ticket) => (
-                        <ListGroup.Item key={ticket.id} as="li" className="d-flex justify-content-between align-items-start">    
+                    {paginatedTickets?.map((ticket) => (
+                        <ListGroup.Item key={ticket?.id} as="li" className="d-flex justify-content-between align-items-start">    
                             <div className="ms-2 me-auto">  
-                                <div className="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={`/ticket/${ticket.code}`}> {ticket.code} </Link>] {ticket.title} </div>
+                                <div className="fs-4"> [<Link className='link-primary link-underline link-underline-opacity-0' to={`/ticket/${ticket?.code}`}> {ticket?.code} </Link>] {ticket?.title} </div>
                                 <div className="fs-6">
                                     {/* 'yyyy-MM-dd hh:mm aaa'   'EEE, MMM d, yyyy hh:mm aaa'*/}
 
-                                    Created At {moment(ticket.createdAt).format('ddd, D MMMM, YYYY hh:mm A')} 
-                                    <ResponseTimeProgressBar createdAt={ticket.createdAt} updatedAt={ticket.updatedAt} priority={ticket.priority} responseStatus={ticket.status}/>
+                                    Created At {moment(ticket?.createdAt).format('ddd, D MMMM, YYYY hh:mm A')} 
+                                    <ResponseTimeProgressBar createdAt={ticket?.createdAt} updatedAt={ticket?.updatedAt} priority={ticket?.priority} responseStatus={ticket?.status}/>
                                 </div>
                                 
                             </div>

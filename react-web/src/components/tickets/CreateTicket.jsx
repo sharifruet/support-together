@@ -8,7 +8,7 @@ import EmailField from "./EmailField";
 import CustomFileAttachment from "../common/CustomFileAttachment";
 import { toast } from 'react-toastify';
 import GlobalContext from "../../GlobalContext";
-
+import { PRIORITY_OPTIONS } from "../../conf"
 
 const TicketModal = () => {
     // Destructuring service or api calls functions
@@ -76,13 +76,6 @@ const TicketModal = () => {
         // attachments: "",
         // fyiTo: "",
     });
-
-    // Priority AutoComplete's options
-    const priorityOptions = [
-        { id: 3, name: "Minor", value: "P3" },
-        { id: 2, name: "Major", value: "P2" },
-        { id: 1, name: "Critical", value: "P1" },
-    ];
 
     // Object to show button labels based on the modal type
     const buttonLabels = {
@@ -469,7 +462,7 @@ const TicketModal = () => {
                                 loading={autocompleteLoading}
                                 value={selectedPriority}
                                 onChange={handlePriorityChange}
-                                options={priorityOptions}
+                                options={PRIORITY_OPTIONS}
                                 getOptionLabel={(priorityOption) => priorityOption.name}
                                 isOptionEqualToValue={(option, value) => option.id === value.id}
                                 renderInput={(params) => (

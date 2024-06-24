@@ -9,6 +9,8 @@ import ModalOverlay from "../common/ModalOverlay";
 import EmailField from "./EmailField";
 import CustomFileAttachment from "../common/CustomFileAttachment";
 import GlobalContext from "../../GlobalContext";
+import {PRIORITY_OPTIONS} from "../../conf"
+
 
 const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userProject }) => {
     // Destructuring service or api calls functions
@@ -71,13 +73,6 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
         // attachments: [],
         // fyiTo: [],
     });
-
-    // Priority AutoComplete's options
-    const priorityOptions = [
-        { id: 3, name: "Minor", value: "P3" },
-        { id: 2, name: "Major", value: "P2" },
-        { id: 1, name: "Critical", value: "P1" },
-    ];
 
     // Object to show button labels based on the modal type
     const buttonLabels = {
@@ -182,7 +177,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
         if (modalType === 'edit' && ticket && topicOptions.length > 0) {
             const { topicId, title, description, priority, requestedBy, attachments, fyiTo, id } = ticket;
             const matchedTopic = topicOptions?.find(option => option.id === topicId);
-            const matchedPriority = priorityOptions?.find(option => option.value === priority);
+            const matchedPriority = PRIORITY_OPTIONS?.find(option => option.value === priority);
 
             // To prefill the material ui AutoComplete component
             matchedTopic && setSelectedTopic(matchedTopic);
@@ -523,7 +518,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                         loading={autocompleteLoading}
                                         value={selectedPriority}
                                         onChange={handlePriorityChange}
-                                        options={priorityOptions}
+                                        options={PRIORITY_OPTIONS}
                                         getOptionLabel={(priorityOption) => priorityOption.name}
                                         isOptionEqualToValue={(option, value) => option.id === value.id}
                                         size="small"

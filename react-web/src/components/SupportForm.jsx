@@ -13,6 +13,7 @@ import { TextareaAutosize } from '@mui/material';
 import GlobalContext from '../GlobalContext';
 import { useNavigate } from 'react-router-dom';
 import Upload from './upload';
+import { PRIORITY_OPTIONS } from '../conf'
 const TICKET_URL = "/tickets";
 const TOPIC_URL = "/topics";
 
@@ -159,9 +160,7 @@ export default function SupportForm({ project }) {
                   <InputLabel id="demo-simple-select-standard-label">Select Priority *</InputLabel>
                   <Select label="Priority" name="priority" id="priority"
                     onChange={e => setPriority(e.target.value)}>
-                    <MenuItem value={'P3'}>Minor</MenuItem>
-                    <MenuItem value={'P2'}>Major</MenuItem>
-                    <MenuItem value={'P1'}>Critical</MenuItem>
+                    {PRIORITY_OPTIONS?.map((priority, index) => <MenuItem key={index} value={priority.value}>{priority.name}</MenuItem>)}
                   </Select>
                 </FormControl>
                 <br /><br />
