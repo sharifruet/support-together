@@ -204,12 +204,12 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
                 formData={formData}
             >
                 {/* Content of the modal */}
-                <form className="w-full" onSubmit={handleSubmit}>
+                <form className="w-100" onSubmit={handleSubmit}>
                     {modalType === 'delete' ? (
                         <DeleteText message={"Email Template"} />
                     ) : (
                         <div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <TextField
                                     id="name"
                                     variant="outlined"
@@ -223,7 +223,7 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
                                     helperText={fieldErrors.name} // Provide the error message
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <TextField
                                     id="subject"
                                     name="subject"
@@ -236,7 +236,7 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
                                     helperText={fieldErrors.subject} // Provide the error message
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <TextField
                                     id="body"
                                     name="body"
@@ -253,7 +253,7 @@ const EmailTemplateModal = ({ modalType, emailTemplate, closeModal, fetchEmailTe
                             </div>
                         </div>
                     )}
-                    <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
+                    <div className="d-flex flex-column w-100 mt-4">
                         <CustomButton
                             isLoading={loading}
                             type="submit"

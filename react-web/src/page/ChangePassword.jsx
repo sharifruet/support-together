@@ -130,6 +130,7 @@ export default function ChangePassword() {
                     ...prevData,
                     error: responseData.message,
                 }));
+                toast.error(responseData.message, { className: 'toast-error' });
             }
         } catch (error) {
             console.error(error);
@@ -137,6 +138,7 @@ export default function ChangePassword() {
                 ...prevData,
                 error: error,
             }));
+            toast.error(error, { className: 'toast-error' });
         } finally {
             setLoading(false);
         }
@@ -184,7 +186,7 @@ export default function ChangePassword() {
                             error={!!(fieldErrors.newPassword)} // Set error prop based on field error
                             helperText={fieldErrors.newPassword} // Provide the error message
                         />
-                        <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
+                        <div className="d-flex flex-column w-100 mt-4">
                             <CustomButton
                                 isLoading={loading}
                                 type="submit"
@@ -195,7 +197,6 @@ export default function ChangePassword() {
                         </div>
                     </Box>
                 </Box>
-                <h1><br /><br /><br /></h1>
             </Container>
         </ThemeProvider>
     );

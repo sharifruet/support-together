@@ -8,14 +8,14 @@ const CustomButton = ({ isLoading, type, icon, label, disabled }) => {
             style={{ background: "#303031" }}
             type={type}
             // onClick={onClick}
-            className={`bg-gray-800 text-gray-100 rounded-full text-lg font-semibold font-medium py-2 ${isLoading ? "cursor-not-allowed" : "cursor-pointer"}`}
+            className={`text-gray-100 rounded-pill font-semibold py-2 ${isLoading ? "cursor-not-allowed" : "cursor-pointer"}`}
             disabled={isLoading || disabled}
         >
             {isLoading ? (
                 <CircularProgress color="inherit" size={24} />
             ) : (
-                <div className="flex justify-center">
-                    <div className="mr-2">{icon}</div>
+                <div className="d-flex justify-content-center">
+                    <div className="me-2">{icon}</div>
                     <div style={{ marginTop: "2px" }}>{label}</div>
                 </div>
             )}

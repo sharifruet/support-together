@@ -205,12 +205,12 @@ const OrganizationModal = ({ modalType, organization, closeModal, fetchOrganizat
                 formData={formData}
             >
                 {/* Content of the modal */}
-                <form className="w-full" onSubmit={handleSubmit}>
+                <form className="w-100" onSubmit={handleSubmit}>
                     {modalType === 'delete' ? (
                         <DeleteText message={"Organization"} />
                     ) : (
                         <div>
-                            <div className="flex flex-col space-y-1 w-full py-4">
+                            <div className="flex flex-col space-y-1 w-100 py-4">
                                 <TextField
                                     id="code"
                                     variant="outlined"
@@ -225,13 +225,13 @@ const OrganizationModal = ({ modalType, organization, closeModal, fetchOrganizat
                                     helperText={fieldErrors.code} // Provide the error message
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <TextField
                                     name="name"
                                     value={formData.name}
                                     onChange={handleInputChange}
                                     variant="outlined"
-                                    className="w-full"
+                                    className="w-100"
                                     id="name"
                                     label="Name"
                                     fullWidth
@@ -240,7 +240,7 @@ const OrganizationModal = ({ modalType, organization, closeModal, fetchOrganizat
                                     helperText={fieldErrors.name} // Provide the error message
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full">
+                            <div className="d-flex flex-column w-100">
                                 <TextField
                                     id="address"
                                     variant="outlined"
@@ -258,7 +258,7 @@ const OrganizationModal = ({ modalType, organization, closeModal, fetchOrganizat
                             </div>
                         </div>
                     )}
-                    <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
+                    <div className="d-flex flex-column w-100 mt-4">
                         <CustomButton
                             isLoading={loading}
                             type="submit"

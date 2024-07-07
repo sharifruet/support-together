@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Container, Row, Col, Form, Button, Pagination } from 'react-bootstrap';
 import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa';
-import { format } from 'date-fns';
+import moment from 'moment';
 import { Tooltip } from "@mui/material";
 import useEmailTemplateService from '../../hooks/useEmailTemplateService';
 import './EmailTemplatesStyles.css';
@@ -121,7 +121,8 @@ const EmailTemplates = () => {
                             <tr key={emailTemplate.id}>
                                 <td>{emailTemplate.name}</td>
                                 <td>{emailTemplate.subject}</td>
-                                <td>{format(new Date(emailTemplate.createdAt), 'MM/dd/yyyy')}</td>
+                                <td>{moment(emailTemplate.createdAt).format('ddd, D MMMM, YYYY hh:mm A')}</td>
+
                                 <td>
                                     <Tooltip title={`Edit this ${emailTemplate.name} Email Template`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-primary border-0' onClick={() => handleOpenModal(emailTemplate, "edit")}>

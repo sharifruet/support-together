@@ -370,12 +370,12 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
                 formData={formData}
             >
                 {/* Content of the modal */}
-                <form className="w-full" onSubmit={handleSubmit}>
+                <form className="w-100" onSubmit={handleSubmit}>
                     {modalType === 'delete' ? (
                         <DeleteText message={"SupportSchedule"} />
                     ) : (
                         <div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
@@ -406,7 +406,7 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
                                     autoFocus
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <Autocomplete
                                     disablePortal
                                     id="combo-box-demo"
@@ -435,7 +435,7 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
                                     getOptionKey={(option) => option.id}
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <TextField
                                     id="startTime"
                                     label="Start Time"
@@ -452,7 +452,7 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
                                     variant="outlined"
                                 />                                
                             </div>
-                            <div className="flex flex-col space-y-1 w-full mb-4">
+                            <div className="d-flex flex-column w-100 mb-4">
                                 <TextField
                                     id="endTime"
                                     label="End Time"
@@ -468,7 +468,7 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
                                     }}
                                 />
                             </div>
-                            <div className="flex flex-col space-y-1 w-full">
+                            <div className="d-flex flex-column w-100">
                                 <TextField
                                     id="escalationLevel"
                                     variant="outlined"
@@ -484,7 +484,7 @@ const SupportScheduleModal = ({ modalType, supportSchedule, closeModal, fetchSup
                             </div>
                         </div>
                     )}
-                    <div className="flex flex-col space-y-1 w-full pb-4 md:pb-6 mt-4">
+                    <div className="d-flex flex-column w-100 mt-4">
                         <CustomButton
                             isLoading={loading}
                             type="submit"
