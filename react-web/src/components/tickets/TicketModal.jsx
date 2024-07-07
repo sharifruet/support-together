@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { TextField, CircularProgress, Autocomplete } from "@mui/material";
-import useCrud from '../../hooks/useCrud';
+import useCrud from "../../hooks/useCrud";
 import CustomButton from "../common/CustomButton";
 import DeleteText from "../common/DeleteText";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
@@ -9,8 +9,7 @@ import ModalOverlay from "../common/ModalOverlay";
 import EmailField from "./EmailField";
 import CustomFileAttachment from "../common/CustomFileAttachment";
 import GlobalContext from "../../GlobalContext";
-import {PRIORITY_OPTIONS} from "../../conf"
-
+import { PRIORITY_OPTIONS } from "../../conf";
 
 const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userProject }) => {
     // Destructuring service or api calls functions
@@ -59,7 +58,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
         fyiTo: [],
         success: "",
         error: "",
-        id: ""
+        id: "",
     });
 
     // State to manage individual field errors
@@ -78,32 +77,32 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
     const buttonLabels = {
         add: "Create Ticket", // Label for the "add" modal type
         edit: "Update Ticket", // Label for the "edit" modal type
-        delete: "Confirm" // Label for the "delete" modal type
+        delete: "Confirm", // Label for the "delete" modal type
     };
 
     // Object to show button icons based on the modal type
     const buttonIcons = {
         add: <FaCirclePlus />, // Label for the "add" modal type
         edit: <FaEdit />, // Label for the "edit" modal type
-        delete: <FaTrashAlt /> // Label for the "delete" modal type
+        delete: <FaTrashAlt />, // Label for the "delete" modal type
     };
 
     // Object to show Modal Header Name based on the modal type
     const modalName = {
         add: "Create Ticket", // Label for the "add" modal type
         edit: "Edit Ticket", // Label for the "edit" modal type
-        delete: "Delete Ticket" // Label for the "delete" modal type
+        delete: "Delete Ticket", // Label for the "delete" modal type
     };
 
     // loader for Material UI Autocomplete
     useEffect(() => {
-        if (modalType === 'add' || modalType === 'edit') {
+        if (modalType === "add" || modalType === "edit") {
             // Set autocompleteLoading to true when modal is opened
             setAutocompleteLoading(true);
             setTimeout(() => {
                 setAutocompleteLoading(false);
                 if (projectRef.current) {
-                    projectRef.current.focus();  // AutoFocus on the autocomplete field
+                    projectRef.current.focus(); // AutoFocus on the autocomplete field
                 }
             }, 1000);
         } else setSelectedTopic(null);
@@ -114,10 +113,10 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
         const fetchProjects = async () => {
             try {
                 const data = await getAll(projectUrl);
-                const filteredProjects = data?.filter(project => {
-                    return user?.roles?.some(role => role.projectId === project.id);
+                const filteredProjects = data?.filter((project) => {
+                    return user?.roles?.some((role) => role.projectId === project.id);
                 });
-                const formattedProjectOptions = filteredProjects?.map(project => ({ id: project.id, name: project.name, value: project.id }));
+                const formattedProjectOptions = filteredProjects?.map((project) => ({ id: project.id, name: project.name, value: project.id }));
                 setProjectOptions(formattedProjectOptions);
             } catch (error) {
                 console.error(error);
@@ -132,10 +131,10 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
         try {
             setTopicLoading(true);
             const data = await getAll(topicUrl);
-            const filteredTopics = data?.filter(topic => {
+            const filteredTopics = data?.filter((topic) => {
                 return topic.ProjectId === projectId;
             });
-            const formattedTopicOptions = filteredTopics?.map(topic => ({ id: topic.id, name: topic.name, value: topic.id }));
+            const formattedTopicOptions = filteredTopics?.map((topic) => ({ id: topic.id, name: topic.name, value: topic.id }));
             setTopicOptions(formattedTopicOptions);
         } catch (error) {
             // Handle error here
@@ -148,11 +147,11 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
         }
     };
 
-    // Effect to check while the project length is 1 or more 
+    // Effect to check while the project length is 1 or more
     useEffect(() => {
         if (userProject !== null && projectOptions.length > 0) {
-            const filteredProject = projectOptions.find(option => option.id === userProject.id)
-            setSelectedProject(filteredProject)
+            const filteredProject = projectOptions.find((option) => option.id === userProject.id);
+            setSelectedProject(filteredProject);
             setFormData((prevData) => ({
                 ...prevData,
                 project: filteredProject ? filteredProject.id : "",
@@ -161,23 +160,22 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
             setSelectedProject(projectOptions[0]);
             setFormData((prevData) => ({
                 ...prevData,
-                project: projectOptions && projectOptions[0] > 0 ? projectOptions[0].id : "",
+                project: projectOptions && projectOptions.length > 0 ? projectOptions[0].id : "",
             }));
         }
-
     }, [userProject, projectOptions]);
 
     // Effect to fetch topics if the project length is 1
     useEffect(() => {
-        selectedProject && fetchTopicsByProjectId(selectedProject.id)
-    }, [selectedProject])
+        selectedProject && fetchTopicsByProjectId(selectedProject.id);
+    }, [selectedProject]);
 
     // Effect to initialize form data based on modal type and ticket(passed props)
     useEffect(() => {
-        if (modalType === 'edit' && ticket && topicOptions.length > 0) {
+        if (modalType === "edit" && ticket && topicOptions.length > 0) {
             const { topicId, title, description, priority, requestedBy, attachments, fyiTo, id } = ticket;
-            const matchedTopic = topicOptions?.find(option => option.id === topicId);
-            const matchedPriority = PRIORITY_OPTIONS?.find(option => option.value === priority);
+            const matchedTopic = topicOptions?.find((option) => option.id === topicId);
+            const matchedPriority = PRIORITY_OPTIONS?.find((option) => option.value === priority);
 
             // To prefill the material ui AutoComplete component
             matchedTopic && setSelectedTopic(matchedTopic);
@@ -197,11 +195,11 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                 success: false,
                 error: false,
             });
-        } else if (modalType === 'add' && topic !== null) {
-            const matchedTopic = topicOptions.find(option => option.id === topic.id);
+        } else if (modalType === "add" && topic !== null) {
+            const matchedTopic = topicOptions.find((option) => option.id === topic.id);
 
             setSelectedTopic(matchedTopic);
-            setFormData(prevData => ({
+            setFormData((prevData) => ({
                 ...prevData,
                 topicId: topic.id,
             }));
@@ -241,7 +239,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
     // Effect to set Fyi to
     useEffect(() => {
         if (selectedCcEmails?.length > 0) {
-            setFormData(prevData => ({
+            setFormData((prevData) => ({
                 ...prevData,
                 fyiTo: selectedCcEmails,
             }));
@@ -251,7 +249,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
     // Effect to set Attachments
     useEffect(() => {
         if (selectedAttachments?.length > 0) {
-            setFormData(prevData => ({
+            setFormData((prevData) => ({
                 ...prevData,
                 attachments: selectedAttachments,
             }));
@@ -275,17 +273,16 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
     // Function to handle form Material UI Autocomplete component changes
     const handleProjectChange = (event, newValue) => {
         setSelectedProject(newValue);
-        newValue && fetchTopicsByProjectId(newValue.id)
-        console.log(newValue)
+        newValue && fetchTopicsByProjectId(newValue.id);
+        console.log(newValue);
         setFormData((prevData) => ({
             ...prevData,
             project: newValue ? newValue.id : "",
         }));
 
-
         // Clear error message for the field when it receives a value
         if (newValue) {
-            console.log(formData)
+            console.log(formData);
             setFieldErrors((prevErrors) => ({
                 ...prevErrors,
                 project: "", // Clear error message if field has a value
@@ -408,24 +405,24 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
         const successMessages = {
             add: "Ticket created successfully",
             edit: "Ticket updated successfully",
-            delete: "Ticket deleted successfully"
+            delete: "Ticket deleted successfully",
         };
 
         // Define actions for different modal types
         const actions = {
             add: () => create(ticketUrl, formData),
             edit: () => update(ticketUrl, formData.id, formData),
-            delete: () => remove(Number(ticketUrl, ticket.id))
+            delete: () => remove(Number(ticketUrl, ticket.id)),
         };
 
         try {
             setLoading(true);
-            const responseData = Object.keys(errors).length === 0 && await actions[modalType]();
-            console.log(responseData)
+            const responseData = Object.keys(errors).length === 0 && (await actions[modalType]());
+            console.log(responseData);
 
             // Check the response and update the form data with success or error message
-            if (responseData.message === successMessages[modalType] || typeof responseData === 'object') {
-                typeof responseData === 'object' && fetchTickets(responseData);
+            if (responseData.message === successMessages[modalType] || typeof responseData === "object") {
+                typeof responseData === "object" && fetchTickets(responseData);
                 setFormData({
                     project: "",
                     topicId: "",
@@ -464,19 +461,13 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
     };
     return (
         <>
-            <ModalOverlay
-                modalType={modalType}
-                closeModal={closeModal}
-                modalName={modalName[modalType]}
-                formData={formData}
-            >
+            <ModalOverlay modalType={modalType} closeModal={closeModal} modalName={modalName[modalType]} formData={formData}>
                 {/* Content of the modal */}
                 <form className="w-100" onSubmit={handleSubmit}>
-                    {modalType === 'delete' ? (
+                    {modalType === "delete" ? (
                         <DeleteText message={"Ticket"} />
                     ) : (
                         <div style={{ height: "65vh", overflowY: "auto" }}>
-
                             <div className="d-flex py-4">
                                 <div className="d-flex flex-column w-100 me-3">
                                     <Autocomplete
@@ -503,7 +494,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                                         </>
                                                     ),
                                                 }}
-                                                error={!!(fieldErrors.project)} // Set error prop based on field error
+                                                error={!!fieldErrors.project} // Set error prop based on field error
                                                 helperText={fieldErrors.project} // Provide the error message
                                             />
                                         )}
@@ -535,7 +526,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                                         </>
                                                     ),
                                                 }}
-                                                error={!!(fieldErrors.priority)} // Set error prop based on field error
+                                                error={!!fieldErrors.priority} // Set error prop based on field error
                                                 helperText={fieldErrors.priority} // Provide the error message
                                             />
                                         )}
@@ -567,7 +558,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                                     </>
                                                 ),
                                             }}
-                                            error={!!(fieldErrors.topicId)} // Set error prop based on field error
+                                            error={!!fieldErrors.topicId} // Set error prop based on field error
                                             helperText={fieldErrors.topicId} // Provide the error message
                                         />
                                     )}
@@ -586,7 +577,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                     onChange={handleInputChange}
                                     fullWidth
                                     size="small"
-                                    error={!!(fieldErrors.title)} // Set error prop based on field error
+                                    error={!!fieldErrors.title} // Set error prop based on field error
                                     helperText={fieldErrors.title} // Provide the error message
                                 />
                             </div>
@@ -602,12 +593,18 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                     fullWidth
                                     autoComplete="requestedBy"
                                     size="small"
-                                    error={!!(fieldErrors.requestedBy)} // Set error prop based on field error
+                                    error={!!fieldErrors.requestedBy} // Set error prop based on field error
                                     helperText={fieldErrors.requestedBy} // Provide the error message
                                 />
                             </div>
                             <div className="d-flex flex-column w-100 mb-4">
-                                <EmailField setSelectedCcEmails={setSelectedCcEmails} clear={clear} error={!!(fieldErrors.fyiTo ? fieldErrors.fyiTo : "")} helperText={fieldErrors.fyiTo} size="small" />
+                                <EmailField
+                                    setSelectedCcEmails={setSelectedCcEmails}
+                                    clear={clear}
+                                    error={!!(fieldErrors.fyiTo ? fieldErrors.fyiTo : "")}
+                                    helperText={fieldErrors.fyiTo}
+                                    size="small"
+                                />
                             </div>
                             <div className="d-flex flex-column w-100 mb-4">
                                 <TextField
@@ -622,7 +619,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                                     multiline
                                     rows={3}
                                     size="small"
-                                    error={!!(fieldErrors.description)} // Set error prop based on field error
+                                    error={!!fieldErrors.description} // Set error prop based on field error
                                     helperText={fieldErrors.description} // Provide the error message
                                 />
                             </div>
@@ -632,13 +629,7 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
                         </div>
                     )}
                     <div className="d-flex flex-column w-100 mt-4">
-                        <CustomButton
-                            isLoading={loading}
-                            type="submit"
-                            icon={buttonIcons[modalType]}
-                            label={buttonLabels[modalType]}
-                            disabled={loading}
-                        />
+                        <CustomButton isLoading={loading} type="submit" icon={buttonIcons[modalType]} label={buttonLabels[modalType]} disabled={loading} />
                     </div>
                 </form>
             </ModalOverlay>
@@ -647,4 +638,3 @@ const TicketModal = ({ modalType, ticket, closeModal, fetchTickets, topic, userP
 };
 
 export default TicketModal;
-
