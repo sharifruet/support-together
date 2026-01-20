@@ -4,10 +4,16 @@ import GlobalContext from '../GlobalContext';
 
 const ProtectedRoute = ({ roles }) => {
 
-    // Logged in user roles
-    const { user } = useContext(GlobalContext);
+    // Auth and role state
+    const { user, loggedIn, authInitialized } = useContext(GlobalContext);
 
-    if (!user?.roles) {
+    // While we're still restoring auth from localStorage, don't redirect yet
+    if (!authInitialized) {
+        return null; // or a spinner if you prefer
+    }
+
+    // If not logged in or no roles after init, send to home/login
+    if (!loggedIn || !user?.roles) {
         return <Navigate to="/home" />;
     }
 

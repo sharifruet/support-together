@@ -14,25 +14,51 @@ const GlobalProvider = ({ children }) => {
     const [topics, setTopics] = useState([]);
     const [organizations, setOrganizations] = useState([]);
     const [accessToken, setAccessToken] = useState(null);
+    const [authInitialized, setAuthInitialized] = useState(false);
 
     const navigate = useNavigate();
     const location = useLocation();
 
+    // On app mount, try to restore auth state from localStorage so deep links work
     useEffect(() => {
-        const publicPaths = ["/about", "/login", "/signup", "/forgotPass"];
+        const storedToken = localStorage.getItem("accessToken");
+        if (storedToken && !accessToken) {
+            try {
+                const decoded = jwtDecode(storedToken);
+                setAccessToken(storedToken);
+                setUser(decoded);
+                setLoggedIn(true);
+            } catch (e) {
+                // Invalid token in storage; clear it
+                localStorage.removeItem("accessToken");
+                setAccessToken(null);
+                setLoggedIn(false);
+            }
+        }
+        setAuthInitialized(true);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Redirect unauthenticated users away from protected routes
+    useEffect(() => {
+        if (!authInitialized) return;
+
+        const publicPaths = ["/about", "/login", "/signup", "/forgotPass", "/home"];
         const currentPath = location.pathname;
 
-        if (!loggedIn && !publicPaths.some((path) => currentPath.endsWith(path))) {
+        const isPublic = publicPaths.some((path) => currentPath === path || currentPath.endsWith(path));
+
+        if (!loggedIn && !isPublic) {
             localStorage.clear();
             setLoggedIn(false);
             setAccessToken(null);
             setProjects([]);
             navigate("/home");
         }
-    }, [loggedIn, navigate, location.pathname]);
+    }, [loggedIn, navigate, location.pathname, authInitialized]);
 
     useEffect(() => {
-        if (accessToken != null) {
+        if (accessToken != null && user) {
             axios
                 .get("/organizations", headerConfig())
                 .then((response) => {
@@ -57,14 +83,16 @@ const GlobalProvider = ({ children }) => {
 
     useEffect(() => {
         console.log(user);
-        if (!user?.user?.name) {
+        if (user && !user?.user?.name) {
             navigate("/profileUpdate");
         }
-    }, [user]);
+    }, [user, navigate]);
 
     const loginSuccess = (response) => {
         if (response?.token) {
             console.log(response.token);
+            // Persist token so deep links / refresh keep the session
+            localStorage.setItem("accessToken", response.token);
             setAccessToken(response.token);
             setUser(jwtDecode(response.token));
 
@@ -111,7 +139,23 @@ const GlobalProvider = ({ children }) => {
     };
 
     return (
-        <GlobalContext.Provider value={{ user, setUser, users, loginSuccess, onLogout, loggedIn, setLoggedIn, topics, projects, organizations, headerConfig, accessToken }}>
+        <GlobalContext.Provider
+            value={{
+                user,
+                setUser,
+                users,
+                loginSuccess,
+                onLogout,
+                loggedIn,
+                setLoggedIn,
+                topics,
+                projects,
+                organizations,
+                headerConfig,
+                accessToken,
+                authInitialized,
+            }}
+        >
             {children}
         </GlobalContext.Provider>
     );

@@ -8,7 +8,7 @@ import useProjectService from '../../hooks/useProjectService';
 import './ProjectsStyles.css';
 import ProjectModal from './ProjectModal';
 import { ReactComponent as AddIcon } from '../../assets/svgIcons/add.svg';
-import { LuUserPlus2 } from "react-icons/lu";
+import { LuUserPlus } from "react-icons/lu";
 import OpenModalButton from '../common/OpenModalButton';
 import TopicModal from '../topics/TopicModal';
 import InviteUsers from '../inviteUsers/InviteUsersModal';
@@ -136,7 +136,7 @@ const Projects = () => {
 
                                     <Tooltip title={`Assign user to this ${project.name} Project`} arrow placement="top">
                                         <Button style={{ padding: ".3rem", margin: "0 .6rem" }} variant="standard" className='text-secondary border-0'>
-                                            <LuUserPlus2 className='fs-5' onClick={() => handleOpenInviteModal(project, "invite")} />
+                                            <LuUserPlus className='fs-5' onClick={() => handleOpenInviteModal(project, "invite")} />
                                         </Button>
                                     </Tooltip>
                                     <Tooltip title={`Add Topic to this ${project.name} Project`} arrow placement="top">

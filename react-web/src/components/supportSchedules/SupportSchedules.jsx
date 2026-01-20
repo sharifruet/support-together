@@ -67,11 +67,20 @@ const SupportSchedules = () => {
     const fetchSupportSchedules = async () => {
         try {
             const data = await getAll(supportTeamSchedulesUrl);
-            setSupportSchedules(data);
-            console.log(data)
+            // Handle paginated response (new format) or array response (old format)
+            if (data && data.schedules) {
+                // New paginated response format
+                setSupportSchedules(data.schedules);
+            } else if (Array.isArray(data)) {
+                // Old array format (backward compatibility)
+                setSupportSchedules(data);
+            } else {
+                setSupportSchedules([]);
+            }
         } catch (error) {
             // Handle error here
             console.error('Error fetching Support Team Schedule:', error);
+            setSupportSchedules([]);
         }
     };
 
@@ -126,6 +135,9 @@ const SupportSchedules = () => {
                         <tr>
                             <th onClick={() => handleSortChange('startTime')}>Start Time</th>
                             <th onClick={() => handleSortChange('endTime')}>End Time</th>
+                            <th onClick={() => handleSortChange('escalationLevel')}>Escalation Level</th>
+                            <th>Support Team</th>
+                            <th>User</th>
                             <th onClick={() => handleSortChange('createdAt')}>Created At</th>
                             <th>Actions</th>
                         </tr>
@@ -135,6 +147,11 @@ const SupportSchedules = () => {
                             <tr key={supportSchedule.id}>
                                 <td>{formatTimeToLocal(supportSchedule.startTime)}</td>
                                 <td>{formatTimeToLocal(supportSchedule.endTime)}</td>
+                                <td>
+                                    <span className="badge bg-primary">L{supportSchedule.escalationLevel}</span>
+                                </td>
+                                <td>{supportSchedule.SupportTeam?.name || supportSchedule.supportTeam?.name || 'N/A'}</td>
+                                <td>{supportSchedule.User?.name || supportSchedule.user?.name || 'N/A'}</td>
                                 <td>{moment(supportSchedule.createdAt).format('ddd, D MMMM, YYYY hh:mm A')}</td>
                                 <td>
                                     <Tooltip title={`Edit this ${supportSchedule?.name} SupportSchedule`} arrow placement="top">

@@ -3,9 +3,10 @@ const router = express.Router();
 const SupportTeam = require('../models/SupportTeam');
 const User = require('../models/User');
 const SupportTeamMembers = require('../models/SupportTeamMembers');
+const { requireAdmin } = require('../middleware/roleMiddleware');
 
 // Create a new support team
-router.post('/support-teams', async (req, res) => {
+router.post('/support-teams', requireAdmin(), async (req, res) => {
   try {
     const { name, userIds } = req.body;
 
@@ -51,7 +52,7 @@ router.get('/support-teams/:id', async (req, res) => {
 });
 
 // Update a support team
-router.put('/support-teams/:id', async (req, res) => {
+router.put('/support-teams/:id', requireAdmin(), async (req, res) => {
   const { id } = req.params;
   const { name, userIds } = req.body;
   try {
@@ -76,7 +77,7 @@ router.put('/support-teams/:id', async (req, res) => {
 });
 
 // Delete a support team
-router.delete('/support-teams/:id', async (req, res) => {
+router.delete('/support-teams/:id', requireAdmin(), async (req, res) => {
   const { id } = req.params;
   try {
     const supportTeam = await SupportTeam.findByPk(id);

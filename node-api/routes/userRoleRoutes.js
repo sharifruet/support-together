@@ -5,9 +5,10 @@ const router = express.Router();
 const UserRole = require('../models/UserRole');
 const User = require('../models/User');
 const Project = require('../models/Project');
+const { requireAdmin } = require('../middleware/roleMiddleware');
 
 // Assign role to user for a project
-router.post('/user-roles', async (req, res) => {
+router.post('/user-roles', requireAdmin(), async (req, res) => {
   try {
     const { userId, projectId, role } = req.body;
     // Check if the user and project exist
@@ -25,7 +26,7 @@ router.post('/user-roles', async (req, res) => {
 });
 
 // Update user role for a project
-router.put('/user-roles/:id', async (req, res) => {
+router.put('/user-roles/:id', requireAdmin(), async (req, res) => {
   const { id } = req.params;
   const { role } = req.body;
   try {
@@ -42,7 +43,7 @@ router.put('/user-roles/:id', async (req, res) => {
 });
 
 // Delete user role for a project
-router.delete('/user-roles/:id', async (req, res) => {
+router.delete('/user-roles/:id', requireAdmin(), async (req, res) => {
   const { id } = req.params;
   try {
     const userRole = await UserRole.findByPk(id);

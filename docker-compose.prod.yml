@@ -1,0 +1,36 @@
+# Production Docker Compose Configuration
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+  api:
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=${DB_HOST:-db}
+      - DB_USERNAME=${DB_USERNAME:-support}
+      - DB_PASSWORD=${DB_PASSWORD:-support}
+      - DB_NAME=${DB_NAME:-support}
+      - PORT=${PORT:-5000}
+      - JWT_SECRET=${JWT_SECRET}
+      - ESCALATION_L1_TO_L2_MINUTES=${ESCALATION_L1_TO_L2_MINUTES:-30}
+      - ESCALATION_L2_TO_L3_MINUTES=${ESCALATION_L2_TO_L3_MINUTES:-60}
+    # Remove volumes for production (use built image)
+    volumes: []
+    restart: always
+
+  web:
+    build:
+      context: ./react-web
+      dockerfile: Dockerfile.prod
+    environment:
+      - REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:5000/api}
+    # Remove volumes for production
+    volumes: []
+    restart: always
+
+  db:
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME:-support}
+      MYSQL_USER: ${DB_USERNAME:-support}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-support}

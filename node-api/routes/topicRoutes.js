@@ -4,9 +4,10 @@ const express = require('express');
 const router = express.Router();
 const Topic = require('../models/Topic');
 const Project = require('../models/Project');
+const { requireAdmin, checkProjectAccess } = require('../middleware/roleMiddleware');
 
 // Create topic
-router.post('/topics', async (req, res) => {
+router.post('/topics', requireAdmin({ checkProjectAccess: true }), async (req, res) => {
   try {
     const { projectId, name, description, supportTeamId } = req.body;
     // Check if the project exists
@@ -49,7 +50,7 @@ router.get('/topics/:id', async (req, res) => {
 });
 
 // Update topic
-router.put('/topics/:id', async (req, res) => {
+router.put('/topics/:id', requireAdmin({ checkProjectAccess: true }), async (req, res) => {
   const { id } = req.params;
   const { name, description, supportTeamId } = req.body;
   try {
@@ -66,7 +67,7 @@ router.put('/topics/:id', async (req, res) => {
 });
 
 // Delete topic
-router.delete('/topics/:id', async (req, res) => {
+router.delete('/topics/:id', requireAdmin({ checkProjectAccess: true }), async (req, res) => {
   const { id } = req.params;
   try {
     const topic = await Topic.findByPk(id);

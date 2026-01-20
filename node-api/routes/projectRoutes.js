@@ -5,9 +5,10 @@ const router = express.Router();
 const Project = require('../models/Project');
 const Topic = require('../models/Topic');
 const Organization = require('../models/Organization');
+const { requireAdmin, checkProjectAccess } = require('../middleware/roleMiddleware');
 
 // Create project
-router.post('/projects', async (req, res) => {
+router.post('/projects', requireAdmin(), async (req, res) => {
   try {
     const { organizationId, code, name, description } = req.body;
     // Check if the organization exists
@@ -57,7 +58,7 @@ router.get('/projects/:id', async (req, res) => {
 });
 
 // Update project
-router.put('/projects/:id', async (req, res) => {
+router.put('/projects/:id', requireAdmin(), async (req, res) => {
   const { id } = req.params;
   const { code, name, description } = req.body;
   try {
@@ -83,7 +84,7 @@ router.put('/projects/:id', async (req, res) => {
 });
 
 // Delete project
-router.delete('/projects/:id', async (req, res) => {
+router.delete('/projects/:id', requireAdmin(), async (req, res) => {
   const { id } = req.params;
   try {
     const project = await Project.findByPk(id);
@@ -99,7 +100,7 @@ router.delete('/projects/:id', async (req, res) => {
 });
 
 // Get topic by ID
-router.get('/projects/:id/topics', async (req, res) => {
+router.get('/projects/:id/topics', checkProjectAccess, async (req, res) => {
   const { id } = req.params;
   try {
     const topics = await Topic.findAll({where:{projectId:id}});

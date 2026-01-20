@@ -12,20 +12,22 @@ const EmailField = ({ setSelectedCcEmails, clear, error, helperText, size }) => 
         setSearchInput(value);
     };
 
+    // Keep ccList and parent-selected emails in sync directly on change
+    const handleCcChange = (_, values) => {
+        setCcList(values);
+        setSelectedCcEmails(values);
+    };
+
+    // When parent asks to clear, reset local + parent state once
     useEffect(() => {
-        console.log(clear);
-        if (ccList.length > 0 && clear === false) {
-            setSelectedCcEmails(ccList);
-        } else if (clear === true) {
+        if (clear) {
             setSelectedCcEmails([]);
             setCcList([]);
             setSearchInput("");
         }
-    }, [ccList, clear]);
-
-    const handleCcChange = (_, values) => {
-        setCcList(values);
-    };
+        // we intentionally don't depend on setSelectedCcEmails (stable from React)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [clear]);
 
     const handleShowSelectedOnly = () => {
         setShowSelectedOnly(!showSelectedOnly);

@@ -116,9 +116,27 @@ const Tickets = () => {
                                     Created At {moment(ticket?.createdAt).format('ddd, D MMMM, YYYY hh:mm A')} 
                                     <ResponseTimeProgressBar createdAt={ticket?.createdAt} updatedAt={ticket?.updatedAt} priority={ticket?.priority} responseStatus={ticket?.status}/>
                                 </div>
+                                {ticket?.assignmentStatus && (
+                                    <div className="fs-6 mt-1">
+                                        <span className={`badge ${
+                                            ticket.assignmentStatus.startsWith('Acknowledged') 
+                                                ? 'bg-success' 
+                                                : 'bg-warning'
+                                        }`}>
+                                            {ticket.assignmentStatus}
+                                        </span>
+                                    </div>
+                                )}
                                 
                             </div>
-                            <Badge bg="primary"> {ticket.status} </Badge>
+                            <div className="d-flex flex-column align-items-end">
+                                <Badge bg="primary" className="mb-1"> {ticket.status} </Badge>
+                                {ticket?.assignedTo && (
+                                    <Badge bg="secondary" className="text-wrap" style={{maxWidth: '150px'}}>
+                                        Assigned
+                                    </Badge>
+                                )}
+                            </div>
                         </ListGroup.Item>
                     ))}
                 </ListGroup>

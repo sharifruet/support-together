@@ -3,9 +3,10 @@
 const express = require('express');
 const router = express.Router();
 const Organization = require('../models/Organization');
+const { requireAdmin } = require('../middleware/roleMiddleware');
 
 // Create organization
-router.post('/organizations', async (req, res) => {
+router.post('/organizations', requireAdmin(), async (req, res) => {
   try {
     const { code, name, address } = req.body;
     const existingOrganization = await Organization.findOne({ where: { code } });
@@ -47,7 +48,7 @@ router.get('/organizations/:id', async (req, res) => {
 });
 
 // Update organization
-router.put('/organizations/:id', async (req, res) => {
+router.put('/organizations/:id', requireAdmin(), async (req, res) => {
   const { id } = req.params;
   const { code, name, address } = req.body;
   try {
@@ -71,7 +72,7 @@ router.put('/organizations/:id', async (req, res) => {
 });
 
 // Delete organization
-router.delete('/organizations/:id', async (req, res) => {
+router.delete('/organizations/:id', requireAdmin(), async (req, res) => {
   const { id } = req.params;
   try {
     const organization = await Organization.findByPk(id);

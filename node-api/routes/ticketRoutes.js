@@ -7,11 +7,44 @@ const Topic = require('../models/Topic');
 const UserRole = require('../models/UserRole');
 const Project = require('../models/Project');
 const { sendEmailWithTemplate } = require('../services/emailService');
+const { requireCustomerOrSupport, requireSupport, requireAdminOrSupport } = require('../middleware/roleMiddleware');
+
+// Generate a human‑readable ticket code based on project code and ticket count
+const generateTicketCode = async (ticket) => {
+  // Load the topic (with its project) for this ticket
+  const topic = await Topic.findByPk(ticket.topicId, { include: Project });
+  if (!topic || !topic.Project) {
+    return null;
+  }
+
+  const projectCode = topic.Project.code;
+
+  // Count existing tickets for all topics under the same project
+  const projectTopics = await Topic.findAll({
+    where: { ProjectId: topic.ProjectId },
+    attributes: ['id'],
+  });
+  const topicIds = projectTopics.map((t) => t.id);
+
+  const ticketCount = await Ticket.count({
+    where: { topicId: topicIds },
+  });
+
+  // Next sequential number for this project
+  const nextNumber = ticketCount + 1;
+  return `${projectCode}-${nextNumber}`;
+};
 
 // Function to send ticket created email
 const sendTicketCreatedEmail = async (ticket, user) => {
-  const placeholders = { title: ticket.title, code: ticket.code, createdAt: ticket.createdAt, email: user.email, name: user.name };
-  const templateId = 1; // Assuming 1 is the template ID for the ticket created email
+  const placeholders = {
+    title: ticket.title,
+    code: ticket.code,
+    createdAt: ticket.createdAt,
+    email: user.email,
+    name: user.name,
+  };
+  const templateId = 1; // Template ID for the ticket created email
   await sendEmailWithTemplate(templateId, user.email, placeholders);
 };
 
@@ -97,20 +130,29 @@ router.get('/tickets/:id', async (req, res) => {
 });
 
 // Create ticket
-router.post('/tickets', async (req, res) => {
+router.post('/tickets', requireCustomerOrSupport(), async (req, res) => {
   try {
 
     const { topicId, title, description, priority, attachments, fyiTo } = req.body;
     const createdBy = req.user.id; // Get user ID from req.user
     const user = req.user;
-   
+
+    // Create the ticket first
     let ticket = await Ticket.create({ topicId, title, description, priority, createdBy });
+
+    // Generate and persist a ticket code (replaces missing DB trigger)
+    const code = await generateTicketCode(ticket);
+    if (code) {
+      await ticket.update({ code });
+    }
     // Create attachments
     await createOrUpdateAttachments(ticket.id, attachments);
     // Create FYI To recipients
     await createOrUpdateFYIToRecipients(ticket.id, fyiTo);
+    // Reload ticket to ensure latest values (including code / timestamps)
+    ticket = await Ticket.findByPk(ticket.id);
+
     // Send ticket created email
-    ticket =  await Ticket.findByPk(ticket.id);
     await sendTicketCreatedEmail(ticket, user);
 
     res.status(201).json(ticket);
@@ -121,7 +163,7 @@ router.post('/tickets', async (req, res) => {
 });
 
 // Update ticket
-router.put('/tickets/:id', async (req, res) => {
+router.put('/tickets/:id', requireSupport(), async (req, res) => {
   const { id } = req.params;
   const { title, description, priority, attachments, fyiTo } = req.body;
   try {
@@ -145,8 +187,8 @@ router.put('/tickets/:id', async (req, res) => {
   }
 });
 
-// Update ticket
-router.put('/tickets/:id/status/:status', async (req, res) => {
+// Update ticket status
+router.put('/tickets/:id/status/:status', requireSupport(), async (req, res) => {
   const { id, status } = req.params;
   
   try {
@@ -164,8 +206,59 @@ router.put('/tickets/:id/status/:status', async (req, res) => {
   }
 });
 
+// Acknowledge ticket
+router.put('/tickets/:id/acknowledge', requireSupport(), async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+  
+  try {
+    const ticket = await Ticket.findByPk(id);
+    if (!ticket) {
+      return res.status(404).json({ error: 'Ticket not found' });
+    }
+
+    // Check if ticket is assigned to the current user
+    if (ticket.assignedTo !== userId) {
+      return res.status(403).json({ error: 'You can only acknowledge tickets assigned to you' });
+    }
+
+    // Check if ticket is in an 'Assigned' state (not already acknowledged)
+    if (!ticket.assignmentStatus || !ticket.assignmentStatus.startsWith('Assigned')) {
+      return res.status(400).json({ error: 'Ticket is not in an assigned state' });
+    }
+
+    // Extract the escalation level from current assignmentStatus
+    const levelMatch = ticket.assignmentStatus.match(/L(\d)/);
+    const level = levelMatch ? levelMatch[1] : '1';
+    
+    // Update to acknowledged status
+    const acknowledgedStatus = `Acknowledged (L${level})`;
+    const now = new Date();
+    
+    await ticket.update({
+      assignmentStatus: acknowledgedStatus,
+      acknowledgedAt: now
+    });
+
+    console.log(`Ticket ${ticket.code || ticket.id} acknowledged by user ${req.user.name} at level L${level}`);
+
+    res.json({ 
+      message: 'Ticket acknowledged successfully',
+      ticket: {
+        id: ticket.id,
+        code: ticket.code,
+        assignmentStatus: acknowledgedStatus,
+        acknowledgedAt: now
+      }
+    });
+  } catch (error) {
+    console.error('Error acknowledging ticket:', error);
+    res.status(500).json({ error: 'Failed to acknowledge ticket' });
+  }
+});
+
 // Delete ticket
-router.delete('/tickets/:id', async (req, res) => {
+router.delete('/tickets/:id', requireAdminOrSupport(), async (req, res) => {
   const { id } = req.params;
   try {
     const ticket = await Ticket.findByPk(id);

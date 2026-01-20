@@ -18,6 +18,7 @@ const authenticate = async (req, res, next) => {
     }
 
     req.user = user; // Store user information in req.user
+    req.roles = decoded.roles || []; // Store user roles from JWT token
     next(); // Proceed to the next middleware/route handler
   } catch (error) {
     res.status(400).json({ error: 'Invalid token.' });

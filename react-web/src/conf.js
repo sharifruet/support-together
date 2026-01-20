@@ -1,5 +1,6 @@
 //export const BASE_URL = "https://support.i2gether.com/api";
-export const BASE_URL = "http://localhost:5000/api";
+// Use environment variable if available, otherwise default to localhost
+export const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 export const TICKET_STATUS_LIST = ['Created', 'Assigned', 'In Progress', 'Resolved', 'Closed'];
 
 export const PRIORITY_LIST = {

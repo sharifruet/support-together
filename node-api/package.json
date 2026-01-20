@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests/assignmentService.test.js",
+    "test:assignment": "node tests/assignmentService.test.js",
+    "test:quick": "node tests/quick-test.js"
   },
   "keywords": [],
   "author": "",

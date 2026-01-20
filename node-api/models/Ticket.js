@@ -72,6 +72,16 @@ const Ticket = db.define('Ticket', {
   topicId: {
     type: DataTypes.INTEGER,
     allowNull: false
+  },
+  assignedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    comment: 'Timestamp when ticket was assigned to current assignee'
+  },
+  acknowledgedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    comment: 'Timestamp when ticket was acknowledged by assignee'
   }
   
 });

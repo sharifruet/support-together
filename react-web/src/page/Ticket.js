@@ -24,7 +24,7 @@ export default function Ticket() {
     const [comment, setComment] = useState();
     const [topic, setTopic] = useState(null);
     const [project, setProject] = useState(null);
-    const {headerConfig, users, topics, projects} = useContext(GlobalContext);
+    const {headerConfig, users, topics, projects, user} = useContext(GlobalContext);
     const location = useLocation();
 
     const loadTicket = ()=>{
@@ -85,6 +85,31 @@ export default function Ticket() {
         }).catch(err=>{
             console.log(err);
         });
+    }
+
+    const acknowledgeTicket = () => {
+        axios.put(`/tickets/${ticket.id}/acknowledge`, 
+            {},
+            headerConfig()
+        ).then(response =>{
+            loadTicket();
+            console.log('Ticket Acknowledged');
+        }).catch(err=>{
+            console.error('Error acknowledging ticket:', err.response?.data?.error || err.message);
+        });
+    }
+
+    // Check if current user can acknowledge this ticket
+    const canAcknowledge = () => {
+        // eslint-disable-next-line no-undef
+        if (!ticket || !user) return false;
+        // Check if ticket is assigned to current user and not already acknowledged
+        // eslint-disable-next-line no-undef
+        const currentUserId = user?.user?.id;
+        const isAssignedToMe = ticket.assignedTo === currentUserId;
+        const isNotAcknowledged = ticket.assignmentStatus && 
+            ticket.assignmentStatus.startsWith('Assigned');
+        return isAssignedToMe && isNotAcknowledged;
     }
 
     const getUserName = (id) => users?.find(u=>u.id===id)?.name;
@@ -172,12 +197,45 @@ export default function Ticket() {
                         <Card.Body>
                             <Row>
                                 <Col className='text-end'>Assignment Status</Col>
-                                <Col className='text-left'>{ticket?.assignmentStatus}</Col>
+                                <Col className='text-left'>
+                                    <span className={`badge ${
+                                        ticket?.assignmentStatus?.startsWith('Acknowledged') 
+                                            ? 'bg-success' 
+                                            : 'bg-warning'
+                                    }`}>
+                                        {ticket?.assignmentStatus || 'Not Assigned'}
+                                    </span>
+                                </Col>
                             </Row>
                             <Row>
                                 <Col className='text-end'>Assigned To</Col>
-                                <Col className='text-left'>{getUserName(ticket?.assignedTo) }</Col>
+                                <Col className='text-left'>{getUserName(ticket?.assignedTo) || 'Not Assigned'}</Col>
                             </Row>
+                            {ticket?.assignedAt && (
+                                <Row>
+                                    <Col className='text-end'>Assigned At</Col>
+                                    <Col className='text-left'>{moment(ticket?.assignedAt).format('ddd, D MMMM, YYYY hh:mm A')}</Col>
+                                </Row>
+                            )}
+                            {ticket?.acknowledgedAt && (
+                                <Row>
+                                    <Col className='text-end'>Acknowledged At</Col>
+                                    <Col className='text-left'>{moment(ticket?.acknowledgedAt).format('ddd, D MMMM, YYYY hh:mm A')}</Col>
+                                </Row>
+                            )}
+                            {canAcknowledge() && (
+                                <Row className='mt-3'>
+                                    <Col>
+                                        <Button 
+                                            variant="success" 
+                                            onClick={acknowledgeTicket}
+                                            className="w-100"
+                                        >
+                                            ✓ Acknowledge Ticket
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            )}
                         </Card.Body>
                     </Card>
                     }
