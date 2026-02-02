@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { TextField, CircularProgress, Autocomplete } from "@mui/material";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { TextField, CircularProgress, Autocomplete, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import useProjectService from '../../hooks/useProjectService';
 import useOrganizationService from '../../hooks/useOrganizationService';
 import CustomButton from "../common/CustomButton";
@@ -7,8 +7,14 @@ import DeleteText from "../common/DeleteText";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
 import ModalOverlay from "../common/ModalOverlay";
+import GlobalContext from "../../GlobalContext";
+import axios from "../../api/axios";
 
 const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organization }) => {
+    const { headerConfig } = useContext(GlobalContext);
+    const [projectTopics, setProjectTopics] = useState([]);
+    const [projectUserRoles, setProjectUserRoles] = useState([]);
+    const [viewDataLoading, setViewDataLoading] = useState(false);
     // Destructuring service or api calls functions
     const { createProject, updateProject, deleteProject } = useProjectService();
     const { getAllOrganizations } = useOrganizationService();
@@ -61,7 +67,8 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
     const modalName = {
         add: "Add Project", // Label for the "add" modal type
         edit: "Edit Project", // Label for the "edit" modal type
-        delete: "Delete Project" // Label for the "delete" modal type
+        delete: "Delete Project", // Label for the "delete" modal type
+        view: "View Project" // Label for the "view" modal type
     };
 
     // loader for Material UI Autocomplete
@@ -99,7 +106,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
 
     // Effect to initialize form data based on modal type and project(passed props)
     useEffect(() => {
-        if (modalType === 'edit' && project && options.length > 0) {
+        if ((modalType === 'edit' || modalType === 'view') && project && options.length > 0) {
             const { name, code, description, id, OrganizationId } = project;
             const matchedOrganization = options.find(option => option.id === OrganizationId);
 
@@ -124,7 +131,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                 organizationId: organization.id,
             }));
         } else {
-            // Clear form data if modalType is not 'edit'
+            // Clear form data if modalType is not 'edit' or 'view'
             setFormData({
                 ...formData,
                 organizationId: organization !== null ? organization.id : "",
@@ -148,6 +155,26 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
             setSelectedOrganization(null);
         }
     }, [modalType, project, options, organization]);
+
+    // Fetch topics and user roles when viewing a project
+    useEffect(() => {
+        if (modalType === 'view' && project?.id) {
+            setViewDataLoading(true);
+            Promise.all([
+                axios.get(`/projects/${project.id}/topics`, headerConfig()).then((res) => res.data),
+                axios.get(`/user-roles/project/${project.id}`, headerConfig()).then((res) => res.data),
+            ])
+                .then(([topics, userRoles]) => {
+                    setProjectTopics(topics || []);
+                    setProjectUserRoles(userRoles || []);
+                })
+                .catch((err) => console.error('Error loading project view data:', err))
+                .finally(() => setViewDataLoading(false));
+        } else {
+            setProjectTopics([]);
+            setProjectUserRoles([]);
+        }
+    }, [modalType, project?.id, headerConfig]);
 
     // Effect to reset error and success messages after 2 seconds
     useEffect(() => {
@@ -312,6 +339,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                                     onChange={handleAutocompleteChange}
                                     options={options}
                                     getOptionLabel={(option) => option.name}
+                                    disabled={modalType === 'view'}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
@@ -344,6 +372,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                                     value={formData.code}
                                     onChange={handleInputChange}
                                     fullWidth
+                                    disabled={modalType === 'view'}
                                     error={!!(fieldErrors.code)} // Set error prop based on field error
                                     helperText={fieldErrors.code} // Provide the error message
                                 />
@@ -358,6 +387,7 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                                     value={formData.name}
                                     onChange={handleInputChange}
                                     fullWidth
+                                    disabled={modalType === 'view'}
                                     error={!!(fieldErrors.name)} // Set error prop based on field error
                                     helperText={fieldErrors.name} // Provide the error message
                                 />
@@ -374,21 +404,76 @@ const ProjectModal = ({ modalType, project, closeModal, fetchProjects, organizat
                                     fullWidth
                                     multiline
                                     rows={3}
+                                    disabled={modalType === 'view'}
                                     error={!!(fieldErrors.description)} // Set error prop based on field error
                                     helperText={fieldErrors.description} // Provide the error message
                                 />
                             </div>
+                            {modalType === 'view' && project && (
+                                <div className="mt-4">
+                                    <Typography variant="subtitle1" fontWeight="600" className="mb-2">Topics</Typography>
+                                    {viewDataLoading ? (
+                                        <Typography variant="body2" color="text.secondary">Loading…</Typography>
+                                    ) : projectTopics.length === 0 ? (
+                                        <Typography variant="body2" color="text.secondary">No topics in this project.</Typography>
+                                    ) : (
+                                        <Table size="small" className="mb-4">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>Name</TableCell>
+                                                    <TableCell>Description</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {projectTopics.map((t) => (
+                                                    <TableRow key={t.id}>
+                                                        <TableCell>{t.name}</TableCell>
+                                                        <TableCell>{t.description || '—'}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    )}
+                                    <Typography variant="subtitle1" fontWeight="600" className="mb-2">Users &amp; roles</Typography>
+                                    {viewDataLoading ? (
+                                        <Typography variant="body2" color="text.secondary">Loading…</Typography>
+                                    ) : projectUserRoles.length === 0 ? (
+                                        <Typography variant="body2" color="text.secondary">No users assigned to this project.</Typography>
+                                    ) : (
+                                        <Table size="small">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>User</TableCell>
+                                                    <TableCell>Email</TableCell>
+                                                    <TableCell>Role</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {projectUserRoles.map((ur) => (
+                                                    <TableRow key={ur.id}>
+                                                        <TableCell>{ur.User?.name || '—'}</TableCell>
+                                                        <TableCell>{ur.User?.email || '—'}</TableCell>
+                                                        <TableCell>{ur.role}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
-                    <div className="d-flex flex-column w-100 mt-4">
-                        <CustomButton
-                            isLoading={loading}
-                            type="submit"
-                            icon={buttonIcons[modalType]}
-                            label={buttonLabels[modalType]}
-                            disabled={loading}
-                        />
-                    </div>
+                    {modalType !== 'view' && (
+                        <div className="d-flex flex-column w-100 mt-4">
+                            <CustomButton
+                                isLoading={loading}
+                                type="submit"
+                                icon={buttonIcons[modalType]}
+                                label={buttonLabels[modalType]}
+                                disabled={loading}
+                            />
+                        </div>
+                    )}
                 </form>
             </ModalOverlay>
         </>

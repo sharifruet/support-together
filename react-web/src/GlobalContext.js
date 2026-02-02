@@ -25,14 +25,29 @@ const GlobalProvider = ({ children }) => {
         if (storedToken && !accessToken) {
             try {
                 const decoded = jwtDecode(storedToken);
-                setAccessToken(storedToken);
-                setUser(decoded);
-                setLoggedIn(true);
+                
+                // Check if token is expired
+                const currentTime = Date.now() / 1000; // Convert to seconds
+                if (decoded.exp && decoded.exp < currentTime) {
+                    // Token expired, clear it
+                    console.log("Token expired, clearing session");
+                    localStorage.removeItem("accessToken");
+                    setAccessToken(null);
+                    setLoggedIn(false);
+                    setUser(null);
+                } else {
+                    // Token is valid, restore session
+                    setAccessToken(storedToken);
+                    setUser(decoded);
+                    setLoggedIn(true);
+                }
             } catch (e) {
                 // Invalid token in storage; clear it
+                console.error("Invalid token in localStorage:", e);
                 localStorage.removeItem("accessToken");
                 setAccessToken(null);
                 setLoggedIn(false);
+                setUser(null);
             }
         }
         setAuthInitialized(true);

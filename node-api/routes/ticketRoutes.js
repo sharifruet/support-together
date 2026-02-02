@@ -109,6 +109,23 @@ router.get('/tickets/code/:code', async (req, res) => {
   }
 });
 
+// Get last N tickets by topic ID (for topic view; default limit 5)
+router.get('/tickets/topic/:topicId', async (req, res) => {
+  try {
+    const { topicId } = req.params;
+    const limit = Math.min(parseInt(req.query.limit, 10) || 5, 20);
+    const tickets = await Ticket.findAll({
+      where: { topicId },
+      order: [['createdAt', 'DESC']],
+      limit,
+    });
+    res.json(tickets);
+  } catch (error) {
+    console.error('Error fetching tickets by topic:', error);
+    res.status(500).json({ error: 'Failed to fetch tickets by topic' });
+  }
+});
+
 // Get a single ticket by ID
 router.get('/tickets/:id', async (req, res) => {
   const { id } = req.params;

@@ -1,0 +1,15 @@
+# React SPA - Fix 404 on direct URL access (e.g. /ticket/LIC-1)
+# For FastComet / Apache shared hosting
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Don't rewrite files or directories
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-l
+
+  # Rewrite everything else to index.html to allow React Router to handle it
+  RewriteRule . /index.html [L]
+</IfModule>

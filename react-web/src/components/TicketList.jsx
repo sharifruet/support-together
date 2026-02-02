@@ -16,7 +16,6 @@ import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import { TextareaAutosize, colors } from '@mui/material';
 import TableHead from '@mui/material/TableHead';
-import "bootstrap-icons/font/bootstrap-icons.css";
 import Upload from './upload';
 import GlobalContext from '../GlobalContext';
 import { Link, useNavigate } from 'react-router-dom';
@@ -298,17 +297,18 @@ const TicketList = ({ project, tickets }) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {tickets?.map((row, index) =>
-                                (row?.code?.split("-")[0].toLowerCase() === project?.name.toLowerCase()) ?
-                                    <TableRow key={index}>
+                            {tickets
+                                ?.filter((row) => row?.code?.split("-")[0].toLowerCase() === project?.name?.toLowerCase())
+                                ?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                ?.map((row, index) => (
+                                    <TableRow key={row.id ?? index}>
                                         <TableCell align="left"> <Link to={`/ticket/${row.code}`}>[{row.code}]</Link> {row.title}</TableCell>
                                         <TableCell align="left">{moment(row.createdAt).format('ddd, D MMMM, YYYY hh:mm A')}</TableCell>
                                         <TableCell align="left"><span className={`badge rounded-pill text-bg-primary ${PRIORITY_COLOR[row.priority]}`}>{PRIORITY_LIST[row.priority]}</span></TableCell>
                                         <TableCell align="left">{row.status}</TableCell>
                                         {/* <TableCell align="right"><i role="button" onClick={() => handleShow(setTid(row.id))} className="bi bi-pencil-square"></i></TableCell> */}
                                     </TableRow>
-                                    : null
-                            )}
+                                ))}
                         </TableBody>
                     </Table>
                 </TableContainer>

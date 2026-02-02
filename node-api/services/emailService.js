@@ -46,11 +46,11 @@ const sendEmailWithTemplate = async (templateId, recipient, placeholders) => {
             emailSubject = emailSubject.replace(regex, value);
         }
        
-        // Send the email
+        // Send the email (use replaced subject)
         const info = await transporter.sendMail({
             from: 'Support-Together<supporttogether@i2gether.com>',
             to: recipient,
-            subject: emailTemplate.subject,
+            subject: emailSubject,
             html: emailBody
         });
 

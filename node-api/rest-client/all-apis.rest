@@ -1,0 +1,630 @@
+# Support Together - Full REST API Collection
+# Use with VS Code REST Client extension (humao.rest-client)
+#
+# Usage: Run "User Login" first, then "Extract Token" to use auth for other requests.
+# Or set @TOKEN manually. Toggle BASE_URL for local vs production.
+
+ @BASE_URL = https://support.i2gether.com/api
+//@BASE_URL = http://localhost:5000/api
+@TOKEN = your_jwt_token_here
+
+##########################################
+# AUTH (no token required for login/register)
+##########################################
+
+### Health check
+GET {{BASE_URL}}
+###
+
+### User Registration
+POST {{BASE_URL}}/register
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "phoneNumber": "1234567890",
+  "password": "password123"
+}
+
+###
+
+### User Login (run this first)
+# @name login
+POST {{BASE_URL}}/login
+Content-Type: application/json
+
+{
+  "email": "sharifruet@gmail.com",
+  "password": "pass@123"
+}
+
+###
+
+### Extract Token (run after login to set TOKEN variable)
+@TOKEN = {{login.response.body.token}}
+
+### Change Password (auth required)
+PUT {{BASE_URL}}/change-password
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "currentPassword": "password123",
+  "newPassword": "newpassword456"
+}
+
+###
+
+### Forgot Password
+POST {{BASE_URL}}/forgot-password
+Content-Type: application/json
+
+{
+  "email": "user@example.com"
+}
+
+###
+
+### Get all users (auth required)
+GET {{BASE_URL}}/users
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Update user info (auth required)
+PUT {{BASE_URL}}/update-user
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "name": "John Doe Updated",
+  "email": "john.updated@example.com",
+  "phoneNumber": "0987654321",
+  "password": "newpassword123"
+}
+
+###
+
+##########################################
+# UPLOADS (auth required)
+##########################################
+
+### Upload file (replace path with your local file)
+POST {{BASE_URL}}/uploads
+Authorization: Bearer {{TOKEN}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="sample.txt"
+Content-Type: text/plain
+
+< ./sample.txt
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+
+### Get uploaded file by filename
+GET {{BASE_URL}}/uploads/filename-1234567890-123456789.txt
+Authorization: Bearer {{TOKEN}}
+
+###
+
+##########################################
+# ATTACHMENTS (auth required)
+##########################################
+
+### Upload attachment (replace path with your local file)
+POST {{BASE_URL}}/attachments
+Authorization: Bearer {{TOKEN}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="attachment.pdf"
+Content-Type: application/pdf
+
+< ./attachment.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+
+##########################################
+# ORGANIZATIONS (auth required)
+##########################################
+
+### Create organization (Admin)
+POST {{BASE_URL}}/organizations
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "code": "ORG001",
+  "name": "Acme Corporation",
+  "address": "123 Main St, City, Country"
+}
+
+###
+
+### Get all organizations
+GET {{BASE_URL}}/organizations
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Get organization by ID
+GET {{BASE_URL}}/organizations/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Update organization (Admin)
+PUT {{BASE_URL}}/organizations/1
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "code": "ORG001",
+  "name": "Acme Corp Updated",
+  "address": "456 New St, City, Country"
+}
+
+###
+
+### Delete organization (Admin)
+DELETE {{BASE_URL}}/organizations/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+##########################################
+# PROJECTS (auth required)
+##########################################
+
+### Create project (Admin)
+POST {{BASE_URL}}/projects
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "organizationId": 1,
+  "code": "PRJ001",
+  "name": "Project Alpha",
+  "description": "Project description"
+}
+
+###
+
+### Get all projects
+GET {{BASE_URL}}/projects
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Get project by ID
+GET {{BASE_URL}}/projects/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Get topics for project
+GET {{BASE_URL}}/projects/1/topics
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Update project (Admin)
+PUT {{BASE_URL}}/projects/1
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "code": "PRJ001",
+  "name": "Project Alpha Updated",
+  "description": "Updated description"
+}
+
+###
+
+### Delete project (Admin)
+DELETE {{BASE_URL}}/projects/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+##########################################
+# TOPICS (auth required)
+##########################################
+
+### Create topic (Admin)
+POST {{BASE_URL}}/topics
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "projectId": 1,
+  "name": "General Support",
+  "description": "General support topic",
+  "supportTeamId": 1
+}
+
+###
+
+### Get all topics
+GET {{BASE_URL}}/topics
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Get topic by ID
+GET {{BASE_URL}}/topics/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Update topic (Admin)
+PUT {{BASE_URL}}/topics/1
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "name": "General Support Updated",
+  "description": "Updated description",
+  "supportTeamId": 1
+}
+
+###
+
+### Delete topic (Admin)
+DELETE {{BASE_URL}}/topics/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+##########################################
+# TICKETS (auth required)
+##########################################
+
+### Get all tickets
+GET {{BASE_URL}}/tickets
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Get ticket by ID
+GET {{BASE_URL}}/tickets/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Get ticket by code
+GET {{BASE_URL}}/tickets/code/EBPM-1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Get tickets by project
+GET {{BASE_URL}}/tickets/project/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Create ticket (Customer/Support)
+POST {{BASE_URL}}/tickets
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "topicId": 1,
+  "title": "New Ticket",
+  "description": "Description of the new ticket",
+  "priority": "P3",
+  "attachments": ["attachment1.jpg", "attachment2.pdf"],
+  "fyiTo": ["user1@example.com", "user2@example.com"]
+}
+
+###
+
+### Update ticket (Support)
+PUT {{BASE_URL}}/tickets/1
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "title": "Updated Ticket",
+  "description": "Updated description",
+  "priority": "P2",
+  "attachments": [],
+  "fyiTo": []
+}
+
+###
+
+### Update ticket status (Support)
+PUT {{BASE_URL}}/tickets/1/status/In Progress
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Acknowledge ticket (Support - assigned user only)
+PUT {{BASE_URL}}/tickets/1/acknowledge
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Delete ticket (Admin/Support)
+DELETE {{BASE_URL}}/tickets/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+##########################################
+# COMMENTS (auth required)
+##########################################
+
+### Create comment
+POST {{BASE_URL}}/comments
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "ticketId": 1,
+  "content": "This is a comment on the ticket."
+}
+
+###
+
+### Get comments for ticket
+GET {{BASE_URL}}/tickets/1/comments
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Update comment
+PUT {{BASE_URL}}/comments/1
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "content": "This is an updated comment."
+}
+
+###
+
+### Delete comment
+DELETE {{BASE_URL}}/comments/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+##########################################
+# PROJECT MEMBERSHIPS (auth required)
+##########################################
+
+### Get user roles for all projects
+GET {{BASE_URL}}/project-memberships/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+##########################################
+# USER ROLES (auth required, Admin)
+##########################################
+
+### Assign role to user for project
+POST {{BASE_URL}}/user-roles
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "projectId": 1,
+  "role": "Customer"
+}
+
+###
+
+### Update user role
+PUT {{BASE_URL}}/user-roles/1
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "role": "Support"
+}
+
+###
+
+### Delete user role
+DELETE {{BASE_URL}}/user-roles/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+##########################################
+# EMAIL TEMPLATES (auth required)
+##########################################
+
+### Create email template
+POST {{BASE_URL}}/email-templates
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "name": "Welcome Email",
+  "subject": "Welcome to Support Together",
+  "body": "Hello {{name}}, welcome to our support system!"
+}
+
+###
+
+### Get all email templates
+GET {{BASE_URL}}/email-templates
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Get email template by ID
+GET {{BASE_URL}}/email-templates/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Update email template
+PUT {{BASE_URL}}/email-templates/1
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "name": "Welcome Email Updated",
+  "subject": "Welcome!",
+  "body": "Hello {{name}}, welcome!"
+}
+
+###
+
+### Delete email template
+DELETE {{BASE_URL}}/email-templates/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+##########################################
+# EMAIL (auth required)
+##########################################
+
+### Send email with template
+POST {{BASE_URL}}/send-email
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "templateId": 1,
+  "recipient": "user@example.com",
+  "placeholders": {
+    "name": "John Doe",
+    "code": "TKT-001"
+  }
+}
+
+###
+
+##########################################
+# INVITE (auth required)
+##########################################
+
+### Invite user to project
+POST {{BASE_URL}}/invite
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "email": "newuser@example.com",
+  "projectId": 1,
+  "role": "Customer"
+}
+
+###
+
+##########################################
+# SUPPORT TEAMS (auth required)
+##########################################
+
+### Create support team (Admin)
+POST {{BASE_URL}}/support-teams
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "name": "Level 1 Support",
+  "userIds": [1, 2, 3]
+}
+
+###
+
+### Get all support teams
+GET {{BASE_URL}}/support-teams
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Get support team by ID
+GET {{BASE_URL}}/support-teams/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Update support team (Admin)
+PUT {{BASE_URL}}/support-teams/1
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "name": "Level 1 Support Updated",
+  "userIds": [1, 2, 3, 4]
+}
+
+###
+
+### Delete support team (Admin)
+DELETE {{BASE_URL}}/support-teams/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+##########################################
+# SUPPORT SCHEDULES (auth required)
+##########################################
+
+### Create support schedule (Admin)
+POST {{BASE_URL}}/support-schedules
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "startTime": "09:00:00",
+  "endTime": "17:00:00",
+  "escalationLevel": 1,
+  "supportTeamId": 1,
+  "userId": 1
+}
+
+###
+
+### Get all support schedules (with filters)
+GET {{BASE_URL}}/support-schedules?page=1&limit=50&supportTeamId=1&escalationLevel=1&includeTeam=true&includeUser=true
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Get support schedule by ID
+GET {{BASE_URL}}/support-schedules/1
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Get schedules for support team
+GET {{BASE_URL}}/support-schedules/team/1?escalationLevel=1&includeUser=true&includeTeam=true
+Authorization: Bearer {{TOKEN}}
+
+###
+
+### Update support schedule (Admin)
+PUT {{BASE_URL}}/support-schedules/1
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "startTime": "08:00:00",
+  "endTime": "16:00:00",
+  "escalationLevel": 1,
+  "supportTeamId": 1,
+  "userId": 2
+}
+
+###
+
+### Delete support schedule (Admin)
+DELETE {{BASE_URL}}/support-schedules/1
+Authorization: Bearer {{TOKEN}}
+
+###

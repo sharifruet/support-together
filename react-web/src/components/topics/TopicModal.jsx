@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { TextField, CircularProgress, Autocomplete } from "@mui/material";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { TextField, CircularProgress, Autocomplete, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import useTopicService from '../../hooks/useTopicService';
 import useProjectService from '../../hooks/useProjectService';
 import CustomButton from "../common/CustomButton";
@@ -7,8 +7,14 @@ import DeleteText from "../common/DeleteText";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
 import ModalOverlay from "../common/ModalOverlay";
+import GlobalContext from "../../GlobalContext";
+import axios from "../../api/axios";
+import moment from "moment";
 
 const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
+    const { headerConfig } = useContext(GlobalContext);
+    const [recentTickets, setRecentTickets] = useState([]);
+    const [ticketsLoading, setTicketsLoading] = useState(false);
     // Destructuring service or api calls functions
     const { createTopic, updateTopic, deleteTopic } = useTopicService();
     const { getAllProjects } = useProjectService();
@@ -59,7 +65,8 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
     const modalName = {
         add: "Add Topic", // Label for the "add" modal type
         edit: "Edit Topic", // Label for the "edit" modal type
-        delete: "Delete Topic" // Label for the "delete" modal type
+        delete: "Delete Topic", // Label for the "delete" modal type
+        view: "View Topic" // Label for the "view" modal type
     };
 
     // loader for Material UI Autocomplete
@@ -97,7 +104,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
 
     // Effect to initialize form data based on modal type and topic(passed props)
     useEffect(() => {
-        if (modalType === 'edit' && topic && options.length > 0) {
+        if ((modalType === 'edit' || modalType === 'view') && topic && options.length > 0) {
             const { name, description, id, ProjectId } = topic;
             const matchedProject = options.find(option => option.id === ProjectId);
 
@@ -123,7 +130,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                 projectId: project.id,
             }));
         } else {
-            // Clear form data if modalType is not 'edit'
+            // Clear form data if modalType is not 'edit' or 'view'
             setFormData({
                 ...formData,
                 projectId: project !== null ? project.id : "",
@@ -145,6 +152,19 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
             setSelectedProject(null);
         }
     }, [modalType, topic, options, project]);
+
+    // Fetch last few tickets when viewing a topic
+    useEffect(() => {
+        if (modalType === 'view' && topic?.id) {
+            setTicketsLoading(true);
+            axios.get(`/tickets/topic/${topic.id}?limit=5`, headerConfig())
+                .then((res) => setRecentTickets(res.data || []))
+                .catch((err) => console.error('Error loading tickets for topic:', err))
+                .finally(() => setTicketsLoading(false));
+        } else {
+            setRecentTickets([]);
+        }
+    }, [modalType, topic?.id, headerConfig]);
 
     // Effect to reset error and success messages after 2 seconds
     useEffect(() => {
@@ -308,6 +328,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                                     onChange={handleAutocompleteChange}
                                     options={options}
                                     getOptionLabel={(option) => option.name}
+                                    disabled={modalType === 'view'}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
@@ -340,6 +361,7 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                                     value={formData.name}
                                     onChange={handleInputChange}
                                     fullWidth
+                                    disabled={modalType === 'view'}
                                     error={!!(fieldErrors.name)} // Set error prop based on field error
                                     helperText={fieldErrors.name} // Provide the error message
                                 />
@@ -356,21 +378,55 @@ const TopicModal = ({ modalType, topic, closeModal, fetchTopics, project }) => {
                                     fullWidth
                                     multiline
                                     rows={3}
+                                    disabled={modalType === 'view'}
                                     error={!!(fieldErrors.description)} // Set error prop based on field error
                                     helperText={fieldErrors.description} // Provide the error message
                                 />
                             </div>
+                            {modalType === 'view' && topic && (
+                                <div className="mt-4">
+                                    <Typography variant="subtitle1" fontWeight="600" className="mb-2">Recent tickets</Typography>
+                                    {ticketsLoading ? (
+                                        <Typography variant="body2" color="text.secondary">Loading…</Typography>
+                                    ) : recentTickets.length === 0 ? (
+                                        <Typography variant="body2" color="text.secondary">No tickets under this topic yet.</Typography>
+                                    ) : (
+                                        <Table size="small">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>Code</TableCell>
+                                                    <TableCell>Title</TableCell>
+                                                    <TableCell>Status</TableCell>
+                                                    <TableCell>Created</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {recentTickets.map((t) => (
+                                                    <TableRow key={t.id}>
+                                                        <TableCell>{t.code || '—'}</TableCell>
+                                                        <TableCell>{t.title || '—'}</TableCell>
+                                                        <TableCell>{t.status || '—'}</TableCell>
+                                                        <TableCell>{t.createdAt ? moment(t.createdAt).format('MMM D, YYYY') : '—'}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
-                    <div className="d-flex flex-column w-100 mt-4">
-                        <CustomButton
-                            isLoading={loading}
-                            type="submit"
-                            icon={buttonIcons[modalType]}
-                            label={buttonLabels[modalType]}
-                            disabled={loading}
-                        />
-                    </div>
+                    {modalType !== 'view' && (
+                        <div className="d-flex flex-column w-100 mt-4">
+                            <CustomButton
+                                isLoading={loading}
+                                type="submit"
+                                icon={buttonIcons[modalType]}
+                                label={buttonLabels[modalType]}
+                                disabled={loading}
+                            />
+                        </div>
+                    )}
                 </form>
             </ModalOverlay>
         </>

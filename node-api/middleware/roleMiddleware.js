@@ -202,8 +202,8 @@ const checkProjectAccess = async (req, res, next) => {
     try {
         const roles = req.roles || [];
         // Check params.id first (for routes like /projects/:id/topics)
-        // Then check body.projectId, then query.projectId
-        const projectId = req.params.id || req.body.projectId || req.query.projectId;
+        // Then params.projectId (e.g. /user-roles/project/:projectId), body, query
+        const projectId = req.params.id || req.params.projectId || req.body.projectId || req.query.projectId;
         
         if (!projectId) {
             return res.status(400).json({ error: 'Project ID is required.' });

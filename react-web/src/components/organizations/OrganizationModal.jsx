@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { TextField } from "@mui/material";
+import React, { useState, useEffect, useContext } from "react";
+import { TextField, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import useOrganizationService from '../../hooks/useOrganizationService';
 import CustomButton from "../common/CustomButton";
 import DeleteText from "../common/DeleteText";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
 import ModalOverlay from "../common/ModalOverlay";
+import GlobalContext from "../../GlobalContext";
 
 const OrganizationModal = ({ modalType, organization, closeModal, fetchOrganizations }) => {
+    const { projects } = useContext(GlobalContext);
+    const organizationProjects = organization?.id
+        ? (projects || []).filter((p) => p.OrganizationId === organization.id)
+        : [];
     // Destructuring service or api calls functions
     const { createOrganization, updateOrganization, deleteOrganization } = useOrganizationService();
 
@@ -49,12 +54,13 @@ const OrganizationModal = ({ modalType, organization, closeModal, fetchOrganizat
     const modalName = {
         add: "Add Organization", // Label for the "add" modal type
         edit: "Edit Organization", // Label for the "edit" modal type
-        delete: "Delete Organization" // Label for the "delete" modal type
+        delete: "Delete Organization", // Label for the "delete" modal type
+        view: "View Organization" // Label for the "view" modal type
     };
 
     // Effect to initialize form data based on modal type and organization(passed props)
     useEffect(() => {
-        if (modalType === 'edit') {
+        if (modalType === 'edit' || modalType === 'view') {
             const { name, code, address, id } = organization;
             setFormData({
                 ...formData,
@@ -66,7 +72,7 @@ const OrganizationModal = ({ modalType, organization, closeModal, fetchOrganizat
                 error: false,
             });
         } else {
-            // Clear form data if modalType is not 'edit'
+            // Clear form data if modalType is not 'edit' or 'view'
             setFormData({
                 ...formData,
                 code: "",
@@ -221,6 +227,7 @@ const OrganizationModal = ({ modalType, organization, closeModal, fetchOrganizat
                                     onChange={handleInputChange}
                                     fullWidth
                                     autoFocus
+                                    disabled={modalType === 'view'}
                                     error={!!(fieldErrors.code)} // Set error prop based on field error
                                     helperText={fieldErrors.code} // Provide the error message
                                 />
@@ -236,6 +243,7 @@ const OrganizationModal = ({ modalType, organization, closeModal, fetchOrganizat
                                     label="Name"
                                     fullWidth
                                     autoComplete="name"
+                                    disabled={modalType === 'view'}
                                     error={!!(fieldErrors.name)} // Set error prop based on field error
                                     helperText={fieldErrors.name} // Provide the error message
                                 />
@@ -252,21 +260,49 @@ const OrganizationModal = ({ modalType, organization, closeModal, fetchOrganizat
                                     fullWidth
                                     multiline
                                     rows={3}
+                                    disabled={modalType === 'view'}
                                     error={!!(fieldErrors.address)} // Set error prop based on field error
                                     helperText={fieldErrors.description} // Provide the error message
                                 />
                             </div>
+                            {modalType === 'view' && organization && (
+                                <div className="mt-4">
+                                    <Typography variant="subtitle1" fontWeight="600" className="mb-2">Projects</Typography>
+                                    {organizationProjects.length === 0 ? (
+                                        <Typography variant="body2" color="text.secondary">No projects in this organization.</Typography>
+                                    ) : (
+                                        <Table size="small">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>Code</TableCell>
+                                                    <TableCell>Name</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {organizationProjects.map((p) => (
+                                                    <TableRow key={p.id}>
+                                                        <TableCell>{p.code}</TableCell>
+                                                        <TableCell>{p.name}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
-                    <div className="d-flex flex-column w-100 mt-4">
-                        <CustomButton
-                            isLoading={loading}
-                            type="submit"
-                            icon={buttonIcons[modalType]}
-                            label={buttonLabels[modalType]}
-                            disabled={loading}
-                        />
-                    </div>
+                    {modalType !== 'view' && (
+                        <div className="d-flex flex-column w-100 mt-4">
+                            <CustomButton
+                                isLoading={loading}
+                                type="submit"
+                                icon={buttonIcons[modalType]}
+                                label={buttonLabels[modalType]}
+                                disabled={loading}
+                            />
+                        </div>
+                    )}
                 </form>
             </ModalOverlay>
         </>

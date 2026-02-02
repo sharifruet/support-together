@@ -5,7 +5,23 @@ const router = express.Router();
 const UserRole = require('../models/UserRole');
 const User = require('../models/User');
 const Project = require('../models/Project');
-const { requireAdmin } = require('../middleware/roleMiddleware');
+const { requireAdmin, checkProjectAccess } = require('../middleware/roleMiddleware');
+const { sendEmailWithTemplate } = require('../services/emailService');
+
+// Get user roles (users and roles) for a project
+router.get('/user-roles/project/:projectId', checkProjectAccess, async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const userRoles = await UserRole.findAll({
+      where: { ProjectId: projectId },
+      include: [{ model: User, attributes: ['id', 'name', 'email'] }],
+    });
+    res.json(userRoles);
+  } catch (error) {
+    console.error('Error fetching user roles by project:', error);
+    res.status(500).json({ error: 'Failed to fetch user roles' });
+  }
+});
 
 // Assign role to user for a project
 router.post('/user-roles', requireAdmin(), async (req, res) => {
@@ -18,6 +34,21 @@ router.post('/user-roles', requireAdmin(), async (req, res) => {
       return res.status(404).json({ error: 'User or project not found' });
     }
     const userRole = await UserRole.create({ UserId: userId, ProjectId: projectId, role });
+
+    // Notify user by email that they have been added to the project
+    try {
+      const placeholders = {
+        name: user.name || user.email,
+        email: user.email,
+        projectName: project.name,
+        role
+      };
+      const templateId = 7; // Project assignment email template
+      await sendEmailWithTemplate(templateId, user.email, placeholders);
+    } catch (emailError) {
+      console.error('Error sending project assignment email:', emailError);
+    }
+
     res.status(201).json(userRole);
   } catch (error) {
     console.error('Error assigning role to user:', error);
